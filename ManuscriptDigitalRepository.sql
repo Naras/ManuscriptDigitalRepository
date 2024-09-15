@@ -166,7 +166,7 @@ ENGINE = InnoDB;
 CREATE  TABLE IF NOT EXISTS `DigitalRepository`.`Language` (
   `id` CHAR(10) NOT NULL ,
   `Name` VARCHAR(100) NULL ,
-  `UnicodePoint` MEDIUMINT NULL ,
+  `UnicodeBlock` MEDIUMINT NULL ,
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB
 COMMENT = 'Langauges for the manuscript and transcrriptions, commentaries etc';
@@ -178,7 +178,7 @@ COMMENT = 'Langauges for the manuscript and transcrriptions, commentaries etc';
 CREATE  TABLE IF NOT EXISTS `DigitalRepository`.`Script` (
   `id` CHAR(10) NOT NULL ,
   `Name` VARCHAR(100) NULL ,
-  `UnicodePoint` MEDIUMINT NULL ,
+  `UnicodeBlock` MEDIUMINT NULL ,
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB
 COMMENT = 'Scripts for the manuscript and transcrriptions, commentaries etc';
@@ -364,9 +364,9 @@ COMMENT = 'A copy of a physical manuscript. The central entity in the database. 
 
 
 -- -----------------------------------------------------
--- Table `DigitalRepository`.`PersonRole`
+-- Table `DigitalRepository`.`Role`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `DigitalRepository`.`PersonRole` (
+CREATE  TABLE IF NOT EXISTS `DigitalRepository`.`Role` (
   `id` CHAR(10) NOT NULL ,
   `Name` CHAR(30) NULL ,
   PRIMARY KEY (`id`) )
@@ -381,16 +381,16 @@ CREATE  TABLE IF NOT EXISTS `DigitalRepository`.`Person_has_Role` (
   `Person` CHAR(10) NOT NULL ,
   `Role` CHAR(10) NOT NULL ,
   PRIMARY KEY (`Person`, `Role`) ,
-  INDEX `fk_Person_has_PersonRole_Person` (`Person` ASC) ,
-  INDEX `fk_Person_has_PersonRole_PersonRole` (`Role` ASC) ,
-  CONSTRAINT `fk_Person_has_PersonRole_Person`
+  INDEX `fk_Person_has_Role_Person` (`Person` ASC) ,
+  INDEX `fk_Person_has_Role_Role` (`Role` ASC) ,
+  CONSTRAINT `fk_Person_has_Role_Person`
     FOREIGN KEY (`Person` )
     REFERENCES `DigitalRepository`.`Person` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Person_has_PersonRole_PersonRole`
+  CONSTRAINT `fk_Person_has_Role_Role`
     FOREIGN KEY (`Role` )
-    REFERENCES `DigitalRepository`.`PersonRole` (`id` )
+    REFERENCES `DigitalRepository`.`Role` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
@@ -547,6 +547,96 @@ CREATE  TABLE IF NOT EXISTS `DigitalRepository`.`PersonLife` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 COMMENT = 'The life of a person. May be a historical, fictional or even a mytholgical person';
+
+
+/*Data for the table `material` */
+
+insert  into `material`(`id`,`Name`,`Description`) values ('palm','Palmleaf','Palm leaf'),('birch','Birch','Birch'),('wood','Wood','Wood');
+
+/*Data for the table `condition` */
+
+insert  into `condition`(`id`,`Name`,`Description`) values ('bad','Bad','Bad'),('good','Good','Good');
+
+/*Data for the table `equipment` */
+
+insert  into `equipment`(`id`,`Name`) values ('scanner','Scanner');
+
+/*Data for the table `make` */
+
+insert  into `make`(`id`,`Name`,`Equipment`) values ('Amul','Amul','Scanner'),('Nirma','Nirma','Scanner'),('Samsung','Samsung','Scanner'),('Sony','Sony','Scanner');
+
+/*Data for the table `imagingsoftware` */
+
+insert  into `imagingsoftware`(`id`,`Name`) values ('Better','Behethar Hai - sirf kehene ke liye'),('Good','goody goody - this is a test'),('Worst','Kharaab Hai - pasand nahi');
+
+/*Data for the table `catalogsource` */
+
+insert  into `catalogsource`(`id`,`Name`) values ('melkote','Melkote');
+
+
+/*Data for the table `organization` */
+
+insert  into `organization`(`id`,`Name`) values ('FRLHT','Foundation for Rejuvenation of Local Health Traditions');
+
+/*Data for the table `person` */
+
+insert  into `person`(`id`,`First`,`Middle`,`Last`,`Initials`,`Nick`,`Other`) values ('ama','Ananth',NULL,'M.A.','AMA',NULL,NULL),('hem','Hemanth',NULL,NULL,'H',NULL,NULL),('maa','Alwar',NULL,'M.A.','MAA',NULL,NULL),('mal','Lakshmitathachar',NULL,'M.A.','MAL',NULL,NULL),('ND','Nikhil','','Desale','ND','',''),('nmg','Narasimhan',NULL,'M.G.','NMG','Naras',NULL),('pa','Pavitha',NULL,'A.','PA',NULL,NULL),('sd','Sindhu',NULL,'D.','SD',NULL,NULL),('skv','Surekha',NULL,'K.V.','SKV',NULL,NULL),('vr','Vinay',NULL,'R.','VR',NULL,NULL),('vs','Vijay',NULL,'Srinivas','VS',NULL,NULL);
+
+/*Data for the table `Role` */
+
+insert  into `Role`(`id`,`Name`) values ('Auth','Author'),('Edt','Editor'),('Mgr','Manager'),('Mtd','Metadata Manager'),('pub','Publisher'),('Rev','Reviewer'),('Sch','Scholar'),('Scr','Scribe');
+
+/*Data for the table `person_has_role` */
+
+insert  into `person_has_role`(`Person`,`Role`) values ('ama','rev'),('ama','sch'),('hem','sch'),('maa','mtd'),('maa','pub'),('maa','rev'),('maa','sch'),('mal','edt'),('mal','mgr'),('mal','mtd'),('mal','pub'),('mal','rev'),('nmg','mgr'),('nmg','scr'),('pa','scr'),('sd','rev'),('skv','edt'),('vr','auth'),('vs','mtd');
+
+/*Data for the table `language` */
+
+insert  into `language`(`id`,`Name`,`UnicodeBlock`) values ('aSSAmi','aSSAmi',21),('bengAli','bengAli',21),('English','English',2),('gujarAthi','gujarAthi',23),('hindi','hindi',20),('kannaDa','KannaDa',27),('kashmIri','kashmIri',185),('malayALam','malayALam',28),('mANipuri','mANipuri',136),('marATHi','marATHi',20),('oDiyA','oDiyA',24),('punjAbi','punJabi',22),('Samskrth','Samskrth',20),('tamiL','tamiL',25),('telugu','telugu',26),('urdu','urdu',19);
+
+/*Data for the table `script` */
+
+insert  into `script`(`id`,`Name`,`UnicodeBlock`) values ('bengAli','bengAli',21),('brAhmi','brAhmi',181),('devanAgari','devanAgari',20),('English','English',2),('granTHa','granTHa',NULL),('gujarAthi','gujarAthi',23),('gurmukhi','gurmukhi',22),('kannaDa','kannADa',27),('malayALam','malayALam',28),('oDiyA','oDiyA',24),('shArada','shArada',185),('tamiL','tamiL',25),('telugu','telugu',26);
+
+/*Data for the table `country` */
+
+insert  into `country`(`id`,`Name`) values ('Afghan','Afghanistan'),('Alb','Albania'),('Argent','Argentina'),('Armen','Armenia'),('Azer','Azerbaijan'),('BD','Bangladesh'),('Bolivia','Bolivia'),('Botswana','Botswana'),('Braz','Brazil'),('Chile','Chile'),('China','China'),('Croatia','Croatia'),('Czech','Czech Republic'),('Eritrea','Eritrea'),('Ethio','Ethiopia'),('Gambia','Gambia'),('Georgia','Georgia'),('Haiti','Haiti'),('Hungary','Hungary'),('ind','India'),('Indonesia','Indonesia'),('Iran','Iran'),('Iraq','Iraq'),('Israel','Israel'),('Japan','Japan'),('Kamp','Kampuchea'),('Kazakhstan','Kazakhstan'),('Kenya','Kenya'),('Kurd','Kurdistan'),('Kuwait','Kuwait'),('Lao','Lao'),('Lat','Latvia'),('Lith','Lithuania'),('Malay','Malaysia'),('Mali','Mali'),('Myanmar','Myanmar'),('Namibia','Namibia'),('NKorea','North Korea'),('Oman','Oman'),('Pakistan','Pakistan'),('Peru','Peru'),('Phil','Phillipines'),('Poland','Poland'),('Rumania','Rumania'),('Russia','Russia'),('SAfrica','South Africa'),('Saud','Saudi Arabia'),('Senegal','Senegal'),('Serbia','Serbia'),('Sing','Singapore'),('SKorea','South Korea'),('SL','Srilanka'),('Somalia','Somalia'),('Tadji','Tadjikistan'),('Tanz','Tanzania'),('Thai','Thailand'),('Turkey','Turkey'),('Turkmen','Turkmenistan'),('UAE','Emirates'),('Uganda','Uganda'),('Ukraine','Ukraine'),('Uzbek','Uzbekistan'),('Viet','Vietnam'),('Zimb','Zimbabwe');
+
+/*Data for the table `state` */
+
+insert  into `state`(`id`,`Country_id`,`Name`) values ('AP','ind','Andhra pradesh'),('aru','ind','aruNAchal pradEsh'),('asm','ind','aSSAm'),('ben','ind','paschim bangAl'),('bih','ind','bihAr'),('Col','SL','Colombo'),('guj','ind','gujarAth'),('HP','ind','himAchal pradEsh'),('JK','ind','jammu & kAshmIr'),('kar','ind','karnAtaka'),('ker','ind','kEraLa'),('mani','ind','maNipUr'),('megh','ind','mEghAlay'),('MH','ind','mahA rAshTRa'),('miz','ind','mizOram'),('MP','ind','madhya pradEsh'),('naga','ind','nAgAland'),('ND','ind','New Delhi'),('odi','ind','odiSSa'),('punj','ind','punJab'),('raj','ind','rAjAsTHAn'),('sik','ind','sikkim'),('TN','ind','tamiL NADu'),('tri','ind','tripura'),('UP','ind','utthara pradEsh');
+
+/*Data for the table `district` */
+
+insert  into `district`(`id`,`State_id`,`Country_id`,`Name`) values ('Gul','kar','ind','Gulbarga'),('mandya','kar','ind','Mandya'),('tumkur','kar','ind','Tumkur');
+
+/*Data for the table `city` */
+
+insert  into `city`(`id`,`State_id`,`Country_id`,`Name`) values ('ahmed','guj','ind','Ahmedabad'),('allah','UP','ind','Allahabad'),('bho','MP','ind','Bhopal'),('bhuv','odi','ind','Bhuvaneshwar'),('bidar','kar','ind','Bidar'),('blr','kar','ind','Bangalore'),('che','TN','ind','Chennai'),('hyd','AP','ind','Hyderabad'),('jai','raj','ind','Jaipur'),('kol','ben','ind','Kolkata'),('luck','UP','ind','Lucknow'),('mumb','MH','ind','Mumbai'),('mys','kar','ind','Mysore'),('nd','ND','ind','New Delhi'),('pat','bih','ind','Patna'),('pune','MH','ind','Pune'),('puri','odi','ind','Puri'),('sim','HP','ind','Simla'),('Tanj','TN','ind','thanjAvUr'),('uday','raj','ind','Udaipur'),('vizag','AP','ind','Vishakapatnam');
+
+
+/*Data for the table `documenttype` */
+
+insert  into `documenttype`(`id`,`Name`) values (1,'Transcription'),(2,'Commentary'),(3,'Annotation');
+
+
+/*Data for the table `bundle` */
+
+insert  into `bundle`(`id`,`Name`) values (0,'Bundle1');
+
+/*Data for the table `folio` */
+
+insert  into `folio`(`id`,`Name`,`Bundle_id`) values (0,'Yog Shatak',0);
+
+/*Data for the table `digitalmanuscript` */
+
+insert  into `digitalmanuscript`(`id`,`MaterialNumber`,`Title`,`OtherTitle`,`Complete`,`Organization`,`Folio`,`Language`,`Script`,`Pages`,`Material`,`Condition`,`ManuscriptDate`,`Length`,`Width`,`CreatedOn`,`ModifiedOn`,`CatalogSource`,`Remarks`,`PixelHeight`,`PixelWidth`,`Resolution`,`ColorMode`,`ColorProfile`,`Make`,`XResolution`,`YResoluton`,`ImagingSoftware`) values ('KSP 1','K460',' ?','',0,NULL,NULL,NULL,'kannaDa',28,NULL,'good',NULL,NULL,NULL,'2013-09-11',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),('KSP 10','K358','Ayurveda Mahashastra','',0,NULL,NULL,'kannaDa','kannaDa',162,NULL,NULL,NULL,NULL,NULL,'2013-09-16',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),('KSP 11','K83','?','',0,NULL,NULL,'kannaDa','kannaDa',144,NULL,NULL,NULL,46,4,'2013-09-17',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),('KSP 2','K455','Vaidya Pustaka ','',0,NULL,NULL,'kannaDa','kannaDa',63,NULL,'good',NULL,23,4,'2013-09-11',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),('KSP 3','K465/3a','Vaidya  ','',0,NULL,NULL,'kannaDa','kannaDa',14,NULL,'good',NULL,23,NULL,'2013-09-13',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),('KSP 4','K465/3b','Vaidya ','',0,NULL,NULL,'kannaDa','kannaDa',9,NULL,'good',NULL,22,NULL,'2013-09-13',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),('KSP 5','K465/3c','Vaidya','',0,NULL,NULL,'kannaDa','kannaDa',2,NULL,'good',NULL,19,4,'2013-09-13',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),('KSP 6','K471','Vaidya Chintamani','',0,NULL,NULL,'kannaDa','kannaDa',55,NULL,'good',NULL,23,NULL,'2013-09-13',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),('KSP 7',' K473','Vaidya Chintamani ','',0,NULL,NULL,'kannaDa','kannaDa',27,NULL,'good',NULL,NULL,NULL,'2013-09-13',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),('KSP 8','K126','Dhanwantari Nighantu','',0,NULL,NULL,'kannaDa','kannaDa',84,NULL,'good',NULL,37,4,'2013-09-13',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),('KSP 9','K298',' Vaidya Grantha    ','',0,NULL,NULL,'kannaDa','kannaDa',213,NULL,NULL,NULL,45,NULL,'2013-09-13',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),('UTC 1','43','?','',0,NULL,NULL,'kannaDa','kannaDa',242,NULL,'good',NULL,47,NULL,'2013-09-19',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),('ys000','ys000','Yog Shatak 0',NULL,1,'FRLHT',0,'English','English',1,'wood','good','2013-06-18',5,4,'2013-08-16',NULL,NULL,'Yog Shatak Logo',2,2,864,NULL,NULL,'Amul',3,3,'Good');
+
+
+/*Data for the table `subject` */
+
+insert  into `subject`(`id`,`Name`,`Description`,`BelongsUnder`) values ('Aitreya','Aitreya','Aitreyopanishad  \"The Microcosm of Man\"','Upanishad'),('AraNyaka','AraNyaka',' \"wilderness texts\" or \"forest treaties\"','Samhita'),('AV','aTHarvaNa Veda','aTHarvaNa Veda','Veda'),('Ayurveda','Ayurveda','Indian Medical Systems','Upaveda'),('BrahadAraN','BrahadAraNyaka','the big forest treatise','Upanishad'),('BrahmaNa','BrahmaNa','Prose commentaries on Samhitas','Samhita'),('Chandas','Chandas','Metre','Vedanga'),('Chandogya','Chandogya','Chandogyopanishad \"Song and Sacrifice\"','Upanishad'),('Dhanurveda','Dhanurveda','Archery','Upaveda'),('Gandharvav','Gandharva veda','Sacred Music and Dance',NULL),('Isa','Isa','Isopanishad \"The Inner Ruler\"','Upanishad'),('Jyotisha','Jyotisha','Astronomy/Astrology/Cosmology','Vedanga'),('Kalpa','Kalpa','Ritual','Vedanga'),('Katha','Katha','Kathopanishad \"Death as Teacher\"','Upanishad'),('Kena','Kena','Kenopanishad \"Who moves the world?\"','Upanishad'),('mAndukya','mAndukya','mAndukyopanishad \"Consciousness and its phases\"','Upanishad'),('MrigAyur','Mrigaayurveda','Ayurveda for Animals','Ayurveda'),('Mundaka','Mundaka','Mundakopanoishad  \"Two modes of Knowing\"','Upanishad'),('Nirukta','Nirukta','Etymology','Vedanga'),('Prasna','Prasna','Prasnopanishad  \"The Breath of Life\"','Upanishad'),('RV','Rk Veda','Rk Veda','Veda'),('Samhita','Samhita','Collection of metric texts','Veda'),('ShastrashA','ShastrashAstra','Military Knowledge','Upaveda'),('Shiksha','Shiksha','Phonetics','Vedanga'),('ShilpashAs','Shilpa shAstra',NULL,'Upaveda'),('Sthapatyav','Sthapatyaveda','Architecture (temples)','Upaveda'),('SV','sAma Veda','sAma Veda','Veda'),('TaittirIya','TaittirIya','Taittiriyopanishad  \"From Food to Joy\"','Upanishad'),('Upanishad','Upanishad','Fundamental philosophy','Vedantha'),('Upaveda','Upaveda','Subsidiary vedas \"applied knowledge\"','Veda'),('Veda','Veda','Veda',NULL),('Vedanga','Vedanga','Angas (limbs) of Vedas','Veda'),('Vedantha','Vedantha','\"End of the vedas\" - sum of all knowledge','Veda'),('VyAkaraNa','VyAkaraNa','Grammar','Vedanga'),('YV','Yajur Veda','Yajur Veda','Veda');
+
 
 COMMIT;
 
