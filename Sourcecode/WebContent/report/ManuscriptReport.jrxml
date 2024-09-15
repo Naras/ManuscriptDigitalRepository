@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ManuscriptReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="511f75b7-9ef9-4aca-bceb-b3fbeac1af72">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="id" class="java.lang.String"/>
+	<parameter name="imagePath" class="java.lang.String"/>
+	<parameter name="recordtype" class="java.lang.Short"/>
+	<queryString>
+		<![CDATA[SELECT dd.id,dd.TEXT,fm.filePath,dm.NAME,op.NAME AS Author FROM omds_digitaldocument_details dd
+JOIN omds_digitaldocument d
+ON dd.digitalDocumentFkId = d.id
+JOIN omds_digital_manuscript_frame fm
+ON d.digitalManuscriptFrameFkId = fm.id
+JOIN omds_digital_manuscript dm
+ON fm.digitalManuscriptFkId = dm.id
+JOIN omds_person op
+ON dm.AuthorFkId = op.Id
+WHERE fm.digitalManuscriptFkId =$P{id} AND d.recordtype= $P{recordtype}
+AND dd.ismax =1]]>
+	</queryString>
+	<field name="id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="TEXT" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="filePath" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="NAME" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Author" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="66" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement uuid="67f41ee7-0e8c-4d0f-a78c-fb22e53f0af7" x="172" y="0" width="229" height="39" backcolor="#666666"/>
+			</rectangle>
+			<textField>
+				<reportElement uuid="e9531808-f2ee-49b3-9b62-fc266df6b82e" x="172" y="9" width="229" height="30" forecolor="#FFFFFF" backcolor="#666666"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="fddf39ec-df7b-4e0b-8771-c1475325c666" x="28" y="46" width="88" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Author Name:-]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="9c64f8b4-da28-452c-8b30-fd9a52bafb40" x="116" y="46" width="164" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Author}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement uuid="479d80db-ea37-4d57-89f2-e12713b7f1f1" x="415" y="46" width="110" height="20"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="5" splitType="Stretch"/>
+	</pageHeader>
+	<detail>
+		<band height="426" splitType="Stretch">
+			<image scaleImage="FillFrame">
+				<reportElement uuid="63b728fc-80a0-4e32-9a77-408cff181cbb" x="28" y="10" width="497" height="281"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineColor="#009999"/>
+				</graphicElement>
+				<imageExpression><![CDATA[$P{imagePath}+$F{filePath}]]></imageExpression>
+			</image>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="19f7483c-9092-4428-b8c9-da68b74ae01d" x="28" y="324" width="497" height="102"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif" size="10" pdfEncoding="Cp1252"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TEXT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="dd6bd89c-77cd-47e7-a249-1f6e7936c52b" x="28" y="295" width="144" height="25"/>
+				<textElement textAlignment="Justified">
+					<font size="14" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Transcribed Part]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="32611215-56a6-49f4-a4f1-5648c4588afb" x="28" y="320" width="497" height="1" forecolor="#009999"/>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="36" splitType="Stretch">
+			<textField>
+				<reportElement uuid="a334f422-4673-4fc3-ac46-baeb79d482ae" x="249" y="14" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="85a7d40e-c0b6-47d9-bb79-15cab2896e45" x="435" y="14" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="2b4abd46-4396-44de-8050-9b6d1b26844f" x="515" y="14" width="40" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="77802a14-d16e-44c1-af9f-a5a93958030c" x="0" y="3" width="555" height="1"/>
+			</line>
+		</band>
+	</pageFooter>
+</jasperReport>

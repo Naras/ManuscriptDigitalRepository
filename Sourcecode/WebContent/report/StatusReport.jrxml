@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="StatusReport" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="d22b8ca4-4001-4e06-8e2f-bd023789def9">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="status" class="java.lang.Integer"/>
+	<parameter name="totalManuscript" class="java.lang.Long"/>
+	<parameter name="totalBook" class="java.lang.Long"/>
+	<parameter name="imagePath" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT COUNT(dmf.id)AS frameno,dm.id,dm.NAME,dm.recordstatus,op.NAME AS AuthorName,ol.NAME AS scriptlanguage,os.NAME AS script,
+wcpd.IsUserRoleId,oem.FirstName,oem.LastName,wcpm.id AS cid
+FROM omds_digital_manuscript dm
+JOIN omds_digitaldocument dd
+ON dm.id = dd.digitalManuscriptFkId
+JOIN omds_person op
+ON dm.AuthorFkId = op.Id
+JOIN omds_language ol
+ON dm.languageFkId = ol.Id
+LEFT JOIN omds_script os
+ON dm.scriptFkId = os.Id
+LEFT JOIN omds_digital_manuscript_frame dmf
+ON dm.Id = dmf.digitalManuscriptFkId
+JOIN wfl_currentprocessmaster wcpm
+ON dm.Id = wcpm.ReferenceFkId
+JOIN wfl_currentprocessdetails wcpd
+ON wcpm.id = wcpd.CurrentProcessMasterFkId
+LEFT JOIN wfl_locationuserroledetails wlsrd
+ON wcpd.LocationUserRoleFkId = wlsrd.id
+LEFT JOIN omds_userlogindetails ould
+ON wlsrd.userinfofkid = ould.Id
+LEFT JOIN omds_employeemaster oem
+ON ould.RefrenceFkId = oem.Id
+WHERE dm.recordstatus=$P{status} AND dm.isDeleted = 0 GROUP BY dm.Id]]>
+	</queryString>
+	<field name="frameno" class="java.lang.Long"/>
+	<field name="id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="NAME" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="recordstatus" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="AuthorName" class="java.lang.String"/>
+	<field name="scriptlanguage" class="java.lang.String"/>
+	<field name="script" class="java.lang.String"/>
+	<field name="IsUserRoleId" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="FirstName" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="LastName" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cid" class="java.lang.Long"/>
+	<background>
+		<band height="842" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="b4fb9967-0117-47f9-9894-de595deb5714" mode="Opaque" x="0" y="0" width="595" height="842" backcolor="#F5FAF3"/>
+				<textElement/>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</background>
+	<title>
+		<band height="164" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="078c7396-ba14-4248-b88a-78a1f3d97fd9" x="208" y="24" width="193" height="39" forecolor="#336600"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="18" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Drill Down Report]]></text>
+			</staticText>
+			<image scaleImage="RetainShape">
+				<reportElement uuid="94286ab2-2632-454d-95c7-e9858bdd22e5" x="18" y="21" width="130" height="70"/>
+				<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="54d0c2e8-48d0-4405-9cd3-fa775100b029" x="18" y="91" width="168" height="20" forecolor="#336600" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Number Of Records:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5d3994fa-b60a-4654-ad55-64634edf3740" x="18" y="113" width="168" height="20" forecolor="#336600" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Number Of Manuscript:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cb0536dc-ea4c-467f-8a29-b06d5e6975c6" x="18" y="136" width="168" height="20" forecolor="#336600"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Number Of Books :]]></text>
+			</staticText>
+			<textField pattern="h.mm.ss a">
+				<reportElement uuid="8bd0a69c-40ba-4760-9494-e600cb185b0e" x="470" y="91" width="85" height="20" forecolor="#336600"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="54e1396a-512f-41c6-b673-eb9404099199" x="390" y="91" width="78" height="20" forecolor="#336600"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4d457fb5-4313-42c7-b6b1-350148b0f20a" x="346" y="91" width="44" height="20" forecolor="#336600"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date :]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="297af7b7-1d20-4ad4-a9a5-720cdbc37ac1" x="186" y="91" width="52" height="20" forecolor="#336600"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{totalManuscript}+$P{totalBook}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f57285c7-9e3f-4a15-84de-720e0b5e068d" x="186" y="113" width="52" height="20" forecolor="#336600"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{totalManuscript}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="db4d0806-4bc9-42cb-ab39-15b3f1e345b8" x="186" y="136" width="52" height="20" forecolor="#336600"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{totalBook}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="2ba2c0e1-10f7-4fc7-bda4-20033f743fb0" x="346" y="113" width="50" height="20" forecolor="#336600"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Status :]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="a81e45df-dc00-4b4f-93a0-ab3d35530b08" x="396" y="113" width="100" height="20" forecolor="#336600"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{recordstatus}.intValue()==6)?"Translator":($F{recordstatus}.intValue()==5)?"Verifier":($F{recordstatus}.intValue()==4)?"Published":($F{recordstatus}.intValue()==3)?"Publisher":($F{recordstatus}.intValue()==2)?"Reviewer":($F{recordstatus}.intValue()==1)?"Scholar":"Not Assigned"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="38" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="25843e5c-2dff-4273-8f0b-5d8469649d2c" x="18" y="14" width="148" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Manuscript Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4de79ea7-3a00-492b-86e9-930234c447a1" x="168" y="14" width="116" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AuthorName]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="6240731f-cd10-4447-869e-0fe233c03415" x="0" y="34" width="595" height="1" forecolor="#336600"/>
+			</line>
+			<staticText>
+				<reportElement uuid="14ef4b0e-3706-49bb-ba75-81166be26f0c" x="286" y="14" width="76" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Language]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9c5e17d6-1ffb-4268-8970-4256b08d1441" x="363" y="14" width="60" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Script]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9769b68d-5a6a-44dc-be74-1977ae441719" x="528" y="14" width="57" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Frames]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1e3fbb08-bdcf-4178-b0f0-1c96f73a14ae" x="424" y="14" width="105" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Under]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="29" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="d32f87c9-6d32-494d-90ba-9d0524ac7c18" x="18" y="0" width="148" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAME}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="046e0815-1be4-4d86-a483-89b197feb38f" x="168" y="0" width="116" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AuthorName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="5b5a00c9-f52a-4018-8f1e-0e022d4d09f2" x="286" y="0" width="76" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{scriptlanguage}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a2f15968-5a34-4ad9-95ca-0e9f69b97ccf" x="538" y="0" width="34" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Serif" size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{frameno}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="eb0f48af-ce11-4594-9e57-03ec36e7168b" positionType="Float" x="0" y="22" width="595" height="1" forecolor="#FFFFFF"/>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="80d6b2c9-1ff5-446d-8611-06897f703d20" x="363" y="0" width="60" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{script}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="772c21c6-f235-411e-8907-290e0194cac8" x="424" y="0" width="105" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{IsUserRoleId}.intValue()==0)?"Under Pool":$F{FirstName}+" "+$F{LastName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="49" splitType="Stretch">
+			<line>
+				<reportElement uuid="1d7a6dab-35e3-47cc-a442-7b5667689e93" x="0" y="0" width="595" height="1" forecolor="#336600"/>
+			</line>
+			<staticText>
+				<reportElement uuid="abd17360-7c33-4954-925f-c6143ebf6688" x="14" y="15" width="427" height="20" forecolor="#336600"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Implemented by : I-AIM(FRLHT, Bangalore) (currently known as ITDHST) ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ed020174-147d-4b03-8e53-26c287eadfa3" x="482" y="15" width="68" height="20" forecolor="#336600"/>
+				<textElement>
+					<font fontName="SansSerif" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Page No. :]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="7c93eeba-a976-4384-802f-b04be24aff40" x="550" y="15" width="22" height="20" forecolor="#336600"/>
+				<textElement>
+					<font fontName="SansSerif" size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="17" splitType="Stretch"/>
+	</summary>
+</jasperReport>

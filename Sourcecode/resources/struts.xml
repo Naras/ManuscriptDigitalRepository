@@ -1,0 +1,707 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+    
+<struts>
+	<constant name="struts.devMode" value="true"/>
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.multipart.maxSize" value="524857600" />
+	
+    <package name="default" extends="struts-default , json-default, jasperreports-default">
+
+    	<interceptors>
+    		<interceptor name="UserSessionCheck" class="com.indven.util.interceptor.UserSessionMgmtInterceptor"/>
+    	
+    		<interceptor-stack name="UserSessionStack">
+    		   <interceptor-ref name="fileUpload"> 
+        	  <param name="maximumSize">524857600</param>
+  	       </interceptor-ref> 
+    			<interceptor-ref name="defaultStack" />
+    			<interceptor-ref name="UserSessionCheck"/>
+    		</interceptor-stack>
+    	</interceptors>
+    	
+    	<default-interceptor-ref name="UserSessionStack"/> 
+    	
+    	<global-results>
+    		<result name="invalidLoggedInAccess">/jsp/home.jsp</result>
+    		<result name="invalid">/jsp/login.jsp</result>
+    		<result type="redirectAction" name="logout">
+    			<param name="actionName">logoutaction</param>
+			</result>
+    	</global-results>
+    	
+    	<!-- Core actions | Start here -->
+    	
+    	<action name="loginaction" class="com.indven.portal.administration.controller.UserLoginAction" method="validateLogin">
+             <result name="success">/jsp/home.jsp</result>
+             <result name="error">/jsp/login.jsp</result> 
+             <result name="input">/jsp/login.jsp</result>   
+        </action>
+        
+        <action name="changemenuforrole" class="com.indven.portal.administration.controller.UserLoginAction" method="getMenuForSelectedRole">
+             <result name="success">/jsp/home.jsp</result>
+             <result name="error">/jsp/login.jsp</result> 
+             <result name="input">/jsp/login.jsp</result>   
+        </action>
+        
+        <action name="logoutaction" class="com.indven.portal.administration.controller.UserLoginAction" method="handleLogout">
+             <result name="success">/jsp/landingpage.jsp</result>
+             <result name="error">/jsp/home.jsp</result> 
+             <result name="input">/jsp/home.jsp</result>   
+        </action>
+        
+        <action name="createSearchFormAction" class="com.indven.search.controller.SearchAction" method="searchGenericUser">
+             <result name="success">/jsp/core/searchformgenerator.jsp</result>
+        </action>
+        
+        <action name="searchAction" class="com.indven.search.controller.SearchAction" method="searchAll">
+        	  <result type="json" name="success">
+            	<param name ="root">resultObj</param>
+           	 </result>
+        </action>
+        
+        <action name="searchemployeeaction" class="com.indven.portal.hrd.controller.EmployeeMasterAction" method="searchEmployeeByCriteria">
+        	 <result name="success">/jsp/core/searchpage.jsp</result>
+             <result name="error">/jsp/core/searchpage.jsp</result> 
+             <result name="input">/jsp/core/searchpage.jsp</result>
+        </action>
+        
+        <action name="displayuseraction" class="com.indven.portal.hrd.controller.EmployeeMasterAction" method="searchEmployeeById">
+        	 <result name="success">/jsp/core/addUser.jsp</result>
+             <result name="error">/jsp/core/searchpage.jsp</result> 
+             <result name="input">/jsp/core/searchpage.jsp</result>
+        </action>
+        
+        <action name="deleteuseraction" class="com.indven.portal.hrd.controller.EmployeeMasterAction" method="deleteEmployeeDetails">
+        	 <result name="success">/jsp/home.jsp</result>
+             <result name="error">/jsp/core/searchpage.jsp</result> 
+             <result name="input">/jsp/core/searchpage.jsp</result>
+        </action>
+        
+       <action name="rolemasteraction" class="com.indven.portal.administration.controller.RoleMasterAction" method="saveRoleInfo">
+             <result name="success">/jsp/core/rolemaster.jsp</result>
+             <result name="error">/jsp/core/rolemaster.jsp</result> 
+             <result name="input">/jsp/core/rolemaster.jsp</result>   
+        </action>
+        
+        <action name="findroleByIdAction" class="com.indven.portal.administration.controller.RoleMasterAction" method="findById">
+             <result name="success">/jsp/core/rolemaster.jsp</result>
+             <result name="error">/jsp/core/searchrole.jsp</result> 
+             <result name="input">/jsp/core/searchrole.jsp</result>   
+        </action>
+        <action name="deleteRole" class="com.indven.portal.administration.controller.RoleMasterAction" method="markedAsDeleted">
+             <result name="success">/jsp/core/searchrole.jsp</result>
+             <result name="error">/jsp/core/searchrole.jsp</result> 
+             <result name="input">/jsp/core/searchrole.jsp</result>   
+        </action>
+        <action name="changePassword" class="com.indven.portal.administration.controller.UserLoginAction" method="changePassword">
+             <result name="success">/jsp/core/changePassword.jsp</result>
+             <result name="error">/jsp/core/changePassword.jsp</result> 
+             <result name="input">/jsp/core/changePassword.jsp</result>   
+        </action>
+       
+        
+		<action name="showRoleInfo" class="com.indven.portal.administration.controller.RoleMasterAction" method="findAll">
+             <result name="success">/jsp/core/accessControl.jsp</result>
+             <result name="error">/jsp/core/accessControl.jsp</result> 
+             <result name="input">/jsp/core/accessControl.jsp</result>   
+        </action>
+        
+        <action name="adduseraction" class="com.indven.portal.hrd.controller.EmployeeMasterAction" method="addUpdateEmployee">
+        	 <result name="success">/jsp/core/addUser.jsp</result>
+             <result name="error">/jsp/core/addUser.jsp</result> 
+             <result name="input">/jsp/core/addUser.jsp</result>
+        </action>
+        
+		 <action name="resetPasswordAction" class="com.indven.portal.administration.controller.UserLoginAction" method="resetPassword">
+        	<result name="success">/jsp/login.jsp</result>
+        	<result name="error">/jsp/core/resetPassword.jsp</result>
+        </action>
+		
+        <action name="generateResetPasswordId" class="com.indven.portal.administration.controller.UserLoginAction" method="generateResetPasswordId">
+             <result type="json" name="success">
+            	<param name ="root">resultObj</param>
+            </result>
+        </action>
+        
+    	<!-- Core actions | End here -->
+    	
+    	<!-- Manuscript actions | Start here -->
+    	<action name="addUpdateManuscript" class="com.indven.omds.controller.ManuscriptMasterAction" method="saveOrUpdateManuscript">
+        	 <result name="success">/jsp/manuscript/addManuscript.jsp</result>
+             <result name="error">/jsp/manuscript/addManuscript.jsp</result> 
+             <result name="input">/jsp/manuscript/addManuscript.jsp</result>   
+        </action>
+        
+        <action name="addUpdateDigitalDocument" class="com.indven.omds.controller.ManuscriptMasterAction" method="saveOrUpdateDigitalDocument">
+        	 <result name="success">/jsp/home.jsp</result>
+             <result name="error">/jsp/home.jsp</result> 
+             <result name="input">/jsp/home.jsp</result>   
+        </action>
+        
+        <action name="getManuscriptById" class="com.indven.omds.controller.ManuscriptMasterAction" method="findById">
+        	 <result name="success">/jsp/manuscript/addManuscript.jsp</result>
+             <result name="error">/jsp/home.jsp</result> 
+             <result name="input">/jsp/home.jsp</result>   
+        </action>
+        
+        <action name="getDerivedWorkById" class="com.indven.omds.controller.ManuscriptMasterAction" method="findDocumentByManuscriptId">
+        	 <result name="success">/jsp/manuscript/addDerivedWork.jsp</result>
+             <result name="error">/jsp/home.jsp</result> 
+             <result name="input">/jsp/home.jsp</result>   
+        </action>
+        
+        <action name="deleteManuscriptaction" class="com.indven.omds.controller.ManuscriptMasterAction" method="markAsDeleted">
+        	 <result name="success">/jsp/manuscript/searchManuscript.jsp</result>
+             <result name="error">/jsp/manuscript/searchManuscript.jsp</result> 
+             <result name="input">/jsp/manuscript/searchManuscript.jsp</result>   
+        </action>
+        
+         <action name="getAudioFile" class="com.indven.omds.controller.ManuscriptMasterAction" method="getAudioFile">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+           	  <result type="json" name="error">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+        </action>
+        
+         <action name="findRealImage" class="com.indven.omds.controller.ManuscriptMasterAction" method="findRealImage">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+           	  <result type="json" name="error">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+        </action>
+        
+       <action name="framePartialSave" class="com.indven.omds.controller.ManuscriptMasterAction" method="framePartialSave">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+           	  <result type="json" name="error">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+        </action>
+        
+        <action name="findAllAuthors" class="com.indven.omds.controller.ManuscriptMasterAction" method="findAllAuthors">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+        </action>
+        
+         <action name="findAllManuscript" class="com.indven.omds.controller.ManuscriptMasterAction" method="findAllManuscripts">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+        </action>
+        
+        <action name="findAllCategoryAutoComplete" class="com.indven.omds.controller.ManuscriptMasterAction" method="findAllCategoryAutoComplete">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+        </action>
+        
+        <action name="findAllPublishers" class="com.indven.omds.controller.ManuscriptMasterAction" method="findAllPublishers">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+        </action>
+        <action name="findAllOrganisations" class="com.indven.omds.controller.ManuscriptMasterAction" method="findAllOrganisations">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+        </action>
+        
+        <action name="findAllTags" class="com.indven.omds.controller.ManuscriptMasterAction" method="findAllTags">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+        </action>
+     
+        <action name="searchForManuscript" class="com.indven.omds.controller.ManuscriptMasterAction" method="searchForManuscript">
+        	 <result name="success">/jsp/manuscript/searchManuscript.jsp</result>
+             <result name="error">/jsp/manuscript/searchManuscript.jsp</result> 
+             <result name="input">/jsp/manuscript/searchManuscript.jsp</result>   
+        </action>
+        
+         <action name="searchForManuscriptMerge" class="com.indven.omds.controller.ManuscriptMasterAction" method="searchManuscriptForMerging">
+        	 <result name="success">/jsp/manuscript/mergemanuscript.jsp</result>
+             <result name="error">/jsp/manuscript/mergemanuscript.jsp</result> 
+             <result name="input">/jsp/manuscript/mergemanuscript.jsp</result>   
+        </action>
+        
+        <action name="mergeManuscript" class="com.indven.omds.controller.ManuscriptMasterAction" method="mergeManuscript">
+        	 <result name="success">/jsp/manuscript/addManuscript.jsp</result>
+             <result name="error">/jsp/manuscript/mergemanuscript.jsp</result> 
+             <result name="input">/jsp/manuscript/home.jsp</result>   
+        </action>
+        
+        <action name="searchForManuscriptDisplay" class="com.indven.omds.controller.ManuscriptMasterAction" method="searchForManuscript">
+        	 <result name="success">/jsp/home.jsp</result>
+             <result name="error">/jsp/home.jsp</result> 
+             <result name="input">/jsp/home.jsp</result>   
+        </action>
+        
+        <action name="searchForDerivedWork" class="com.indven.omds.controller.ManuscriptMasterAction" method="searchForManuscript">
+        	 <result name="success">/jsp/manuscript/searchDerivedWork.jsp</result>
+             <result name="error">/jsp/manuscript/searchDerivedWork.jsp</result> 
+             <result name="input">/jsp/manuscript/searchDerivedWork.jsp</result>   
+        </action>
+        
+        <action name="findAllManuscripts" class="com.indven.omds.controller.ManuscriptMasterAction" method="searchForManuscript">
+        	 <result name="success">/jsp/manuscript/searchManuscript.jsp</result>
+             <result name="error">/jsp/manuscript/searchManuscript.jsp</result> 
+             <result name="input">/jsp/manuscript/searchManuscript.jsp</result>   
+        </action>
+    	<action name="findNoOfManuscripts" class="com.indven.omds.controller.ManuscriptMasterAction" method="findNoOfManuscripts">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+        </action>
+		<action name="uploadImagesToTemp" class="com.indven.omds.controller.ManuscriptMasterAction" method="saveTempPhoto">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+           	  <result type="json" name="error">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+        </action>
+        
+        <action name="deleteFrame" class="com.indven.omds.controller.ManuscriptMasterAction" method="deleteFrame">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+           	  <result type="json" name="error">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+        </action>
+        
+         <action name="frameNMMDate" class="com.indven.omds.controller.ManuscriptMasterAction" method="frameNMMDate">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+           	  <result type="json" name="error">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+        </action>
+        
+        <action name="exportReportFrame" class="com.indven.omds.report.controller.JasperAction" method="exportReport">
+        <result name="success" type="jasper">
+				<!-- <param name="connection">conn</param>
+				<param name="exportParameters">parameters</param>
+				<param name="format">PDF</param> -->
+			</result>
+        </action>
+        
+         <action name="exportReport" class="com.indven.omds.report.controller.JasperAction" method="exportReport">
+        <result name="success" type="jasper">
+				<!-- <param name="connection">conn</param>
+				<param name="exportParameters">parameters</param>
+				<param name="format">PDF</param> -->
+			</result>
+        </action>
+        
+        <action name="exportReportForPublic" class="com.indven.omds.report.controller.JasperAction" method="exportReportForPublic">
+        <result name="success" type="jasper">
+				<!-- <param name="connection">conn</param>
+				<param name="exportParameters">parameters</param>
+				<param name="format">PDF</param> -->
+			</result>
+        </action>
+        
+        
+         <action name="goToReportPage" class="com.indven.omds.report.controller.JasperAction" method="reDirectToPage">
+        	<result name="success">/jsp/report/generateReport.jsp</result>
+        </action>
+        <action name="generateReportForNext" class="com.indven.omds.report.controller.JasperAction"
+			method="generateReport">
+			<result name="success">/jsp/report/report.jsp</result>
+			<result name="error">/jsp/report/report.jsp</result>
+		</action>
+		<action name="generateReportByCriteria" class="com.indven.omds.report.controller.JasperAction"
+			method="generateReportByCriteria">
+			<result name="success">/jsp/report/report.jsp</result>
+			<result name="error">/jsp/report/report.jsp</result>
+		</action>
+		
+			<action name="pdfReport" class="com.indven.omds.report.controller.JasperAction"
+			method="exportReportFromJsp">
+			<result name="success" type="jasper">
+				<param name="connection">conn</param>
+				<param name="exportParameters">parameters</param>
+				<param name="format">PDF</param>
+			</result>
+		</action>
+
+		<action name="xlsReport" class="com.indven.omds.report.controller.JasperAction"
+			method="exportReportFromJsp">
+			<result name="success" type="jasper">
+				<param name="dataSource">faultReportVOs</param>
+				<param name="format">XLS</param>
+			</result>
+			<result name="error">/jsp/home.jsp</result>
+		</action>
+		
+                
+    	<!-- Manuscript actions | End here -->
+    	
+    	<!-- Master table actions | Start here -->
+		 <action name="addlanguage" class="com.indven.omds.controller.MasterAddUpdateAction" method="reDirectToPage">
+        	<result name="success">/jsp/lookup/addlanguage.jsp</result>
+        </action>
+        
+		 <action name="savelanguage" class="com.indven.omds.controller.MasterAddUpdateAction" method="saveLanguage">
+        	<result name="success">/jsp/lookup/addlanguage.jsp</result>
+        	<result name="error">/jsp/lookup/addlanguage.jsp</result>
+        </action>
+        
+        <action name="findLanguageById" class="com.indven.omds.controller.MasterAddUpdateAction" method="findLanguageById">
+        	<result name="success">/jsp/lookup/addlanguage.jsp</result>
+        	<result name="error">/jsp/home.jsp</result>
+        </action>
+        
+        <action name="deletelanguageaction" class="com.indven.omds.controller.MasterAddUpdateAction" method="deleteLanguage">
+        	<result name="success">/jsp/home.jsp</result>
+        </action>
+        
+         <action name="tagFormAction" class="com.indven.omds.controller.MasterAddUpdateAction" method="reDirectToPage">
+        	<result name="success">/jsp/lookup/SearchTag.jsp</result>
+        </action>
+        
+         <action name="addtag" class="com.indven.omds.controller.MasterAddUpdateAction" method="reDirectToPage">
+        	<result name="success">/jsp/lookup/addTag.jsp</result>
+        </action>
+          <action name="replaceTag" class="com.indven.omds.controller.MasterAddUpdateAction" method="replaceTag">
+        	<result name="success">/jsp/lookup/SearchTag.jsp</result>
+        	<result name="error">/jsp/lookup/SearchTag.jsp</result>
+        </action>
+        
+         <action name="savetag" class="com.indven.omds.controller.MasterAddUpdateAction" method="saveTag">
+        	<result name="success">/jsp/lookup/addTag.jsp</result>
+        	<result name="error">/jsp/lookup/addTag.jsp</result>
+        </action>
+        
+           <action name="findTag" class="com.indven.omds.controller.MasterAddUpdateAction" method="findTag">
+        	<result name="success">/jsp/lookup/SearchTag.jsp</result>
+        	<result name="error">/jsp/home.jsp</result>
+        </action>
+        
+        <action name="deleteTagaction" class="com.indven.omds.controller.MasterAddUpdateAction" method="deleteTag">
+        	<result name="success">/jsp/home.jsp</result>
+        </action>
+        
+		<action name="addcategory" class="com.indven.omds.controller.MasterAddUpdateAction" method="reDirectToPage">
+        	<result name="success">/jsp/lookup/addcategory.jsp</result>
+        </action>
+        
+		 <action name="savecategory" class="com.indven.omds.controller.MasterAddUpdateAction" method="saveCategory">
+        	<result name="success">/jsp/lookup/addcategory.jsp</result>
+        	<result name="error">/jsp/lookup/addcategory.jsp</result>
+        </action>
+        
+        <action name="findCategoryById" class="com.indven.omds.controller.MasterAddUpdateAction" method="findCategoryById">
+        	<result name="success">/jsp/lookup/addcategory.jsp</result>
+        	<result name="error">/jsp/home.jsp</result>
+        </action>
+        
+        <action name="deletecategoryaction" class="com.indven.omds.controller.MasterAddUpdateAction" method="deleteCategory">
+        	<result name="success">/jsp/home.jsp</result>
+        </action>
+        
+        
+        <action name="addscript" class="com.indven.omds.controller.MasterAddUpdateAction" method="reDirectToPage">
+        	<result name="success">/jsp/lookup/addscript.jsp</result>
+        </action>
+        
+		 <action name="savescript" class="com.indven.omds.controller.MasterAddUpdateAction" method="saveScript">
+        	<result name="success">/jsp/lookup/addscript.jsp</result>
+        	<result name="error">/jsp/lookup/addscript.jsp</result>
+        </action>
+        
+        <action name="findScriptById" class="com.indven.omds.controller.MasterAddUpdateAction" method="findScriptById">
+        	<result name="success">/jsp/lookup/addscript.jsp</result>
+        	<result name="error">/jsp/home.jsp</result>
+        </action>
+        
+        <action name="deletescriptaction" class="com.indven.omds.controller.MasterAddUpdateAction" method="deleteScript">
+        	<result name="success">/jsp/home.jsp</result>
+        </action>
+        
+        
+        <action name="addbundle" class="com.indven.omds.controller.MasterAddUpdateAction" method="reDirectToPage">
+        	<result name="success">/jsp/lookup/addbundle.jsp</result>
+        </action>
+        
+		 <action name="savebundle" class="com.indven.omds.controller.MasterAddUpdateAction" method="saveBundle">
+        	<result name="success">/jsp/lookup/addbundle.jsp</result>
+        	<result name="error">/jsp/lookup/addbundle.jsp</result>
+        </action>
+        
+        <action name="findBundleById" class="com.indven.omds.controller.MasterAddUpdateAction" method="findBundleById">
+        	<result name="success">/jsp/lookup/addbundle.jsp</result>
+        	<result name="error">/jsp/home.jsp</result>
+        </action>
+        
+        <action name="deletebundleaction" class="com.indven.omds.controller.MasterAddUpdateAction" method="deleteBundle">
+        	<result name="success">/jsp/home.jsp</result>
+        </action>
+        
+        
+        <!-- Master table actions | End here -->
+    	
+    	<!-- Action menu links | Start here -->
+    	<action name="homePageAction" class="com.indven.portal.administration.controller.UserLoginAction" method="reDirectToPage">
+        	<result name="success">/jsp/home.jsp</result>
+        </action>
+         <action name="addUserPageWithRoles" class="com.indven.portal.hrd.controller.EmployeeMasterAction" method="generateListOfAllRoles">
+        	<result name="success">/jsp/core/addUser.jsp</result>
+        	<result name="error">/jsp/home.jsp</result>
+        	<result name="input">/jsp/home.jsp</result>
+        </action>
+        
+        <action name="searchPageAction" class="com.indven.portal.hrd.controller.EmployeeMasterAction" method="generateListOfAllRoles">
+        	<result name="success">/jsp/searchpage.jsp</result>
+        	<result name="error">/jsp/searchpage.jsp</result>
+        	<result name="input">/jsp/searchpage.jsp</result>
+        </action>
+        <action name="displayMenuInfo" class="com.indven.portal.menu.controller.MenuInfoAction" method="findMenuInfo">
+        	<result name="success">/jsp/core/rolemaster.jsp</result>
+             <result name="error">/jsp/core/rolemaster.jsp</result> 
+             <result name="input">/jsp/core/rolemaster.jsp</result>   
+        </action>
+        <action name="showroleaction" class="com.indven.portal.administration.controller.RoleMasterAction" method="findAll">
+             <result name="success">/jsp/core/searchrole.jsp</result>
+             <result name="error">/jsp/core/searchrole.jsp</result> 
+             <result name="input">/jsp/core/searchrole.jsp</result>   
+        </action>
+        <action name="addManuscript" class="com.indven.omds.controller.ManuscriptMasterAction" method="generateLists">
+             <result name="success">/jsp/manuscript/addManuscript.jsp</result>
+             <result name="error">/jsp/home.jsp</result> 
+             <result name="input">/jsp/home.jsp</result>   
+        </action>
+        <action name="searchManuscript" class="com.indven.omds.controller.ManuscriptMasterAction" method="generateLists">
+             <result name="success">/jsp/manuscript/searchManuscript.jsp</result>
+             <result name="error">/jsp/home.jsp</result> 
+             <result name="input">/jsp/home.jsp</result>   
+        </action>
+        
+        <action name="searchManuscriptToMerge" class="com.indven.omds.controller.ManuscriptMasterAction" method="generateLists">
+        	 <result name="success">/jsp/manuscript/mergemanuscript.jsp</result>
+             <result name="error">/jsp/home.jsp</result> 
+             <result name="input">/jsp/home.jsp</result>   
+        </action>
+        
+        <action name="searchDerivedWork" class="com.indven.omds.controller.ManuscriptMasterAction" method="generateLists">
+             <result name="success">/jsp/manuscript/searchDerivedWork.jsp</result>
+             <result name="error">/jsp/home.jsp</result> 
+             <result name="input">/jsp/home.jsp</result>   
+        </action>
+        <action name="changePasswordAction" class="com.indven.portal.administration.controller.UserLoginAction" method="reDirectToPage">
+        	<result name="success">/jsp/core/changePassword.jsp</result>
+        	<result name="error">/jsp/home.jsp</result>
+        </action>
+        <action name="showResetPasswordPage" class="com.indven.portal.administration.controller.UserLoginAction" method="reDirectToPage">
+        	<result name="success">/jsp/core/resetPassword.jsp</result>
+        </action>
+        <action name="generateResetPasswordIdPageAction" class="com.indven.portal.administration.controller.UserLoginAction" method="reDirectToPage">
+        	<result name="success">/jsp/core/generateResetPasswordId.jsp</result>
+        	<result name="error">/jsp/core/generateResetPasswordId.jsp</result>
+        </action>
+       <action name="test" class="com.indven.portal.administration.controller.UserLoginAction" method="reDirectToPage">
+        	<result name="success">/jsp/test/test.jsp</result>
+        </action>
+        
+        <action name="searchManuscriptForPDF" class="com.indven.omds.controller.ManuscriptMasterAction" method="generateLists">
+        	 <result name="success">/jsp/manuscript/searchmanuscriptforpdf.jsp</result>
+             <result name="error">/jsp/home.jsp</result> 
+             <result name="input">/jsp/home.jsp</result>   
+        </action>
+        
+        <action name="viewManuscriptSearch" class="com.indven.omds.controller.ManuscriptMasterAction" method="generateLists">
+        	 <result name="success">/jsp/manuscript/publicSearch.jsp</result>
+             <result name="error">/jsp/home.jsp</result> 
+             <result name="input">/jsp/home.jsp</result>   
+        </action>
+        
+          <action name="searchManuscriptPublicUse" class="com.indven.omds.controller.ManuscriptMasterAction" method="searchForManuscript">
+        	 <result name="success">/jsp/manuscript/publicSearch.jsp</result>
+             <result name="error">/jsp/manuscript/publicSearch.jsp</result>
+             <result name="input">/jsp/manuscript/publicSearch.jsp</result>  
+        </action>
+        
+        
+         <action name="searchManuscriptRecordForPDF" class="com.indven.omds.controller.ManuscriptMasterAction" method="searchForManuscript">
+        	 <result name="success">/jsp/manuscript/searchmanuscriptforpdf.jsp</result>
+             <result name="error">/jsp/manuscript/searchmanuscriptforpdf.jsp</result> 
+             <result name="input">/jsp/manuscript/searchmanuscriptforpdf.jsp</result>   
+        </action>
+        
+        <action name="findAllDigitisers" class="com.indven.omds.controller.ManuscriptMasterAction" method="findAllDigitisers">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+        </action>
+        
+		<!-- Action menu links | End here -->
+	<!-- Start of workflow related actions -->
+	
+		<action name="getWFLCount" class="com.indven.workflow.core.controller.WorkflowCoreAction" method="getWFLTaskCount">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+        	</result>
+      	</action>
+      	
+      	<action name="getDetailedSummaryWFL" class="com.indven.workflow.core.controller.WorkflowCoreAction" method="getDetailedSummaryWFL">
+        	 <result name="success">/jsp/wfl/workflowdetailedsummary.jsp</result>
+             <result name ="error">/jsp/home.jsp</result>
+      	</action>
+      	
+      	<action name="getWflDetailedList" class="com.indven.workflow.core.controller.WorkflowCoreAction" method="getWflDetailedList">
+        	 <result name="success">/jsp/home.jsp</result>
+             <result name ="error">/jsp/home.jsp</result>
+      	</action>
+      	
+      	<action name="findmanuscriptforreviw" class="com.indven.omds.controller.ManuscriptMasterAction" method="findById">
+        	 <result name="success">/jsp/wfl/mainworkflowdisplay.jsp</result>
+             <result name ="error">/jsp/home.jsp</result>
+      	</action>
+      	
+      	<action name="assignedToReviewer" class="com.indven.workflow.core.controller.WorkflowCoreAction" method="assignWorkToReviewer">
+             <result name ="error">/jsp/home.jsp</result>
+             <result name ="success">/jsp/home.jsp</result>
+      	</action>
+      	
+      	<action name="unassignwfl" class="com.indven.workflow.core.controller.WorkflowCoreAction" method="unAssignWFLToUser">
+             <result name ="error">/jsp/home.jsp</result>
+             <result name ="success">/jsp/home.jsp</result>
+      	</action>
+      	
+      	<action name="makeRecordForWFL" class="com.indven.omds.controller.ManuscriptMasterAction" method="makeRecordForWFL">
+      		
+      		<result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+        	</result>
+             
+      	</action>
+      	
+		 <action name="workflowWork" class="com.indven.omds.controller.ManuscriptMasterAction" method="findDocumentByManuscriptId">
+        	 <result name="success">/jsp/wfl/mainworkflowdisplay.jsp</result>
+             <result name="error">/jsp/home.jsp</result> 
+             <result name="input">/jsp/home.jsp</result>   
+        </action>
+        
+        
+        <action name="workflowWorkTranslator" class="com.indven.omds.controller.ManuscriptMasterAction" method="findDocumentByManuscriptIdForTranslation">
+        	 <result name="success">/jsp/wfl/wfldisplayfortranslation.jsp</result>
+             <result name="error">/jsp/home.jsp</result> 
+             <result name="input">/jsp/home.jsp</result>   
+        </action>
+        
+        
+        <action name="viewFrames" class="com.indven.omds.controller.ManuscriptMasterAction" method="deriveDocumentsForManuscript">
+        	 <result name="success">/jsp/manuscript/viewFrames.jsp</result>
+             <result name="error">/jsp/manuscript/searchManuscript.jsp</result> 
+             <result name="input">/jsp/manuscript/searchManuscript.jsp</result>   
+        </action>
+        
+        <action name="goToSearchPage" class="com.indven.omds.controller.ManuscriptMasterAction" method="reDirectToPage">
+        	 <result name="success">/jsp/manuscript/searchManuscript.jsp</result>
+        </action>
+        
+        <action name="goToHomePage" class="com.indven.omds.controller.ManuscriptMasterAction" method="reDirectToPage">
+        	  <result name="success">/jsp/home.jsp</result> 
+        </action>
+        
+        <action name="getReviewersList" class="com.indven.workflow.core.controller.WorkflowCoreAction" method="getReviewersList">
+        	  <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+        	</result>
+        </action>
+        
+         <action name="branchWfl" class="com.indven.workflow.core.controller.WorkflowCoreAction" method="branchWflInSameLabel">
+        	  <result name="success">/jsp/home.jsp</result>
+        	   <result name="error">/jsp/home.jsp</result> 
+        </action>
+        
+         <action name="rejectwfl" class="com.indven.workflow.core.controller.WorkflowCoreAction" method="rejectWflToPreviousPerson">
+        	  <result name="success">/jsp/home.jsp</result>
+        	   <result name="error">/jsp/home.jsp</result> 
+        </action>
+        
+       <action name="assignprocessfromusertorole" class="com.indven.omds.controller.ManuscriptMasterAction" method="assignProcessFromUserToRole">
+        	   <result name="success">/jsp/manuscript/searchManuscript.jsp</result> 
+        	   <result name="error">/jsp/manuscript/searchManuscript.jsp</result> 
+       </action>
+        
+        
+        <action name="savecommentforframe" class="com.indven.omds.controller.ManuscriptMasterAction" method="saveCommentForFrame">
+        	<result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+        	</result>
+        </action>
+        
+        
+        
+        
+        <!-- Static Menu related actions information starts here -->     
+        <action name="loadforguest" class="com.indven.portal.administration.controller.UserLoginAction" method="getDefaultMenuForGuest">
+        	  <result name="success">/jsp/index.jsp</result> 
+        </action>
+        
+         <action name="gofrlhthome" class="com.indven.omds.controller.ManuscriptMasterAction" method="reDirectToPage">
+        	  <result name="success">/jsp/index.jsp</result> 
+        </action>
+        
+         <action name="aboutpageaction" class="com.indven.omds.controller.ManuscriptMasterAction" method="reDirectToPage">
+        	  <result name="success">/jsp/staticcontents/about.jsp</result> 
+        </action>
+        
+        <action name="faqpageaction" class="com.indven.omds.controller.ManuscriptMasterAction" method="reDirectToPage">
+        	  <result name="success">/jsp/staticcontents/faq.jsp</result> 
+        </action>
+        
+         <action name="getloginform" class="com.indven.omds.controller.ManuscriptMasterAction" method="reDirectToPage">
+        	  <result name="success">/jsp/login.jsp</result> 
+        </action>       
+        <!-- Static Menu related actions information ends here -->
+        
+       
+       
+       
+        <!-- Translation related actions starts from here -->
+        <action name="savetranslationlangscript" class="com.indven.omds.controller.ManuscriptMasterAction" method="createTranslateRecordAndSaveInfo">
+        	<result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+        	</result>
+        	<result type="json" name="error">
+            	<param name ="root">jsonObject</param>
+        	</result>
+        </action>
+        
+        
+         <action name="framePartialSaveTrans" class="com.indven.omds.controller.ManuscriptMasterAction" method="framePartialSaveTrans">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+           	  <result type="json" name="error">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+        </action>
+        
+         <action name="gettranslationinexistinglanguages" class="com.indven.omds.controller.ManuscriptMasterAction" method="getAvailableLanguages">
+        	 <result type="json" name="success">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+           	  <result type="json" name="error">
+            	<param name ="root">jsonObject</param>
+           	 </result>
+        </action>
+        
+        
+        <!-- Translation related actions ends from here -->
+        
+    </package>
+</struts>
+
