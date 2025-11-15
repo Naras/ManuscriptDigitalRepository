@@ -51,14 +51,14 @@
 <link
 	href="${pageContext.servletContext.contextPath}/assets/css/jquery-ui.css"
 	rel="stylesheet" />
-<div class="form" style="padding-top: -50px;">
+<div class="form" style="margin-left: 190px;">
 	<div class="container" style="padding-top: 0px;">
 		<div class="alert alert-danger hide container-center"
 			id="msg-container"></div>
-		<div class="container-center">
+		<!-- <div class="container-center" style="background-color: #FFA500;"> -->
 			<%@ include file='../messagecontainer.jsp'%>
-		</div>
-		<s:form action="addUpdateDigitalDocument" id="derivedWorkForm" enctype="multipart/form-data">
+		<!-- </div> -->
+		<s:form action="addUpdateDigitalDocument" id="derivedWorkForm" enctype="multipart/form-data" style="float:right;width:100%;">
 			<s:hidden id="manuscriptId" name="digitalManuscriptVO.id" />
 			<s:hidden name="presentReviewer2" id="isPresentReviewer2" />
 			<s:hidden id="scribeId" name="digitalManuscriptVO.scribeVO.id" />
@@ -107,26 +107,41 @@
 				<s:param name="jasperPath" value="%{'/report/OnlyTextRepotManuscript.jasper'}"></s:param>
 			</s:url>
 
-			<br>
-			<h3>
+			<!-- <br> -->
+			<h3 style="margin: 0px;">
 				Online Derived Work - <span style="color: #FFA500;"><s:text
 						name="digitalManuscriptVO.name"></s:text></span>
 			</h3>
+			<div>
 			<input type="radio" name="transcriptionType" id="frameLabel"> 
 			<label>Frame</label>  
 			<input type="radio" name="transcriptionType" id="manuscriptLabel">
-			<label>Manuscript</label> 
+			<label>Document</label> 
+			<span class="panel-header">Thumbnail Color Code Info:</span>
+
+								<span class="label label-primary">Edited</span>
+								<span class="label label-success">Current</span>
+								<span class="label label-danger">Last Edited</span>
+						
+			</div>
+			<div class="image-container panel" style="margin-bottom: 5px;">
+							<div class="panel-header" style="margin-bottom: 0px;">Frames
+								<span class="glyphicon glyphicon-picture glyphiconmargin"></span>
+							</div>
+							<div class="panel-body" oncontextmenu="return false" style="overflow-y: scroll;padding-top: 3px;">
+							</div>
+			</div>
 			<div id="frame">
 				<div class="image-details">
 					<div
-						class="left-column frame-filter-container resizable-h ui-widget-content ui-resizable">
-						<div class="image-container panel" style="overflow-y: scroll;">
+						class="left-column frame-filter-container resizable-h ui-widget-content ui-resizable" style="width:0%">
+						<%-- <div class="image-container panel" style="overflow-y: scroll;">
 							<div class="panel-header">Frames
 								<span class="glyphicon glyphicon-picture glyphiconmargin"></span>
 							</div>
 							<div class="panel-body" oncontextmenu="return false"></div>
-						</div>
-						<div style="overflow-y: scroll;">
+						</div> --%>
+						<%-- <div style="overflow-y: scroll;">
 							<div class="panel-header">Thumbnail Color Code Info<span class="glyphicon glyphicon-th-list glyphiconmargin"></span>
 							</div>
 							<div style=" height: 30px;margin-left: 15px;margin-top: 10px;">
@@ -135,8 +150,8 @@
 								<span class="label label-danger">Last Edited</span>
 							</div>
 						
-						</div>
-						<div class="tag-container panel" style="overflow-y: scroll;">
+						</div> --%>
+						<%-- <div class="tag-container panel" style="overflow-y: scroll;">
 							<div class="panel-header">Tags<span class="glyphicon glyphicon-tags glyphiconmargin"></span>
 							</div>
 							<div class="tag-data" style="padding-top: 10px;">
@@ -146,16 +161,16 @@
 										<s:hidden id="%{#var.index}"
 											name="digitalManuscriptVO.tagList[%{#var.index}].id"></s:hidden>
 											<s:property value="name"/>
-										<%-- <s:textfield cssStyle="border-width: 0px;width: 100%;"
-											name="digitalManuscriptVO.tagList[%{#var.index}].name" readonly="true"></s:textfield> --%>
+										<s:textfield cssStyle="border-width: 0px;width: 100%;"
+											name="digitalManuscriptVO.tagList[%{#var.index}].name" readonly="true"></s:textfield>
 										<!--  <a href='#' class='thumbnail-close'>×</a> -->
 									</div>
 								</s:iterator>
 							</div>
-						</div>
+						</div> --%>
 					</div>
 					<div
-						class="middle-column resizable-h ui-widget-content ui-resizable">
+						class="middle-column resizable-h ui-widget-content ui-resizable" style="width:55%">
 						<div class="frame-controlbar">
 							<s:if test="#session.currentRole == 7">
 
@@ -243,7 +258,7 @@
 							<img src="" id="frame-img">
 
 							<span class="col-md-3 control-label waterMark"
-									style="padding: 10px 0px 0px 0px;">FRLHT</span>
+									style="padding: 10px 0px 0px 0px;">MDR</span>
 						</div>
 						<div class="button-container">
 						<label id="audioLable" class="col-md-3 control-label" style="padding: 0px;  width: 140px; margin-top: 8px;">Upload Audio/Video</label>
@@ -290,157 +305,158 @@
 							</s:if>
 						</div>
 
-						<div class="transcriber-container">
+					</div>
+					<div class="right-column ui-widget-content ui-resizable" style="border: none;width: 44.25%;">
+						<div class="transcriber-container" style="height: 49%;">
+						<div class="panel panel-success">
+								<div class="panel-heading" style="height: 25px">Transcription<span class="glyphicon glyphicon-comment glyphiconmargin" style="margin-top: 8px;"></span></div>
 							<s:textarea 
-								cssClass="form-control transcriber" rows="11" name="transcribedText"></s:textarea>
+								cssClass="form-control transcriber" rows="16" name="transcribedText"></s:textarea>
 								<div class="searchDiv" style="display: none;" id="showdiv" onclick="replace();"></div>
 						</div>
-					</div>
-					<div class="right-column ui-widget-content ui-resizable" style="border: none;">
-						<div style="height: 55%; box-shadow: none;">
-								<div class="panel-group" id="accordion1">
+						</div> 
+						<div style="height: 51%; box-shadow: none;">
+							<div class="panel-group" id="accordion1">
 									<div id="accordionPanelHeader" class="panel panel-default">
+									<!-- <div class="panel panel-success"> -->
+										<%-- <div class="panel-heading" style="height: 30px">Comments<span class="glyphicon glyphicon-comment glyphiconmargin" style="margin-top: 8px;"></span></div> --%>
 										<div class="panel-heading" data-target="#collapseOne1" data-toggle="collapse" data-parent="#accordion1" style="background: #DFDDDD;height: 22px;">
-											<label style="font-weight: normal;font-size: 14px;cursor: pointer;margin-top: 2px;">Summary</label>	<span class="glyphicon glyphicon-book glyphiconmargin" style="margin-top: 5px;"></span>
-										</div>
+												<label style="font-weight: normal;font-size: 14px;cursor: pointer;margin-top: 2px;">Comments</label><span class="glyphicon glyphicon-comment glyphiconmargin" style="margin-top: 5px;"></span>
+											</div>
 										<div id="collapseOne1" class="panel-collapse collapse in">
-											<div class="panel-body"
-												style="background:#ffffff; overflow-y: scroll; display: block; margin-top: 1%; height: 74%;font-family: trebuchet ms ; font-size: 11.5px;font-style: italic;">
-												<s:textarea readonly="true" cssStyle="width:100%;height:100%;font-size: 13px;font-style: italic;background-image: url('/OMDS/assets/images/images.jpg');" name="digitalManuscriptVO.summary" />
+											<div class="container-center" id="comments"
+												style="overflow-y: scroll; display: block; margin-top: 1%; height: 50%;background-color: #fff;">
+											</div>
+											<div class="col-md-6" style="padding-bottom: 5px;">
+												<button type="button" class="btn btn-lg btn-success btn-block"
+													id="newcomment" style="margin-top: 4%; background: #D6E9C6 ; border: #D6E9C6; width:180px;"><span class="glyphicon glyphicon-plus glyphiconmargin" style="margin-top: 0px;"></span> Add Comment</button>
 											</div>
 										</div>
-									</div>
-									<div id="accordionPanelHeader2" class="panel panel-default">
-									
-										<div class="panel-heading" data-target="#collapseTwo1" data-toggle="collapse" data-parent="#accordion1" style="background: #DFDDDD;height: 26px;">
-											<label style="font-weight: normal;font-size: 14px;cursor: pointer; margin-top: 2px;">Other Info</label>	<span class="glyphicon glyphicon-paperclip glyphiconmargin" style=" margin-top: 5px;"></span>
-										</div>
-										<div id="collapseTwo1" class="panel-collapse collapse">
-											<div class="panel-body" style="background:#ffffff; margin-top: 1%; margin-right: 1%; height: 74%; background-image: url('/OMDS/assets/images/images.jpg');">
-												<div>
-													<label class="control-label">Author:</label>
-													<s:property value="digitalManuscriptVO.authorVO.name" />
-												</div>
-												<div>
-													<label class="control-label">Source:</label>
-													<s:property value="digitalManuscriptVO.organisationVO.name" />
-												</div>
-												<div>
-													<label class="control-label">Manuscript Id:</label>
-													<s:property value="digitalManuscriptVO.manuscriptId" />
-												</div>
-												<div>
-													<label class="control-label">Material:</label>
-													<s:property value="digitalManuscriptVO.materialVO.name" />
-												</div>
-												<div>
-													<label class="control-label">Type Of Work:</label>
-													<s:property value="digitalManuscriptVO.typeOfWork" />
-												</div>											
+								  	</div>
+										<div id="accordionPanelHeader1" class="panel panel-default">
+											<div class="panel-heading" data-target="#collapseTwo1" data-toggle="collapse" data-parent="#accordion1" style="background: #DFDDDD;height: 22px;">
+												<label style="font-weight: normal;font-size: 14px;cursor: pointer;margin-top: 2px;">Summary</label>	<span class="glyphicon glyphicon-book glyphiconmargin" style="margin-top: 5px;"></span>
 											</div>
-										</div>
-									
-									</div>
-									<div class="panel panel-default" id="accordionPanelHeader1">
-										<div class="panel-heading" data-toggle="collapse" data-parent="#accordion1" data-target="#collapseThree1" style="background: #DFDDDD;margin-top: 1px;">
-											<label style="font-weight: normal;font-size: 14px;cursor: pointer;">NMM Image Details (Manuscript)</label><span class="glyphicon glyphicon-info-sign glyphiconmargin" style=" margin-top: 3px;"></span>
-										</div>
-										<div id="collapseThree1" class="panel-collapse collapse" >
-											<div class="panel-body" style="background:#ffffff; margin-top: 1%; margin-right: 1%; height: 74%; background-image: url('/OMDS/assets/images/images.jpg');">
-												<div class="nmm-fields">
-													<label class="col-md-4 control-label">Height:</label>
-													<div class="col-md-8">
-														<s:property
-															value="digitalManuscriptVO.nmmDetailsVO.height" />
-													</div>
-												</div>
-												<div class="nmm-fields">
-													<label class="col-md-4 control-label">Width:</label>
-													<div class="col-md-8">
-														<s:property value="digitalManuscriptVO.nmmDetailsVO.width" />
-													</div>
-												</div>
-												
-												<div class="nmm-fields">
-													<label class="col-md-4 control-label">Make:</label>
-													<div class="col-md-8">
-														<s:property
-															value="digitalManuscriptVO.nmmDetailsVO.cameraMake" />
-													</div>
-												</div>
-												<div class="nmm-fields">
-													<label class="col-md-4 control-label">Model:</label>
-													<div class="col-md-8">
-														<s:property
-															value="digitalManuscriptVO.nmmDetailsVO.cameraModel" />
-													</div>
-												</div>
-												<div class="nmm-fields">
-													<label class="col-md-4 control-label">X Res:</label>
-													<div class="col-md-8">
-														<s:property
-															value="digitalManuscriptVO.nmmDetailsVO.xResolution" />
-													</div>
-												</div>
-												<div class="nmm-fields">
-													<label class="col-md-4 control-label">Y Res:</label>
-													<div class="col-md-8">
-														<s:property
-															value="digitalManuscriptVO.nmmDetailsVO.yResolution" />
-													</div>
-												</div>
-												
-												<div class="nmm-fields">
-													<label class="col-md-4 control-label">Created:</label>
-													<div class="col-md-8">
-														<s:property
-															value="digitalManuscriptVO.nmmDetailsVO.createdDate" />
-													</div>
-												</div>
-												<div class="nmm-fields">
-													<label class="col-md-4 control-label">Digitised:</label>
-													<div class="col-md-8">
-														<s:property
-															value="digitalManuscriptVO.nmmDetailsVO.digitisedDate" />
-													</div>
+											<div id="collapseTwo1" class="panel-collapse collapse">
+												<div class="panel-body"
+													style="background:#ffffff; overflow-y: scroll; display: block; margin-top: 1%; height: 63%;font-family: trebuchet ms ; font-size: 11.5px;font-style: italic;">
+													<s:textarea readonly="true" cssStyle="width:100%;height:100%;font-size: 13px;font-style: italic;" name="digitalManuscriptVO.summary" /><!-- //background-image: url('/MDR/assets/images/images.jpg'); -->
 												</div>
 											</div>
 										</div>
-									</div>
+										<div id="accordionPanelHeader2" class="panel panel-default">
+										
+											<div class="panel-heading" data-target="#collapseThree1" data-toggle="collapse" data-parent="#accordion1" style="background: #DFDDDD;height: 26px;">
+												<label style="font-weight: normal;font-size: 14px;cursor: pointer; margin-top: 2px;">Other Info</label>	<span class="glyphicon glyphicon-paperclip glyphiconmargin" style=" margin-top: 5px;"></span>
+											</div>
+											<div id="collapseThree1" class="panel-collapse collapse">
+												<div class="panel-body" style="background:#ffffff; margin-top: 1%; margin-right: 1%; height: 63%;">
+													<div>
+														<label class="control-label">Author:</label>
+														<s:property value="digitalManuscriptVO.authorVO.name" />
+													</div>
+													<div>
+														<label class="control-label">Source:</label>
+														<s:property value="digitalManuscriptVO.organisationVO.name" />
+													</div>
+													<div>
+														<label class="control-label">Manuscript Id:</label>
+														<s:property value="digitalManuscriptVO.manuscriptId" />
+													</div>
+													<div>
+														<label class="control-label">Material:</label>
+														<s:property value="digitalManuscriptVO.materialVO.name" />
+													</div>
+													<div>
+														<label class="control-label">Type Of Work:</label>
+														<s:property value="digitalManuscriptVO.typeOfWork" />
+													</div>											
+												</div>
+											</div>
+										
+										</div>
+										<div class="panel panel-default" id="accordionPanelHeader3">
+											<div class="panel-heading" data-toggle="collapse" data-parent="#accordion1" data-target="#collapseFour1" style="background: #DFDDDD;margin-top: 1px;">
+												<label style="font-weight: normal;font-size: 14px;cursor: pointer;">NMM Image Details (Manuscript)</label><span class="glyphicon glyphicon-info-sign glyphiconmargin" style=" margin-top: 3px;"></span>
+											</div>
+											<div id="collapseFour1" class="panel-collapse collapse" >
+												<div class="panel-body" style="background:#ffffff; margin-top: 1%; margin-right: 1%; height: 65%;">
+													<div class="nmm-fields">
+														<label class="col-md-4 control-label">Height:</label>
+														<div class="col-md-8">
+															<s:property
+																value="digitalManuscriptVO.nmmDetailsVO.height" />
+														</div>
+													</div>
+													<div class="nmm-fields">
+														<label class="col-md-4 control-label">Width:</label>
+														<div class="col-md-8">
+															<s:property value="digitalManuscriptVO.nmmDetailsVO.width" />
+														</div>
+													</div>
+													
+													<div class="nmm-fields">
+														<label class="col-md-4 control-label">Make:</label>
+														<div class="col-md-8">
+															<s:property
+																value="digitalManuscriptVO.nmmDetailsVO.cameraMake" />
+														</div>
+													</div>
+													<div class="nmm-fields">
+														<label class="col-md-4 control-label">Model:</label>
+														<div class="col-md-8">
+															<s:property
+																value="digitalManuscriptVO.nmmDetailsVO.cameraModel" />
+														</div>
+													</div>
+													<div class="nmm-fields">
+														<label class="col-md-4 control-label">X Res:</label>
+														<div class="col-md-8">
+															<s:property
+																value="digitalManuscriptVO.nmmDetailsVO.xResolution" />
+														</div>
+													</div>
+													<div class="nmm-fields">
+														<label class="col-md-4 control-label">Y Res:</label>
+														<div class="col-md-8">
+															<s:property
+																value="digitalManuscriptVO.nmmDetailsVO.yResolution" />
+														</div>
+													</div>
+													
+													<div class="nmm-fields">
+														<label class="col-md-4 control-label">Created Date:</label>
+														<div class="col-md-8">
+															<s:property
+																value="digitalManuscriptVO.nmmDetailsVO.createdDate" />
+														</div>
+													</div>
+													<div class="nmm-fields">
+														<label class="col-md-4 control-label">Digitised Date:</label>
+														<div class="col-md-8">
+															<s:property
+																value="digitalManuscriptVO.nmmDetailsVO.digitisedDate" />
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
 								</div>
 
-						</div>
-						<div
-							style="height: 45%; box-shadow: none;">
-							<div class="panel panel-success">
-								<div class="panel-heading" style="height: 30px">Comments<span class="glyphicon glyphicon-comment glyphiconmargin" style="margin-top: 8px;"></span></div>
-								<div>
-									<div class="container-center" id="comments"
-									style="overflow-y: scroll; display: block; margin-top: 1%; height: 75%;">
-								</div>
-								<div class="col-md-6" style="padding-bottom: 5px;">
-									<button type="button" class="btn btn-lg btn-success btn-block"
-										id="newcomment" style="margin-top: 4%; background: #D6E9C6 ; border: #D6E9C6; width:180px;"><span class="glyphicon glyphicon-plus glyphiconmargin" style="margin-top: 0px;"></span> Add Comment</button>
-								</div>
-
-							</div>
-
-						</div>
-
-							</div>
+					  </div>
 						</div>
 
 					</div>
 				</div>
 			<div id="nmmcontent" style="display: none"></div>
 			<s:if test="isVisibleSave != 0">
-				<div class="form-group row buttons container-center" style="width: 30%;">
-					<div class="col-md-4">
+				<div class="form-group row buttons container-center" style="width: 30%; margin-top: 20px;">
+					<div class="col-md-6">
 						<input type="button" class="btn btn-lg btn-primary btn-block"
 							value="Save" style="width: 142px;" onclick="owdSave();">
 					</div>
 					<s:if test="#session.currentRole == 6 && presentReviewer2 != 1">
-						<div class="col-md-4">
+						<div class="col-md-6">
 							<input type="button" onclick="branchWflToUser();"
 								class="btn btn-lg btn-success btn-block"
 								style="width: 145px;" value="Submit to verify">
@@ -453,11 +469,11 @@
 				</div>
 			</s:if>
 			<s:else>
-				<div class="form-group row buttons container-center">
-					<div class="col-md-4">
+				<div class="form-group row buttons container-center" style="margin-top: 20px;">
+					<div class="col-md-6">
 						<!-- <input type="button" class="btn btn-lg btn-primary btn-block" value="previous" id="previous-manuscript"> -->
 					</div>
-					<div class="col-md-4">
+					<div class="col-md-6">
 						<s:url id="assignedToMe" action="assignedToReviewer.action">
 							<s:param name="currentWFLDtsid"
 								value="%{currentProcessDetailsId}"></s:param>
@@ -670,10 +686,11 @@
 			if(!($('#manuscriptLabel').prop('checked'))){
 				audioPath=$('#audioPath').val();
 			}
-			$('#frame-img').css('height','50px');
-			$('#frame-img').css('width','50px');
-			$('#frame-img').css('position','relative');
-			$('#frame-img').css('margin-top','150px');
+		 	$('#frame-img').css('height','50px');
+			$('#frame-img').css('width','50px'); 
+			//$('#frame-img').css('position','absolute');
+			$('#frame-img').css('margin-top','250px');
+			$('#frame-img').css('margin-left','100px');
 			$('.frame-container #frame-img').attr('src',"<%=request.getContextPath()%>/assets/images/loading_new.gif"); 
 				var xmlHttpRequest = getXMLHttpRequest();
 			
@@ -697,6 +714,7 @@
 							$('#realFrameName').val(dataRead.realPath);
 							$('.frame-container #frame-img').attr('src',contextPath + '/temp/' + dataRead.realPath);
 							$('#frame-img').css('margin-top','0px');
+							$('#frame-img').css('margin-left','0px');
 							$('#frame-img').css('position','absolute');
 							if(!($('#manuscriptLabel').prop('checked'))){
 							if(dataRead.audioPath!=null){
@@ -904,7 +922,7 @@
 				sortcomment = sortcomment.substring(0,75)+"...(More)";
 			}
 			var commentStr = '<p>'+sortcomment+'</p>';
-			var commentsHtml='<div id="mainTableContainer" class="alert alert-success" style="cursor: pointer;height:70px !important ;  margin-right: 1%;" onclick="executemethod('+commentBy+','+comment+','+commentOn+')">'+commentStr+'<span style="color:#AAAAAA;font-weight:bold;font-size: 10px;">'+fileDiskPathObject[imgno].comments[j].commentBy+' \\ '+fileDiskPathObject[imgno].comments[j].commentTime+'</span>';
+			var commentsHtml='<div id="mainTableContainer" class="alert alert-success" style="cursor: pointer;height:50px !important ;  margin-right: 1%;" onclick="executemethod('+commentBy+','+comment+','+commentOn+')">'+commentStr+'<span style="color:#AAAAAA;font-weight:bold;font-size: 10px;">'+fileDiskPathObject[imgno].comments[j].commentBy+' \\ '+fileDiskPathObject[imgno].comments[j].commentTime+'</span>';
 			commentsHtml += '</div>';
 			
 			$('#comments').append(commentsHtml);
@@ -1283,7 +1301,7 @@ function generateSelectedReport(){
 					sortcomment = sortcomment.substring(0,75)+"...(More)";
 				}
 				var commentStr = '<p>'+sortcomment+'</p>';
-				var commentsHtml='<div id="mainTableContainer" class="alert alert-success" style="cursor: pointer;height:70px !important ;  margin-right: 1%;" onclick="executemethod('+commentBy+','+comment+','+commentOn+')">'+commentStr+'<span style="color:#AAAAAA;font-weight:bold;font-size: 10px;">'+commentBy+' \\ '+commentOn+'</span>';
+				var commentsHtml='<div id="mainTableContainer" class="alert alert-success" style="cursor: pointer;height:50px !important ;  margin-right: 1%;" onclick="executemethod('+commentBy+','+comment+','+commentOn+')">'+commentStr+'<span style="color:#AAAAAA;font-weight:bold;font-size: 10px;">'+commentBy+' \\ '+commentOn+'</span>';
 				commentsHtml += '</div>';
 				
 				$('#comments').append(commentsHtml);

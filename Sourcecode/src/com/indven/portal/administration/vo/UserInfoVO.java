@@ -85,6 +85,7 @@ public class UserInfoVO extends IndvenResultVO {
 	 * @return the name
 	 */
 	public final String getName() {
+//            System.out.println(" name: "+name+" loginName:"+loginName+" roleMasterFkId:"+roleMasterFkId+" id:"+id);
 		return name;
 	}
 
@@ -206,5 +207,12 @@ public class UserInfoVO extends IndvenResultVO {
 	public void setRoleMasterFkId(Long roleMasterFkId) {
 		this.roleMasterFkId = roleMasterFkId;
 	}
-
+    
+        public String toString() {
+            return "id:" + this.id  + " name:" + this.name + " loginName:" + this.loginName + " passWord:" 
+                    + this.passWord + " referenceFkId :" + this.referenceFkId
+                  + " type :" + this.type + " resetPasswordId:" + this.resetPasswordId 
+                  + " roleMasterFkId:" + this.roleMasterFkId 
+                    ;
+        }
 }

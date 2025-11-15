@@ -65,7 +65,8 @@
 </script>
 
 	<%@ include file='../layout/header.jsp'%>
-	<div class="container container-center  alert alert-success appTable" style="max-width: 60%;">
+	<div class="container container-center" style="max-width: 60%;">
+	<div class=" alert alert-success appTable centerdiv">
 	<div class="form">
 		<div style="margin-left: 3%;margin-right: 3%;">
 			<%@ include file='../messagecontainer.jsp' %>
@@ -101,12 +102,12 @@
 										
 				<div class="form-group row buttons">
 					<div class="col-xs-5 col-md-6">
-						<input type="reset" class="btn btn-lg btn-primary btn-block" value="reset" onClick="return getTreeState();">
+						<input type="reset" class="btn btn-lg btn-success btn-block" value="Reset" onClick="return getTreeState();">
 					</div>
 					<div class="col-xs-1">
 					</div>
 					<div class="col-xs-5 col-md-6">
-						<input type="submit" class="btn btn-lg btn-primary btn-block" value="submit">
+						<input type="submit" class="btn btn-lg btn-primary btn-block" value="Submit">
 					</div>
 				</div>
 				
@@ -118,6 +119,7 @@
 				</div>
 			</s:form>
 		</div>
+	</div>
 	</div>
 	</div>
 	<%@ include file='../layout/footer.jsp'%>

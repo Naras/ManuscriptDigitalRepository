@@ -61,6 +61,23 @@ public class DigitalManuscriptFrame implements Serializable,Comparator<DigitalMa
 	@Transient
 	private String translatedText;
 	
+	@Column(name = "frame_order")
+	private Long frameOrder;
+	
+	/**
+	 * @return the frameOrder
+	 */
+	public final Long getFrameOrder() {
+		return frameOrder;
+	}
+
+	/**
+	 * @param frameOrder the frameOrder to set
+	 */
+	public final void setFrameOrder(Long frameOrder) {
+		this.frameOrder = frameOrder;
+	}
+
 	/**
 	 * @return the translatedText
 	 */
@@ -157,7 +174,7 @@ public class DigitalManuscriptFrame implements Serializable,Comparator<DigitalMa
 	}
 	@Override
 	public int compare(DigitalManuscriptFrame frame1, DigitalManuscriptFrame frame2) {
-		String compValue1=frame2.getFilePath().split("\\.")[0].substring( frame2.getFilePath().split("\\.")[0].length() - IndvenApplicationConstants.IMAGE_NAME_SIZE);
+		/*String compValue1=frame2.getFilePath().split("\\.")[0].substring( frame2.getFilePath().split("\\.")[0].length() - IndvenApplicationConstants.IMAGE_NAME_SIZE);
 		String compValue2=frame1.getFilePath().split("\\.")[0].substring( frame1.getFilePath().split("\\.")[0].length() - IndvenApplicationConstants.IMAGE_NAME_SIZE);
 		
 		if(!(NumberUtils.isNumber(compValue1.substring(compValue1.length() - 1)))) {
@@ -166,10 +183,14 @@ public class DigitalManuscriptFrame implements Serializable,Comparator<DigitalMa
 		
 		if(!(NumberUtils.isNumber(compValue2.substring(compValue2.length() - 1)))) {
 			compValue2 = frame1.getFilePath().split("\\.")[0].substring( frame1.getFilePath().split("\\.")[0].length() - 5);
-		}
-		
+		}*/
+		Long compValue1 =frame2.getFrameOrder();
+		Long compValue2 = frame1.getFrameOrder();
 		return (compValue2.compareTo(compValue1));
 		//return o1.salary-o2.salary;
 	}
-
+public String toString() {
+    return "DigitalManuscriptFrame filepath:" +this.filePath + " translatedText:" + this.translatedText 
+            ;
+}
 }

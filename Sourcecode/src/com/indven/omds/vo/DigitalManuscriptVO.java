@@ -3,14 +3,22 @@
  */
 package com.indven.omds.vo;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.indven.framework.util.CustomBeanUtil;
 import com.indven.framework.util.IndvenApplicationConstants;
 import com.indven.framework.vo.IndvenResultVO;
+import com.indven.omds.util.ManuscriptConditionType;
 import com.indven.portal.hrd.vo.EmployeeMasterVO;
 import com.indven.search.vo.GenericSearch;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
+import javax.persistence.Column;
 
 /**
  * @author Deba Prasad
@@ -106,6 +114,77 @@ public class DigitalManuscriptVO extends IndvenResultVO implements GenericSearch
 	private Long isSavingMerged ;
 	private String parentIdsStr;
 	
+	
+	private String fieldsCovered;
+	
+	private ArticleDetailsVO articleDetailsVO;
+	private Integer articleLaguage;
+	
+	private List<AuthorVO> authors;
+	private List<Long> authorId;
+
+	private String patha;
+	private Short redMarked;
+	private Short redLines;
+	private Short redDigits;
+	private Short redLetters;
+	private String redMarkedText;
+	private String redLinesText;
+	private String redDigitsText;
+	private String redLettersText;
+
+	private String linesPerPage;
+	private String charactersPerLine;
+
+	private List<Long> pathaIds;
+	private List<Long> comIds;
+	private List<Long> subject1Ids;
+	
+	private Short edited; 
+	private String editedType;  
+	private String editedTypeRemarks; 
+	private String inkPigment; 
+	private String inkPigmentOthers; 
+	private Short illustrations; 
+	private String illustrationsType; 
+	private String illustrationsOthers;   
+	private Short decorated; 
+	private String decoratedRemarks;  
+	private String miscellaneousRemarks;
+	
+	private String subject1;
+	
+	private List<String> savedIllustrationsType;
+
+
+	public List<AuthorVO> getAuthors() {
+		return authors;
+	}
+
+	public void setAuthors(List<AuthorVO> authors) {
+		this.authors = authors;
+	}
+
+	public Integer getArticleLaguage() {
+		return articleLaguage;
+	}
+
+	public void setArticleLaguage(Integer articleLaguage) {
+		this.articleLaguage = articleLaguage;
+	}
+	
+	public ArticleDetailsVO getArticleDetailsVO() {
+		return articleDetailsVO;
+	}
+	public void setArticleDetailsVO(ArticleDetailsVO articleDetailsVO) {
+		this.articleDetailsVO = articleDetailsVO;
+	}
+	public String getFieldsCovered() {
+		return fieldsCovered;
+	}
+	public void setFieldsCovered(String fieldsCovered) {
+		this.fieldsCovered = fieldsCovered;
+	}
 	/**
 	 * @return the minimumFolios
 	 */
@@ -890,5 +969,296 @@ public class DigitalManuscriptVO extends IndvenResultVO implements GenericSearch
 	public void setTotalFrame(Integer totalFrame) {
 		this.totalFrame = totalFrame;
 	}
+
+	/**
+	 * @return the authorId
+	 */
+	public List<Long> getAuthorId() {
+		return authorId;
+	}
+
+	/**
+	 * @param authorId the authorId to set
+	 */
+	public void setAuthorId(List<Long> authorId) {
+		this.authorId = authorId;
+	}
+
+
+	public String getPatha() {
+		return patha;
+	}
+
+	public void setPatha(String patha) {
+		this.patha = patha;
+	}
+
+	public Short getRedMarked() {
+		return redMarked;
+	}
+
+	public void setRedMarked(Short redMarked) {
+		this.redMarked = redMarked;
+	}
+
+	public Short getRedLines() {
+		return redLines;
+	}
+
+	public void setRedLines(Short redLines) {
+		this.redLines = redLines;
+	}
+
+	public Short getRedDigits() {
+		return redDigits;
+	}
+
+	public void setRedDigits(Short redDigits) {
+		this.redDigits = redDigits;
+	}
+
+	public Short getRedLetters() {
+		return redLetters;
+	}
+
+	public void setRedLetters(Short redLetters) {
+		this.redLetters = redLetters;
+	}
+
+	public String getRedMarkedText() {
+		return redMarkedText;
+	}
+
+	public void setRedMarkedText(String redMarkedText) {
+		this.redMarkedText = redMarkedText;
+	}
+
+	public String getRedLinesText() {
+		return redLinesText;
+	}
+
+	public void setRedLinesText(String redLinesText) {
+		this.redLinesText = redLinesText;
+	}
+
+	public String getRedDigitsText() {
+		return redDigitsText;
+	}
+
+	public void setRedDigitsText(String redDigitsText) {
+		this.redDigitsText = redDigitsText;
+	}
+
+	public String getRedLettersText() {
+		return redLettersText;
+	}
+
+	public void setRedLettersText(String redLettersText) {
+		this.redLettersText = redLettersText;
+	}
+
+	public List<Long> getPathaIds() {
+		if (StringUtils.isNotBlank(this.getPatha())) {
+			pathaIds = new ArrayList<Long>();
+			String[] pathaArray = this.getPatha().split(",");
+			for (int i=0;i<pathaArray.length;i++) {
+				pathaIds.add(Long.valueOf(pathaArray[i].trim()));
+				//logger.debug("patha ids "+pathaIds);
+			}
+		}
+		return pathaIds;
+	}
+
+	public void setPathaIds(List<Long> pathaIds) {
+		this.pathaIds = pathaIds;
+	}
+
+
+	public String getLinesPerPage() {
+		return linesPerPage;
+	}
+
+	public void setLinesPerPage(String linesPerPage) {
+		this.linesPerPage = linesPerPage;
+	}
+
+	public String getCharactersPerLine() {
+		return charactersPerLine;
+	}
+
+	public void setCharactersPerLine(String charactersPerLine) {
+		this.charactersPerLine = charactersPerLine;
+	}
+
+	public List<Long> getComIds() {
+		//comIds = CustomBeanUtil.convertCommaSeparatedStringToList(this.conditionOfManuscript);
+		if (StringUtils.isNotBlank(this.conditionOfManuscript)) {
+			comIds = new ArrayList<Long>();
+			String[] conditionOfManuscriptArray = this.conditionOfManuscript.split(",");
+			for (int i=0;i<conditionOfManuscriptArray.length;i++) {
+				comIds.add(Long.valueOf(conditionOfManuscriptArray[i].trim()));
+				//logger.debug("patha ids "+pathaIds);
+			}
+		}
+		return comIds;
+	}
+
+	public void setComIds(List<Long> comIds) {
+		this.comIds = comIds;
+	}
+	//new
+
+	public Short getEdited() {
+		return edited;
+	}
+
+	public void setEdited(Short edited) {
+		this.edited = edited;
+	}
+
+	public String getEditedType() {
+		return editedType;
+	}
+
+	public void setEditedType(String editedType) {
+		this.editedType = editedType;
+	}
+
+	public String getEditedTypeRemarks() {
+		return editedTypeRemarks;
+	}
+
+	public void setEditedTypeRemarks(String editedTypeRemarks) {
+		this.editedTypeRemarks = editedTypeRemarks;
+	}
+
+	public String getInkPigment() {
+		return inkPigment;
+	}
+
+	public void setInkPigment(String inkPigment) {
+		this.inkPigment = inkPigment;
+	}
+
+	public String getInkPigmentOthers() {
+		return inkPigmentOthers;
+	}
+
+	public void setInkPigmentOthers(String inkPigmentOthers) {
+		this.inkPigmentOthers = inkPigmentOthers;
+	}
+
+	public Short getIllustrations() {
+		return illustrations;
+	}
+
+	public void setIllustrations(Short illustrations) {
+		this.illustrations = illustrations;
+	}
+
+	public String getIllustrationsType() {
+		return illustrationsType;
+	}
+
+	public void setIllustrationsType(String illustrationsType) {
+		this.illustrationsType = illustrationsType;
+	}
+
+	public String getIllustrationsOthers() {
+		return illustrationsOthers;
+	}
+
+	public void setIllustrationsOthers(String illustrationsOthers) {
+		this.illustrationsOthers = illustrationsOthers;
+	}
+
+	public Short getDecorated() {
+		return decorated;
+	}
+
+	public void setDecorated(Short decorated) {
+		this.decorated = decorated;
+	}
+
+	public String getDecoratedRemarks() {
+		return decoratedRemarks;
+	}
+
+	public void setDecoratedRemarks(String decoratedRemarks) {
+		this.decoratedRemarks = decoratedRemarks;
+	}
+
+	public String getMiscellaneousRemarks() {
+		return miscellaneousRemarks;
+	}
+
+	public void setMiscellaneousRemarks(String miscellaneousRemarks) {
+		this.miscellaneousRemarks = miscellaneousRemarks;
+	}
+
+	public List<String> getSavedIllustrationsType() {
+		if (StringUtils.isNotBlank(this.illustrationsType)) {
+			savedIllustrationsType = new ArrayList<String>();
+			String[] illustrationsTypeArray = this.illustrationsType.split(",");
+			for (int i=0;i<illustrationsTypeArray.length;i++) {
+				savedIllustrationsType.add(illustrationsTypeArray[i].trim());
+				//logger.debug("patha ids "+pathaIds);
+			}
+		}
+		return savedIllustrationsType;
+	}
+
+	public void setSavedIllustrationsType(List<String> savedIllustrationsType) {
+		
+		this.savedIllustrationsType = savedIllustrationsType;
+	}
 	
+	private List<String> savedEditedType;
+	public List<String> getSavedEditedType() {
+		savedEditedType = CustomBeanUtil.convertCommaSeparatedStringToList(this.editedType);   
+		return savedEditedType;
+	}
+	
+	private List<String> savedInkPigmentTypeList;
+	public List<String> getSavedInkPigmentTypeList() {
+		savedInkPigmentTypeList = CustomBeanUtil.convertCommaSeparatedStringToList(this.inkPigment);   
+		return savedInkPigmentTypeList;
+	}
+
+	public String getSubject1() {
+		return subject1;
+	}
+
+
+	public List<Long> getSubject1Ids() {
+		if (StringUtils.isNotBlank(this.getSubject1())) {
+			subject1Ids = new ArrayList<Long>();
+			String[] subject1Array = this.getSubject1().split(",");
+			for (int i=0;i<subject1Array.length;i++) {
+				subject1Ids.add(Long.valueOf(subject1Array[i].trim()));
+			}
+		}
+//		logger.debug("vo.DigitalManuscriptVo.getsubject1Ids()"+subject1Ids);
+		return subject1Ids;
+	}
+
+	public void setSubject1Ids(List<Long> subject1Ids) {
+
+
+		this.subject1Ids = subject1Ids;
+	}
+
+	public void setSubject1(String subject1) {
+		this.subject1 = subject1;
+	}
+        
+        public String toString(){
+            return "id:" + id + " manuscriptId:" + manuscriptId + " name:" + name + " regionalName:" + regionalName 
+                    + " diacriticName:" + diacriticName + " author:" + authorName + " manuscriptType:" + manuscriptType
+                    + " languageFk:" + languageFkId + " scriptFk:" + scriptFkId 
+//                    + " language:" + languageVO.getName() + " script:" + scriptVO.getName()
+                    + " digitizer id:" + digitizerId
+                    ;
+        }
 }
+ 

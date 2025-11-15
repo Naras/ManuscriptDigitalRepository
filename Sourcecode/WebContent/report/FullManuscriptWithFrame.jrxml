@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="FullManuscriptWithFrame" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="67f97928-a3c5-4583-b858-d4ce3a888193">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="104"/>
+	<property name="ireport.y" value="48"/>
 	<style name="Rotated180" mode="Opaque" forecolor="#FF33CC" hAlign="Center" vAlign="Middle" rotation="UpsideDown" fontName="Curlz MT" fontSize="40"/>
 	<style name="Rotated270" mode="Opaque" forecolor="#FF33CC" hAlign="Center" vAlign="Middle" rotation="Left" fontName="Curlz MT" fontSize="40"/>
 	<style name="Rotated90" mode="Opaque" forecolor="#FF33CC" hAlign="Center" vAlign="Middle" rotation="Right" fontName="Curlz MT" fontSize="40"/>
@@ -11,17 +11,21 @@
 	<parameter name="imagePath" class="java.lang.String"/>
 	<parameter name="recordtype" class="java.lang.Short"/>
 	<queryString>
-		<![CDATA[SELECT dd.id,ifnull(dd.TEXT,"") as TEXT,fm.filePath,dm.NAME,op.NAME AS Author FROM omds_digital_manuscript_frame fm
+		<![CDATA[SELECT dd.id,IFNULL(dd.TEXT,"") AS TEXT,fm.filePath,fm.frame_order,dm.NAME,GROUP_CONCAT(op.NAME) AS Author FROM omds_digital_manuscript_frame fm
 LEFT JOIN omds_digitaldocument d
 ON fm.id = d.digitalManuscriptFrameFkId
 LEFT JOIN omds_digitaldocument_details dd
 ON dd.digitalDocumentFkId = d.id
 LEFT JOIN omds_digital_manuscript dm
 ON fm.digitalManuscriptFkId = dm.id
-LEFT JOIN  omds_person op
-ON dm.AuthorFkId = op.Id
-WHERE fm.digitalManuscriptFkId = $P{id} AND (d.recordtype= $P{recordtype} or d.recordtype is null)
-AND (dd.ismax =1 OR dd.ismax IS NULL)]]>
+LEFT JOIN  omds_manuscript_authormapper am
+ON dm.Id = am.manuscriptfkid
+LEFT JOIN omds_person op
+ON am.authorfkid = op.Id
+WHERE fm.digitalManuscriptFkId = $P{id} AND (d.recordtype= $P{recordtype} OR d.recordtype IS NULL)
+AND (dd.ismax =1 OR dd.ismax IS NULL)
+GROUP BY fm.frame_order
+ORDER BY fm.frame_order]]>
 	</queryString>
 	<field name="id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -32,20 +36,15 @@ AND (dd.ismax =1 OR dd.ismax IS NULL)]]>
 	<field name="filePath" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
+	<field name="frame_order" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="NAME" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="Author" class="java.lang.String"/>
 	<background>
-		<band height="802" splitType="Stretch">
-			<staticText>
-				<reportElement uuid="3bdd5d67-94f0-457f-8477-b1d0438d7bc9" mode="Opaque" x="79" y="200" width="428" height="428" forecolor="#9999FF"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
-					<font fontName="SansSerif" size="40" isItalic="true"/>
-				</textElement>
-				<text><![CDATA[FRLHT!]]></text>
-			</staticText>
-		</band>
+		<band height="802" splitType="Stretch"/>
 	</background>
 	<title>
 		<band height="62" splitType="Stretch">
@@ -81,26 +80,26 @@ AND (dd.ismax =1 OR dd.ismax IS NULL)]]>
 	<detail>
 		<band height="413">
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="4d385570-e8de-4761-8244-d63cdd5390c8" x="30" y="314" width="497" height="98"/>
+				<reportElement uuid="4d385570-e8de-4761-8244-d63cdd5390c8" x="30" y="322" width="497" height="90"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{TEXT}]]></textFieldExpression>
 			</textField>
-			<image scaleImage="FillFrame">
-				<reportElement uuid="3c03dd45-6a7b-4837-a2c0-6a48272cd2d0" x="30" y="0" width="497" height="281"/>
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement uuid="3c03dd45-6a7b-4837-a2c0-6a48272cd2d0" x="30" y="0" width="497" height="298"/>
 				<graphicElement>
 					<pen lineWidth="2.0" lineColor="#009999"/>
 				</graphicElement>
 				<imageExpression><![CDATA[$P{imagePath}+$F{filePath}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement uuid="315cb283-4f52-490f-bb19-a43bff75d378" x="30" y="281" width="120" height="22"/>
+				<reportElement uuid="315cb283-4f52-490f-bb19-a43bff75d378" x="30" y="298" width="120" height="22"/>
 				<textElement>
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Transcribed Part]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="2f8067e8-14ef-4aca-a65b-20e0415b4533" x="30" y="303" width="497" height="1" forecolor="#009999"/>
+				<reportElement uuid="2f8067e8-14ef-4aca-a65b-20e0415b4533" x="30" y="320" width="497" height="1" forecolor="#009999"/>
 			</line>
 		</band>
 	</detail>

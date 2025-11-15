@@ -6,6 +6,7 @@ package com.indven.search.controller;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +68,7 @@ public class SearchAction extends BaseAction{
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public String searchAll() {
+	public String searchAll() {System.out.println("search.controller.SearchAction:searchAll()entry");
 		String status = ERROR;
 		List<Object> searchList = new ArrayList<>();
 		
@@ -76,7 +77,7 @@ public class SearchAction extends BaseAction{
 		
 		
 		String tableName = getRequest().getParameter("tableName");
-		
+		System.out.println("search.controller.SearchAction:"+tableName);
 		int pageNumber = Integer.parseInt(getRequest().getParameter("pageNumber"));
 		int recordsPerPage = Integer.parseInt(getRequest().getParameter("recordsPerPage"));
 		
@@ -139,12 +140,11 @@ public class SearchAction extends BaseAction{
 	 */
 	@SuppressWarnings("unchecked")
 	public SearchVO getSearchVOFromClassName(String className , boolean flag) throws Exception{
-		
 		Class<?> c = Class.forName(className);
 		Object obj = c.newInstance();
 		
 		Map<String, String> actionNamesMap = new HashMap<String, String>();
-		Map<String, String> labelDisplayMap = new HashMap<String, String>();
+		Map<String, String> labelDisplayMap = new LinkedHashMap<String, String>();
 
 		Method method = c.getDeclaredMethod ("getTableName");
 		searchVO.setTableName((String) method.invoke(obj));

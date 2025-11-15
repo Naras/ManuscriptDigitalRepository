@@ -1,6 +1,7 @@
 package com.indven.omds.vo;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.indven.framework.util.IndvenApplicationConstants;
@@ -66,7 +67,7 @@ public class ScriptVO extends IndvenResultVO implements GenericSearch  {
 
 	@Override
 	public Map<String, String> getLabelDisplayMap() {
-		Map<String, String> returnMap = new HashMap<String, String>();
+		Map<String, String> returnMap = new LinkedHashMap<String, String>();
 		returnMap.put("Script Name" , "name");
 		
 		return returnMap;

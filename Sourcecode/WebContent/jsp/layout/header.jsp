@@ -15,6 +15,100 @@
     max-width: 65%;
     width: auto;
 }
+
+
+
+
+#navigation { font-size:1em; width:190px; }
+	#navigation ul { margin:0px; padding:0px; }
+	#navigation li { list-style: none; }
+	ul.top-level li {
+	border-radius:5px;
+	margin-top:5px;
+	background: #4f4f4f ;
+	}
+	#navigation a {
+	 transition: all .5s ease-out 0s;
+	 color: #fff;
+	 cursor: pointer;
+	 display:block;
+	 height:25px;
+	 line-height: 25px;
+	 text-indent: 10px;
+	 text-decoration:none;
+	 width:100%;
+	 border-radius:5px;
+	}
+	  
+	#navigation a:hover{
+	 text-decoration:none;
+	}
+	  
+	#navigation li:hover {
+	 background: #e9ac5d;
+	 transition: all .5s ease-out 0s;
+	 position: relative;
+	}
+	 
+	ul.sub-level {
+	    display: none;
+	    z-index:10;
+	}
+	  
+	li:hover .sub-level {
+	transition: all .5s ease-out 0s;
+	    background: #999;
+	    border: #fff solid;
+	    border-width: 1px;
+	    display: block;
+	    position: absolute;
+	    left: 75px;
+	    top: 5px;
+	    border-radius:5px;
+	}
+	  
+	ul.sub-level li {
+	    border: none;
+	    float:left;
+	    width:150px;
+	    border-radius:5px;
+	}
+	 
+	/*Seconda Level*/
+	#navigation .sub-level {
+	    background: #999;
+	    transition: all .5s ease-out 0s;
+		margin-left: 8em;
+	}
+	  
+	/*Third Level*/
+	#navigation .sub-level .sub-level {
+	    background: #09C;
+	    transition: all .5s ease-out 0s;
+	}
+	 
+	/*RESET STYLES*/
+	li:hover .sub-level .sub-level {
+	    display:none;
+	}
+	  
+	.sub-level li:hover .sub-level {
+	    display:block;
+	    transition: all .5s ease-out 0s;
+	    z-index:10;
+	}
+	 
+	ul.top-level li span
+	 {
+	  float:right;
+	  color: #fff;
+	  margin-right:10px;
+	  margin-top:-20px;
+	 }
+
+
+
+
 </style>
 <head>
 <meta charset="utf-8">
@@ -27,7 +121,7 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/assets/js/jquery-1.9.1.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/assets/js/bootstrap.min.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>FRLHT</title>
+<title><%=request.getContextPath()%></title>
 <s:head/>
 <sx:head/>
 </head>
@@ -104,14 +198,14 @@
 						out.println("<li>"
 								+ "<a class='dropdown-toggle "+extraClass+"' data-toggle='dropdown' href='" + menuLink + "'>" + node.getMenuName()
 								+ "<b class='caret'></b></a>" 
-								+ "<ul class='dropdown-menu'>");
+								+ "<ul class='sub-level'>");
 					}
 					else if(areChildrenChecked(node.getChild()) == true) {
 						//The children node contain atleast one checked node
 						out.println("<li>"
 								+ "<a class='dropdown-toggle "+extraClass+"' data-toggle='dropdown' href='" + menuLink + "'>" + node.getMenuName()
 								+ "<b class='caret'></b></a>"
-								+ "<ul class='dropdown-menu'>");
+								+ "<ul class='sub-level'>");
 					}
 					else 
 						continue;
@@ -136,26 +230,16 @@
 
 %>
 <%@ include file='../layout/topHeader.jsp' %>
-	<!-- <div id="wrap"  style="background-image: url('/WEB-INF/assets/images/slider/Ayurveda_Bk_Img.png') ; background-repeat: no-repeat;";> -->
+	<!-- <div id="wrap"  style="background-image: url('/MDR/assets/images/slider/Ayurveda_Bk_Img.png') ; background-repeat: no-repeat;";> -->
 	<div id="wrap">
 	
-	<div id="leftDiv" style="z-index:-1 ;position: absolute;overflow: auto;">
-		<img alt="" src="/WEB-INF/assets/images/theme/bundle-2.png" style="width: 336px;height: 408px;">
-	</div>
-	
-	<div id="rightDiv" style="z-index:-1 ;position: absolute;">
-		<img alt="" src="/WEB-INF/assets/images/theme/top_right_second.png">
-	</div>
-	
-	 <div id="middleDiv" style="z-index:-2 ;position: absolute;">
-		<img alt="" src="/WEB-INF/assets/images/theme/top_left.png">
-	</div> 
-
-	<div class="navbar navbar-inverse navbar-fixed-top" style="position: relative;" role="navigation">
-		<div class="container container-center1" id="divul2">
-			
-			<div class="collapse navbar-collapse" id="divul" style="text-align: center !important;">
-				<ul class="nav navbar-nav" id="idul" style="margin-left: auto;margin-right: auto;">  <!-- ul is closed within recursive loop -->
+	<div id="leftDiv" style="height:90%;position: absolute;">
+		<!-- <img alt="" src="/MDR/assets/images/theme/bundle-2.png" style="width: 336px;height: 408px;">
+		<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">>></button> -->
+	<div class="navbar-inverse " id="demo" style="position: relative;float:left;width:190px;height:100%;">
+		<div class="container container-center1" id="divul2" style="float: left;">
+			<div class="collapse in navbar-collapse" id="navigation" style="text-align: left !important; padding-left: 0px;">
+				<ul class="top-level" id="idul" style="margin-left: auto;margin-right: auto;">  <!-- ul is closed within recursive loop -->
 					<%-- <li>
 						<s:if test="#session.nodeclicked == 201">
 							<a class="navbar-brand selectedMenu" href="gofrlhthome.action?nodeclicked=201" style="font-size: 14px">Home</a>
@@ -185,8 +269,23 @@
 							<a class="navbar-brand" href="faqpageaction.action?nodeclicked=204" style="font-size: 14px">FAQ</a>
 						</s:else>
 					</li> --%>
-					
-					<% 
+
+						<%-- <li><a href="#">Menu1</a><span>&gt;&gt;</span>
+							<ul class="sub-level">
+								<li><a href="#">Sub Menu Item 1</a></li>
+								<li><a href="#">Sub Menu Item 2</a><span>&gt;&gt;</span>
+									<ul class="sub-level">
+										<li><a href="#">Sub Sub Menu Item 1</a></li>
+										<li><a href="#">Sub Sub Menu Item 2</a></li>
+										<li><a href="#">Sub Sub Menu Item 3</a></li>
+										<li><a href="#">Sub Sub Menu Item 4</a></li>
+									</ul></li>
+								<li><a href="#">Sub Menu Item 3</a></li>
+								<li><a href="#">Sub Menu Item 3</a></li>
+							</ul></li>
+						<li><a href="#">Menu2</a></li>
+						<li><a href="#">Menu3</a></li> --%>
+						<% 
 						//Gets the header menu through the session and prints it recursively
 						MenuMasterVO menu = (MenuMasterVO) session.getAttribute("headerMenu");
 						printMenus(menu.getChild(), out, request.getContextPath());
@@ -195,6 +294,15 @@
 			</div>
 		</div>
 	</div>
+	</div>
+	
+	<div id="rightDiv" style="z-index:-1 ;position: absolute;">
+		<!-- <img alt="" src="/MDR/assets/images/theme/top_right_second.png"> -->
+	</div>
+	
+	 <div id="middleDiv" style="z-index:-2 ;position: absolute;">
+		<img alt="" src="/OMDS/assets/images/theme/top_left.png">
+	</div> 
 	
 	<%
 		
@@ -253,10 +361,13 @@
 		    }
 		    
 		    if(flag) {
+		    	if(link != "http://www.samskrti.org/"){
+		    	
 		    	if(link.indexOf("?") != -1) {
 		    		linkCollection[i].href = link + "&requestId=" + requestId;
 		    	} else {
 		    		linkCollection[i].href = link + "?requestId=" + requestId;
+		    	}
 		    	}
 		    }
 		}
@@ -272,9 +383,9 @@
 		var xx = screen.height;
 		
 		 var d = document.getElementById("leftDiv");
-		  d.style.position = "fixed";
+		//  d.style.position = "absolute";
 		  d.style.left = 0+'px';
-		  d.style.top = (xx-500)+'px';
+		  //d.style.top = (xx-500)+'px';
 		  
 		  
 		var width = screen.width;	

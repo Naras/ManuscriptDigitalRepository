@@ -422,7 +422,7 @@
 
 	// default options
 	$.ime.defaults = {
-		imePath: '/OMDS/assets/', // Relative/Absolute path for the rules folder of jquery.ime
+		imePath: '/MDR/assets/', // Relative/Absolute path for the rules folder of jquery.ime
 		languages: [], // Languages to be used- by default all languages
 		helpHandler: null // Called for each ime option in the menu
 	};

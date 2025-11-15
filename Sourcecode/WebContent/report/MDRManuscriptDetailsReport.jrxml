@@ -1,0 +1,708 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MDRManuscriptDetailsReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4659c74f-f5f5-4fdb-9fb3-81afa9fbdefc">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="reportfilter" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="filePath" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT dm.Id,dm.NAME,dm.regional_name,dm.diacritical_name,dm.SUMMARY,dm.acc_no,dm.table_of_contents,dm.digitized_by,dm.catalogue_no,
+dm.cataloguedetails,dm.colophon,dm.beginning_line,dm.ending_line,dm.documentation_of_manuscript,dm.isbound,dm.manuscript_id,
+dm.total_no_of_folios,dm.total_no_of_maps,dm.condition_of_manuscript,dm.source_of_catalogue,dm.TYPE_OF_WORK,org.Id AS orgId,org.NAME AS orgName,
+org.email,org.ADDRESS AS orgAddress,org.website,org.type AS orgType,org.phoneNumber,op.Id AS publicationId,op.PRICE,op.NO_OF_PAGES,
+op.YEAR_OF_PUBLICATION,opp.NAME AS editorName,opb.NAME AS publisherName,opb.ADDRESS publisherAddress,ol.NAME AS languageName,
+os.NAME AS scriptName,om.NAME materialName,ob.name AS bundleName,oc.name AS categoryName,opc.NAME AS scribName,
+GROUP_CONCAT(opa.NAME) AS Author,GROUP_CONCAT(DISTINCT osc.NAME) AS specificcategory FROM omds_digital_manuscript dm
+LEFT JOIN omds_organisation org ON dm.OrganisationFkId = org.Id
+LEFT JOIN omds_publication op ON dm.PublicationFkId = op.Id
+LEFT JOIN omds_person opp ON op.editorfkid = opp.Id
+LEFT JOIN omds_publisher opb ON op.PublisherFkId = opb.Id
+LEFT JOIN omds_language ol ON dm.languageFkId = ol.Id
+LEFT JOIN omds_script os ON dm.scriptFkId = os.Id
+LEFT JOIN omds_material om ON dm.MaterialFkId = om.Id
+LEFT JOIN omds_bundle ob ON dm.bundleMasterfkid = ob.id
+LEFT JOIN omds_category oc ON dm.categoryFkId = oc.id
+LEFT JOIN omds_person opc ON dm.scribefkid = opc.Id
+LEFT JOIN omds_manuscript_authormapper am ON dm.Id = am.manuscriptfkid
+LEFT JOIN omds_person opa ON am.authorfkid = opa.Id
+LEFT JOIN omds_manuscript_specificcategorymapper oscc ON oscc.manuscriptfkid = dm.Id
+LEFT JOIN omds_specificcategory osc ON oscc.specificcategoryfkid = osc.id
+WHERE $P!{reportfilter} GROUP BY dm.Id
+ORDER BY dm.Id]]>
+	</queryString>
+	<field name="Id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="NAME" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="regional_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="diacritical_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="SUMMARY" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="acc_no" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="table_of_contents" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="digitized_by" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="catalogue_no" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cataloguedetails" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="colophon" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="beginning_line" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ending_line" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="documentation_of_manuscript" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="isbound" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="manuscript_id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="total_no_of_folios" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="total_no_of_maps" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="condition_of_manuscript" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="source_of_catalogue" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="TYPE_OF_WORK" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="orgId" class="java.lang.Long"/>
+	<field name="orgName" class="java.lang.String"/>
+	<field name="email" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="orgAddress" class="java.lang.String"/>
+	<field name="website" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="orgType" class="java.lang.Integer"/>
+	<field name="phoneNumber" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="publicationId" class="java.lang.Long"/>
+	<field name="PRICE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="NO_OF_PAGES" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="YEAR_OF_PUBLICATION" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="editorName" class="java.lang.String"/>
+	<field name="publisherName" class="java.lang.String"/>
+	<field name="publisherAddress" class="java.lang.String"/>
+	<field name="languageName" class="java.lang.String"/>
+	<field name="scriptName" class="java.lang.String"/>
+	<field name="materialName" class="java.lang.Integer"/>
+	<field name="bundleName" class="java.lang.String"/>
+	<field name="categoryName" class="java.lang.String"/>
+	<field name="scribName" class="java.lang.String"/>
+	<field name="Author" class="java.lang.String"/>
+	<field name="specificcategory" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="772" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="1e620e5a-9666-44f2-a5c8-da6f79509f90" x="50" y="285" width="453" height="122" forecolor="#009999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="36" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Detail Manuscript Report]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="751" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="9cca54c8-0f97-4309-9a49-e8acea64364a" x="0" y="590" width="555" height="160"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="d40e64ed-387b-486b-a0c3-d59ddbc50b6d" x="0" y="447" width="555" height="141"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="58833dd7-cb58-43f9-bf9c-e87de31c16ba" x="0" y="263" width="555" height="182"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="e192aa7e-8e94-4b5a-89d7-7ebd0262af4d" x="0" y="148" width="555" height="112"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="1889da26-04f6-41c6-8c9e-3a58caf80192" x="0" y="84" width="555" height="62"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="e8125263-7e98-47e8-b5cc-e7c978010e2d" x="0" y="0" width="555" height="82"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="1fb55b48-f10b-4c8e-8915-e6dc9df73c8d" mode="Opaque" x="2" y="1" width="551" height="20" backcolor="#C0C0C0"/>
+				<textElement>
+					<font size="14" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Information]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="80f1b6cc-1ddd-4d38-a028-c09e269108ad" x="2" y="22" width="100" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Document ID :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="38ea1cf5-e206-4355-b2ed-74a807eebe1b" x="269" y="22" width="110" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Document Name :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5127aa6f-2279-4c6d-b592-cf8e48517ee9" x="2" y="42" width="100" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Accession No. :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cfa6ac88-18a3-4589-8369-5e081bb00273" x="269" y="42" width="110" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Diacritical Name :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="29a0a194-a79c-462b-968f-1594d83669a5" x="2" y="62" width="100" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bundle :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="22916f54-e5a0-4468-83c5-debf754a34d0" x="269" y="62" width="110" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vernacular Name :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="454739c7-eabc-429d-ba15-4c7120d7f3ee" mode="Opaque" x="0" y="85" width="553" height="20" backcolor="#C0C0C0"/>
+				<textElement>
+					<font size="14" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Work Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2445b20c-5332-408c-8e65-4488bb320c77" x="2" y="106" width="70" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Language :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ff625117-ee13-4e5f-90db-dfac1f743ad2" x="172" y="106" width="45" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Script :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8ce7b1bf-da6a-4d7b-9dfb-b23e86fe6461" x="286" y="106" width="93" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Subject :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="412d4ad8-1c9d-4387-8748-939c790b420f" x="2" y="126" width="70" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Material :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a058743b-736e-4a5b-bc2a-dd0b0ada8eb8" x="172" y="126" width="45" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Type :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8a8590d5-f9e9-407f-bb69-6c3c9ef9eedc" x="286" y="126" width="93" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Specific Category :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1c23b513-0b37-4abc-aae7-b24a0b528af5" mode="Opaque" x="2" y="149" width="264" height="18" backcolor="#C0C0C0"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Summary :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="08284136-9bc8-41a8-affc-217d19eed3e4" mode="Opaque" x="269" y="149" width="284" height="18" backcolor="#C0C0C0"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Table Of Contents :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2fe6ca28-3cb6-4e9c-8533-8dfc4c0898be" mode="Opaque" x="2" y="207" width="264" height="20" backcolor="#C0C0C0"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Authors:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ddd9d926-6ed7-4133-b60d-777c88669a67" mode="Opaque" x="269" y="207" width="284" height="20" backcolor="#C0C0C0"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Scribe:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ae355f76-9204-4c9c-9ba9-6626a63f3818" mode="Opaque" x="2" y="264" width="551" height="19" backcolor="#C0C0C0"/>
+				<textElement verticalAlignment="Top">
+					<font size="14" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Frames]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ead93f10-615d-4c45-b6eb-8adf94bc7837" mode="Opaque" x="2" y="448" width="551" height="20" backcolor="#C0C0C0"/>
+				<textElement verticalAlignment="Top">
+					<font size="14" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Subject Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bc7a8f63-a3db-493d-8930-d66f94082d55" x="2" y="468" width="100" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bound :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9ae348dc-1848-4a76-b6ab-7234a5c3c148" x="2" y="488" width="100" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Catalogue No. :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="002c8cd7-abf2-441a-a9fa-ebc4312a5542" x="2" y="508" width="100" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Digitized By. :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c8098422-d9c2-4709-956a-1e57ba927291" x="2" y="528" width="100" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Documentation :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a190bd7c-6a20-4077-bad9-62c01191ab16" x="2" y="548" width="100" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No Of Folies :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f7e61cd1-38da-4405-bb45-e7c38110370c" x="2" y="568" width="100" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Colophone :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5bea546f-e79d-4e6c-9fc7-213898142fd0" x="269" y="468" width="110" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Source Of Catalogue :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8b73f600-3cb7-465b-9b0f-8fb581a342c1" x="269" y="488" width="110" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Catalogue Details :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fbaa584f-a2aa-4fc1-9968-5d36c40e5b25" x="269" y="508" width="110" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No. Of Illustrations :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d0fee0d8-1d39-49f9-8c04-85dce262dbe0" x="269" y="528" width="110" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Begining Line :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dd0100f4-872c-4701-96ef-9b0df49ad132" x="269" y="548" width="110" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ending Line :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e8f91c55-9cc1-472e-a684-2b998f78767c" x="269" y="568" width="110" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Manuscript Condition:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d9bea6d9-2a61-4f6c-8f78-d1f80e748159" mode="Opaque" x="2" y="591" width="264" height="20" backcolor="#C0C0C0"/>
+				<textElement verticalAlignment="Top">
+					<font size="14" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Source Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ae766b6d-fd0d-4106-aca8-57861e5dcfc8" mode="Opaque" x="269" y="591" width="284" height="20" backcolor="#C0C0C0"/>
+				<textElement verticalAlignment="Top">
+					<font size="14" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Publication Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="185b2e1b-91cd-400e-8263-2dc278768e31" x="2" y="611" width="70" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cdf71359-bc20-4367-b155-029a00c0dd3c" x="2" y="631" width="70" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Address :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1071a0a4-795c-49d5-8482-c747ef81edce" x="269" y="611" width="70" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3bc760f0-18f0-4136-a4e0-1b6066e1b3ba" x="269" y="631" width="70" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Address :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0f4353dd-8812-44a2-9428-f88b4a6924b9" x="2" y="690" width="70" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Phone No.:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9aeb5173-d6f1-472f-baee-d978e71edcdb" x="2" y="710" width="70" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Email ID :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a1019c52-5cff-4ef1-8b76-a3b55b63474d" x="2" y="730" width="70" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Website :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ddd8f5a2-9892-49d5-b997-f90fb3876ab8" x="269" y="690" width="70" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Editer Name :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="01ff6a7d-4c38-40e8-97fc-df8871bd6cd8" x="269" y="710" width="70" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No Of Pages :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e56d59cc-9aaa-4433-93e1-b884c68799da" x="430" y="710" width="47" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Price :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c0efc6a9-f450-4868-91ed-469169293730" x="269" y="730" width="70" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Year :]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="592d6d06-37da-4269-9e06-da866c51807a" x="379" y="22" width="174" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="52d99b38-1dfe-424d-80be-df0911e44bae" x="379" y="42" width="174" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{diacritical_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="110f3709-b34d-47ad-9eac-10bdc0ae5399" x="379" y="62" width="174" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{regional_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="20f7a33e-c58c-435e-aec2-3c9f9b4143a4" x="102" y="42" width="164" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{acc_no}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="43af65b8-4e07-4df9-a15c-6665e1f1e7e1" x="102" y="22" width="164" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{manuscript_id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="eabff4ed-77e4-4c9a-bf92-60a15c30a706" x="72" y="106" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{languageName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a3601e0a-ebb7-4698-b9d6-0de0168ff00c" x="217" y="106" width="69" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{scriptName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b1e6aa63-bedc-47e9-a120-38e8203a59e6" x="72" y="126" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[($F{materialName}==2)?"Paper":($F{materialName}==1)?"Palm Leaf":($F{materialName}==3)?"BrichWood":"N/A"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="afa65680-b199-4c9e-ab5f-cdec7f00c23b" x="2" y="167" width="264" height="40"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{SUMMARY}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="965b7cc8-7cb2-4466-8f50-8e1f73b3440c" x="269" y="167" width="284" height="40"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{table_of_contents}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c3b51a0a-4d25-43ff-a496-4242b4a23465" x="379" y="528" width="174" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{beginning_line}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="58394aa3-35c0-4116-afe0-cbc7ac69f2a8" x="102" y="548" width="164" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{total_no_of_folios}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4c3b10b1-6255-461f-b0c0-637788de20ae" x="379" y="508" width="174" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{total_no_of_maps}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="907106ba-75b5-4ba4-8c18-46af641ace97" x="102" y="488" width="164" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{catalogue_no}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5539bbe6-514e-496e-b59f-62fae8d2b639" x="102" y="468" width="164" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{isbound}==0?"No":"Yes"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="820f0a1c-e19d-4ede-95a4-c11f696e9797" x="102" y="508" width="164" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{digitized_by}==null?"N/A":$F{digitized_by}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c26d6a8f-7e27-420a-89d6-e7b42ab0f2a5" x="102" y="528" width="164" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[($F{documentation_of_manuscript}==1)?"Complete":($F{documentation_of_manuscript}==2)?"Ongoing":"N/A"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6105e322-bf72-4a9d-88d7-0f5e263f2dfb" x="102" y="568" width="164" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{colophon}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="61207389-3fc8-4b55-b86a-88bc5a3e049c" x="379" y="548" width="174" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ending_line}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6a202d48-6047-4669-82ae-925b1a7dc429" x="379" y="468" width="174" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[($F{source_of_catalogue}==1)?"Descriptive":($F{source_of_catalogue}==2)?"Handllist":($F{source_of_catalogue}==3)?"Triennial":($F{source_of_catalogue}==4)?"Alphabetical":"N/A"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="319102e6-3334-492f-b8ca-c96970fb0b0f" x="379" y="488" width="174" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cataloguedetails}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1554c7e9-70ab-40c3-9e02-71b558119e29" x="379" y="568" width="174" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[($F{condition_of_manuscript}==1)?"Good":($F{condition_of_manuscript}==2)?"Bad":($F{condition_of_manuscript}==3)?"Brittle":"N/A"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb1cca15-71ef-43c7-af1d-e4f8802bb075" x="72" y="611" width="194" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{orgName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c2d78bde-7fda-4bc0-a44b-ac0a35301729" x="72" y="631" width="194" height="59"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{orgAddress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e2ff174f-bf35-4d11-850f-0a0d775201b6" x="72" y="710" width="194" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="100252a4-e9ab-4eb7-83ec-f93074db89bb" x="72" y="690" width="194" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{phoneNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ec7fd778-e55b-4efd-8592-839e2d0a65a0" x="72" y="730" width="194" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{website}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0d098150-682f-4b4d-8e67-4141ccddfde7" x="339" y="611" width="214" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{publisherName}==null?"N/A":$F{publisherName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0d88a5b8-c8d7-4675-98d9-2243257cfe4f" x="339" y="631" width="214" height="59"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{publisherAddress}==null?"N/A":$F{publisherAddress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9ced4857-695d-430a-87fa-7ac7237631d4" x="339" y="690" width="214" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{editorName}==null?"N/A":$F{editorName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="427947e2-2a35-4150-829a-c01d5d096ded" x="339" y="710" width="91" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{NO_OF_PAGES}==null?"N/A":$F{NO_OF_PAGES}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="920a80a8-04c5-4009-9999-625cd108b169" x="339" y="730" width="91" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{YEAR_OF_PUBLICATION}==null?"N/A":$F{YEAR_OF_PUBLICATION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b28cbb6b-0d5e-443c-9cc5-05c4941ee38c" x="477" y="710" width="76" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{PRICE}==null?"N/A":$F{PRICE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="397daaab-99f8-4cf1-8746-24d1e709ddd9" x="2" y="227" width="264" height="33"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{Author}==null?"N/A":$F{Author}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6a26cc0c-e135-45b2-a537-1967bb967532" x="269" y="227" width="284" height="33"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{scribName}==null?"N/A":$F{scribName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="28c5620a-c539-42fd-a395-0107fcdcd1e0" x="102" y="62" width="164" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{bundleName}==null?"N/A":$F{bundleName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f63473fc-80ab-4820-aaa1-63422a15e25e" x="379" y="106" width="174" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{categoryName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a7620786-294f-4864-9e8a-ac17108dc308" x="217" y="126" width="69" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[($F{TYPE_OF_WORK}==1)?"Poetry":($F{TYPE_OF_WORK}==2)?"Prose":($F{TYPE_OF_WORK}==3)?"Poem And Prose":($F{TYPE_OF_WORK}==4)?"Compendium":"N/A"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c6e6d421-484d-48a8-a31a-62977e2cec2b" x="379" y="126" width="174" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{specificcategory}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="462302a1-4d29-4c81-a87d-8068efc97dc7" x="0" y="283" width="553" height="162"/>
+				<subreportParameter name="imagePath">
+					<subreportParameterExpression><![CDATA[$P{filePath}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="parentid">
+					<subreportParameterExpression><![CDATA[$F{Id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement uuid="43d6bf13-47b3-43eb-8551-f7dd45dee035" x="435" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="72dc09b0-4b7f-40d4-b967-cc1a11150d94" x="515" y="0" width="40" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

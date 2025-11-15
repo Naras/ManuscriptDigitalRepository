@@ -79,14 +79,14 @@ a {
 	}
 	
 	.image-container { 
-		padding-top: 5px;
+		/* padding-top: 5px; */
 		padding-left: 5px;
-		height:63%;
+		height:10%;
 	}
 	.tag-container {
 	padding-top: 5px;
 		padding-left: 5px;
-		height:37%;
+		height:26%;
 	}
 	
 	.tag-field .col-1 {
@@ -164,7 +164,7 @@ a {
 	
 	.frame-container {
 		background-color: #222;
-		height: 50%;
+		height: 85%;
 		width: 100%;
 		overflow: hidden;
 	}

@@ -198,9 +198,7 @@ public class MenuInfoDAOImpl extends GenericBaseCRUDDAOImpl<MenuMasterBean> {
 			
 			List<AccessControlBean> menuForRole = new ArrayList<AccessControlBean>();
 			menuForRole = getMenusForRole(session, id);
-
 			getMapPrivilegeForRole(session,root, IndvenApplicationConstants.EPM_HIERARCHY_ROOT_ID, menuForRole);
-
 			return root;
 
 		} catch (MenuInfoException mie) {
@@ -211,6 +209,7 @@ public class MenuInfoDAOImpl extends GenericBaseCRUDDAOImpl<MenuMasterBean> {
 	
 	@SuppressWarnings("unchecked")
 	public List<AccessControlBean> getMenusForRole(Session session, Long id) {
+//            System.out.println("MenuInfoDAOImpl.getMenusForRole: select * from omds_accesscontrol ac where ac.RoleMasterFkId =" + id.longValue());
 		List<AccessControlBean> accessControlBeans = new ArrayList<AccessControlBean>();
 		try {
 			accessControlBeans = session.createSQLQuery("select * from omds_accesscontrol ac where ac.RoleMasterFkId =" + id.longValue())

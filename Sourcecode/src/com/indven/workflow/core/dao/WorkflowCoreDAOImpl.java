@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -29,6 +30,7 @@ import com.indven.framework.util.HibernateUtil;
 import com.indven.framework.util.IndvenApplicationConstants;
 import com.indven.omds.assembler.DigitalManuscriptAssembler;
 import com.indven.omds.entity.DigitalManuscriptBean;
+import com.indven.omds.entity.ManuscriptAuthorMapperBean;
 import com.indven.omds.exception.OMDPCoreException;
 import com.indven.omds.util.DocumentStatusEnum;
 import com.indven.omds.util.ManuscriptTypeEnum;
@@ -685,6 +687,7 @@ public class WorkflowCoreDAOImpl {
 			query = session.createQuery("select manBean from DigitalManuscriptBean manBean where id = :manuscriptId");
 			query.setParameter("manuscriptId", referenceProjectId);
 			DigitalManuscriptBean dmbean = (DigitalManuscriptBean) query.uniqueResult();
+			Hibernate.initialize(dmbean.getAuthorMapperList());
 			
 			
 			
@@ -712,6 +715,15 @@ public class WorkflowCoreDAOImpl {
 				if(dmbean.getManuscriptType().equals(ManuscriptTypeEnum.Original)) {
 					DigitalManuscriptBean transcribedBean = new DigitalManuscriptBean();				
 					DigitalManuscriptAssembler.copyObjToNewState(transcribedBean, dmbean);
+					List<ManuscriptAuthorMapperBean> autherMapperList = new ArrayList<>();
+					ManuscriptAuthorMapperBean newAuthorBean ;
+					for(ManuscriptAuthorMapperBean authorBean:dmbean.getAuthorMapperList()){
+						newAuthorBean = new ManuscriptAuthorMapperBean();
+						newAuthorBean.setAuthorFkId(authorBean.getAuthorFkId());
+						newAuthorBean.setManuscriptFkObj(transcribedBean);
+						autherMapperList.add(newAuthorBean);
+					}
+					transcribedBean.setAuthorMapperList(autherMapperList);
 					session.save(transcribedBean);
 				}
 			}

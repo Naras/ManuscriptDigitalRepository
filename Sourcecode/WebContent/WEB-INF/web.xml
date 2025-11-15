@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
-  <display-name>OMDS</display-name>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>MDRScience</display-name>
   <welcome-file-list>
     <welcome-file>jsp/landingpage.jsp</welcome-file>
   </welcome-file-list>
@@ -13,14 +13,13 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
   <servlet>
-<servlet-name>ImageServlet</servlet-name>
-<servlet-class>
+    <servlet-name>ImageServlet</servlet-name>
+    <servlet-class>
 net.sf.jasperreports.j2ee.servlets.ImageServlet
 </servlet-class>
-</servlet>
-
-<servlet-mapping>
-<servlet-name>ImageServlet</servlet-name>
-<url-pattern>/image</url-pattern>
-</servlet-mapping>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ImageServlet</servlet-name>
+    <url-pattern>/image</url-pattern>
+  </servlet-mapping>
 </web-app>

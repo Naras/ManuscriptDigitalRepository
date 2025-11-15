@@ -171,8 +171,7 @@ public class UserLoginDetailsBean extends BaseEntityBean{
 		this.isDeleted = isDeleted;
 	}
 	
-        public String toString() {
-            return ("login id "+ loginId + " pw " + password + " status " + status + " RefrenceFkid " + refrenceFkId); 
+	public String toString(){
+            return "id:" + loginId + " refrenceFkId:" + refrenceFkId + " isDeleted " + isDeleted;
         }
-	
 }

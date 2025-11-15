@@ -275,7 +275,6 @@ public class RoleMasterDAOImpl extends BaseCRUDDAOImpl<RoleMasterBean>{
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
 			tx = session.beginTransaction();
-			userRoleDetailsBeans = session.createQuery("from UserRoleDetailsBean role").list();
 			userRoleDetailsBeans = session.createQuery("from UserRoleDetailsBean role where role.userLoginDetailsFkId =" + id.longValue()).list();
 			tx.commit();
 		} catch (HibernateException e) {

@@ -24,7 +24,7 @@
 		<%@include file='../layout/staticheader.jsp' %>
 	</s:if> --%>
 	<br>
-		<div class="container container-center" style="max-width: 990px">
+		<div class="container container-center" style="max-width: 990px; margin-left: 190px;">
 			<%-- <div class="imageContainer">
 				<img src="<%=request.getContextPath()%>/assets/images/carousel/img1.png" alt="Image">
 			</div> --%>
@@ -33,7 +33,7 @@
 	  <div class="panel panel-info">
 	    <div class="panel-heading">
 	      <h4 class="panel-title">
-	        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Manuscript</a>
+	        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Document</a>
 	      </h4>
 	    </div>
 	    <div id="collapseOne" class="panel-collapse collapse">
@@ -42,7 +42,7 @@
 				  <div class="panel panel-default">
 				    <div class="panel-heading">
 				      <h4 class="panel-title">
-				        <a data-toggle="collapse" data-parent="#accordion1" href="#collapseOne1">How to add a Manuscript?</a>
+				        <a data-toggle="collapse" data-parent="#accordion1" href="#collapseOne1">How to add a Document?</a>
 				      </h4>
 				    </div>
 				    <div id="collapseOne1" class="panel-collapse collapse">
@@ -54,21 +54,21 @@
 				  <div class="panel panel-default">
 				    <div class="panel-heading">
 				      <h4 class="panel-title">
-				        <a data-toggle="collapse" data-parent="#accordion1" href="#collapseOne2">How to update a Manuscript?</a>
+				        <a data-toggle="collapse" data-parent="#accordion1" href="#collapseOne2">How to update a Document?</a>
 				      </h4>
 				    </div>
 				    <div id="collapseOne2" class="panel-collapse collapse">
 				      <div class="panel-body">
 				      
 				       <div>
-				<img style="border:5px solid #F9F8F6;border-radius:15px;width: 100% ;" alt="" src="/WEB-INF/assets/images/slider/searchmanuscript.png">
+				<!-- <img style="border:5px solid #F9F8F6;border-radius:15px;width: 100% ;" alt="" src="/OMDS/assets/images/slider/searchmanuscript.png"> -->
 				<p class="dropcap" style="font-size: 14px; font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: 500; text-align: justify; line-height: 150%; 
 						">
 						
-					1: Click on Manuscript -> Search. Then you will get the manuscript search screen.<br>
-					2: Fill the desired criteria and click on Search button to get the related manuscripts. You can click on FindAll button also to get all the
-						manuscript records.<br>
-					3: Click on the update image and you will get the manuscript details in the manuscript form.<br>
+					1: Click on Document -> Search. Then you will get the document search screen.<br>
+					2: Fill the desired criteria and click on Search button to get the related documents. You can click on FindAll button also to get all the
+						document records.<br>
+					3: Click on the update image and you will get the document details in the document form.<br>
 					4: Edit the form to update the field you want and Submit.<br>
 				</p>
 
@@ -80,12 +80,18 @@
 				  <div class="panel panel-default">
 				    <div class="panel-heading">
 				      <h4 class="panel-title">
-				        <a data-toggle="collapse" data-parent="#accordion1" href="#collapseOne3">How to delete a Manuscript?</a>
+				        <a data-toggle="collapse" data-parent="#accordion1" href="#collapseOne3">How to delete a Document?</a>
 				      </h4>
 				    </div>
 				    <div id="collapseOne3" class="panel-collapse collapse">
 				      <div class="panel-body">
-				        <p>CSS stands for Cascading Style Sheet. CSS allows you to specify various style properties for a given HTML element such as colors, backgrounds, fonts etc.</p>
+				       <p class="dropcap" style="font-size: 14px; font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: 500; text-align: justify; line-height: 150%;">
+					1: Click on Document -> Search. Then you will get the document search screen.<br>
+					2: Fill the desired criteria and click on Search button to get the related documents. You can click on FindAll button also to get all the
+						document records.<br>
+					3: Click on the delete image and you will get popup to confirmation of deletion.<br>
+					4: Click on ok button to delete the record.<br>
+				</p>
 				      </div>
 				    </div>
 				  </div>

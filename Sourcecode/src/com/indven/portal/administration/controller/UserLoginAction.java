@@ -140,6 +140,7 @@ public class UserLoginAction extends BaseAction {
 				
 				//Save the header menu for user to session
 				menusForCurrentRole = new MenuInfoServiceImpl().getActiveMenuPrivilegeForRole(userInfoVO.getRoleMasterFkId());
+//              System.out.println("UserLoginAction.validateLogin: userInfoVO:"+userInfoVO.toString());
 				super.getRequest().getSession().setAttribute("headerMenu", menusForCurrentRole);
 				
 				//Adding user and session data to list of active sessions
@@ -179,9 +180,9 @@ public class UserLoginAction extends BaseAction {
 	public String getMenuForSelectedRole() {
 		String status = ERROR;
 		MenuMasterVO menusForCurrentRole = new MenuMasterVO();
-		
 		try {
 			menusForCurrentRole = new MenuInfoServiceImpl().getActiveMenuPrivilegeForRole(userRoleId);
+//          System.out.println("UserLoginAction.getMenuForSelectedRole userRoleId:" + userRoleId.toString());
 			super.getRequest().getSession().setAttribute("currentRole", userRoleId);
 			
 			
@@ -192,6 +193,7 @@ public class UserLoginAction extends BaseAction {
 			 
 			 
 			super.getRequest().getSession().setAttribute("headerMenu", menusForCurrentRole);
+//   System.out.println("UserLoginAction.getMenuForSelectedRole menusForCurrentRole:" + menusForCurrentRole.toString());
 			
 			isReloadMenu = (short)0;
 			status = SUCCESS;
@@ -223,6 +225,7 @@ public class UserLoginAction extends BaseAction {
 			super.getRequest().getSession().setAttribute("currentRole", userRoleId);
 			super.getRequest().getSession().setAttribute("headerMenu", menusForCurrentRole);
 			
+//                        System.out.println("UserLoginAction.getDefaultMenuForGuest menusForCurrentRole=" + menusForCurrentRole.toString());
 			status = SUCCESS;
 		} catch (MenuInfoException e) {
 			menusForCurrentRole = new MenuMasterVO();
@@ -308,7 +311,7 @@ public class UserLoginAction extends BaseAction {
 	 * @return  success or failure string.
 	 * 
 	 */
-	public String resetPassword() {System.out.println("at resetPassword 0");
+	public String resetPassword() {
 		
 //		IndvenResultVO  ehrmsResultVO = new IndvenResultVO();
 //		try{
@@ -337,18 +340,17 @@ public class UserLoginAction extends BaseAction {
 		try{
 		
 			UserLoginDetailsServiceImpl userServiceImpl = new UserLoginDetailsServiceImpl();
-			System.out.println("at resetPassword 1");
+			
 			int result = userServiceImpl.resetPassword(userInfoVO);
-			System.out.println("at resetPassword 2");
 	
-			if(result==1){System.out.println("at resetPassword success");
+			if(result==1){
 				addActionMessage(IndvenMessageResolver.resolveMessage(AdministrationException.SAVE_RESET_PASSWORD, IndvenApplicationConstants.LOCALE));
 				status=SUCCESS;
-			}else if(result==0){System.out.println("at resetPassword failure");
+			}else if(result==0){
 				addActionError(IndvenMessageResolver.resolveMessage(AdministrationException.UNABLE_TO_RESET_USER_PASSWORD, IndvenApplicationConstants.LOCALE));
 				status = ERROR;
 			}
-		} catch (AdministrationException e) {System.out.println("at resetPassword error");
+		} catch (AdministrationException e) {
 			IndvenResultVO  resultVO = new IndvenResultVO();
 			new IndvenExceptionMessageResolver().resolveMessage(resultVO, e, IndvenApplicationConstants.LOCALE);
 			addActionError(resultVO.getMessage());

@@ -4,6 +4,7 @@
 package com.indven.omds.vo;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.indven.framework.util.IndvenApplicationConstants;
@@ -111,7 +112,7 @@ public class BundleMasterVO  extends IndvenResultVO implements GenericSearch {
 
 	@Override
 	public Map<String, String> getLabelDisplayMap() {
-		Map<String, String> returnMap = new HashMap<String, String>();
+		Map<String, String> returnMap = new LinkedHashMap<String, String>();
 		returnMap.put("Bundle Name" , "name");
 		returnMap.put("Bundle No:" , "bundleNo");
 		return returnMap;

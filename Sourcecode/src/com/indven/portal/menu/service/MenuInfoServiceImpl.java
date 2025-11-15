@@ -121,7 +121,7 @@ public class MenuInfoServiceImpl {
 	public List<AccessControlBean> createAccessControlBean(String menuNumber, Long roleFkId) throws IOException, JSONException, Exception {
 		
 		JSONArray jsonArray = null;
-		System.out.println(roleFkId);
+//		System.out.println("createAccessControlBean - role:" + roleFkId);
 		List<AccessControlBean> accessControlBeans = new ArrayList<AccessControlBean>();
 		
 		jsonArray = new JSONArray(menuNumber);

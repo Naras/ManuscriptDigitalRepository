@@ -8,15 +8,15 @@
 			<%@ include file='../messagecontainer.jsp' %>
 			
 			<h2 class="form-heading">
-				Search Manuscripts
+				Search Documents
 			</h2>
 			<s:form action="searchForDerivedWork" name="searchform">
 				<div class="form-group row">
-					<label class="col-xs-3 control-label">Manuscript ID</label>
+					<label class="col-xs-3 control-label">Document ID</label>
 					<div class="col-xs-3">
 						<s:textfield name="digitalManuscriptVO.manuscriptId" maxlength="50" cssClass="form-control" id="manuscriptId"/>
 					</div>
-					<label class="col-xs-3 control-label">Manuscript Name</label>
+					<label class="col-xs-3 control-label">Document Name</label>
 					<div class="col-xs-3">
 						<s:textfield name="digitalManuscriptVO.name" maxlength="50" cssClass="form-control" id="manuscriptName"/>
 					</div>
@@ -96,10 +96,14 @@
 						<%-- <s:text name="((selectedPage-1)*10)+1"></s:text> &nbsp-
 						<s:if test="selectedPage*10 <= totalRecords">
 						<s:text name="selectedPage*10"></s:text></s:if><s:else><s:text name="totalRecords"></s:text></s:else> --%>
-						<input type="button" onclick="nextPrevious(1);" style="background-image: url('./assets/images/last.png');" class="searchbutton"/>
+						<span class="glyphicon glyphicon-backward next-previous" onclick="nextPrevious(1);"></span>
+						<span class="glyphicon glyphicon-chevron-left next-previous" onclick="nextPrevious(2);"></span>
+						<span class="glyphicon glyphicon-chevron-right next-previous" onclick="nextPrevious(3);"></span>
+						<span class="glyphicon glyphicon-forward next-previous" onclick="nextPrevious(4);"></span>
+						<!-- <input type="button" onclick="nextPrevious(1);" style="background-image: url('./assets/images/last.png');" class="searchbutton"/>
 						<input type="button" onclick="nextPrevious(2);" style="background-image: url('./assets/images/previous.png');" class="searchbutton"/>
 						<input type="button" onclick="nextPrevious(3);" style="background-image: url('./assets/images/next.png');" class="searchbutton"/>
-						<input type="button" onclick="nextPrevious(4);" style="background-image: url('./assets/images/lastr.png');" class="searchbutton"/>
+						<input type="button" onclick="nextPrevious(4);" style="background-image: url('./assets/images/lastr.png');" class="searchbutton"/> -->
 						</div>
 						<label class="col-xs-3 control-label" style="width : 20%;">Show page No:</label>
 						<div class="col-xs-3" style="width:10%;">

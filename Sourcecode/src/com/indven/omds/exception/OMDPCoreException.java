@@ -68,6 +68,8 @@ public class OMDPCoreException extends FrameworkException {
 	public static final String UNABLE_TO_PROCESS_THE_RECORD = "omds.generic.image.0001";
 	
 	public static final String UNABLE_TO_SAVE_COMMENT = "omds.document.comments.0001";
+	public static final String UNABLE_TO_FIND_FRAME_COUNT = "omds.core.frame.0001";
+	public static final String UNABLE_TO_UPLOAD_PDF = "omds.core.pdfupload.0001";
 	
 	
 }

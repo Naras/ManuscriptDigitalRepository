@@ -104,7 +104,7 @@ public class EmployeeMasterAction extends BaseAction {
 	 * Saves new employee data or updates existing employee data
 	 * @return
 	 */
-	public String addUpdateEmployee()  {System.out.println("addUpdate employee method");
+	public String addUpdateEmployee()  {
 		
 		EmployeeMasterServiceImpl employeeMasterServiceImpl = new EmployeeMasterServiceImpl();
 		String status = ERROR;
@@ -184,7 +184,7 @@ public class EmployeeMasterAction extends BaseAction {
 		return status;
 	}
 	
-	public String deleteEmployeeDetails() {System.out.println("delete employee method");
+	public String deleteEmployeeDetails() {
 		String status = ERROR;
 		try {
 			Long id = Long.parseLong(getRequest().getParameter("id"));

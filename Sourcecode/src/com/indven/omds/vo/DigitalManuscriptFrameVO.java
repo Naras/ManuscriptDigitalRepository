@@ -8,6 +8,7 @@ public class DigitalManuscriptFrameVO {
 
 	private DigitalDocumentVO documentVO;
 	private Short isLast=0;
+	private Long frameOrder;
 	
 	public Long getId() {
 		return id;
@@ -44,6 +45,18 @@ public class DigitalManuscriptFrameVO {
 	 */
 	public void setIsLast(Short isLast) {
 		this.isLast = isLast;
+	}
+	/**
+	 * @return the frameOrder
+	 */
+	public Long getFrameOrder() {
+		return frameOrder;
+	}
+	/**
+	 * @param frameOrder the frameOrder to set
+	 */
+	public void setFrameOrder(Long frameOrder) {
+		this.frameOrder = frameOrder;
 	}
 
 }

@@ -13,15 +13,16 @@ package com.indven.framework.util;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import com.indven.framework.entity.BaseEntityBean;
 import com.indven.portal.administration.vo.UserInfoVO;
 import com.opensymphony.xwork2.ActionContext;
+import com.indven.framework.logging.IndvenLogger;
 
 /**
  * This Class will be use to convert value object to Entity and vice-versa for a given project
@@ -32,6 +33,8 @@ import com.opensymphony.xwork2.ActionContext;
  * 
  */
 public class CustomBeanUtil {
+	private static IndvenLogger logger = IndvenLogger
+            .getInstance(CustomBeanUtil.class);
 
 	public static Object voToEntity(Object valueObject, Object entity) {
 		try {
@@ -133,7 +136,9 @@ public class CustomBeanUtil {
 	}
 	
 	public static String formatImageName(String imageName) {
-		String imageExt = imageName.split("\\.")[1];
+		imageName = imageName.replaceAll(" ","-");
+		logger.debug("image name============================= "+imageName);
+		/* String imageExt = imageName.split("\\.")[1];
 		
 		String naemBeforeExt = imageName.split("\\.")[0];
 		String img = "";
@@ -149,9 +154,13 @@ public class CustomBeanUtil {
 			
 		} else {
 			img = convertString(imageName.split("\\.")[0] , (imageName.split("\\.")[0]).length());
-		}
-		
-		return img+"."+imageExt;
+		} */
+                String img; String imageExt;
+                int dotIndex = imageName.lastIndexOf(".");
+                if (dotIndex ==-1) {img = imageName; imageExt = "";}
+                else {img = imageName.substring(0,dotIndex); imageExt = imageName.substring(dotIndex + 1);};
+		logger.debug("image name=====after formatinng "+img+"."+imageExt.trim());
+		return img+"."+imageExt.trim();
 	}
 	
 	private static String convertString(String str,int length) {
@@ -174,8 +183,41 @@ public class CustomBeanUtil {
 			}
 		}
 		subStr = srtP2.toString() + str;
-		System.out.println(subStr);
+		//logger.debug(subStr);
 		return subStr;
+	}
+
+	public static List<Long> convertCommaSeparatedStringToLongTypeList(String commaSeparatedString){
+		List<Long> idsList = new ArrayList<Long>();
+		if (StringUtils.isNotBlank(commaSeparatedString)) {
+
+			String[] pathaArray = commaSeparatedString.split(",");
+			for (int i=0;i<pathaArray.length;i++) {
+				idsList.add(Long.valueOf(pathaArray[i].trim()));
+				//logger.debug("patha ids "+pathaIds);
+			}
+
+		}
+		return idsList;
+
+	}
+	
+	public static List<String> convertCommaSeparatedStringToList(String commaSeparatedString){
+		List<String> convertedList = new ArrayList<String>();
+		if (StringUtils.isNotBlank(commaSeparatedString)) { 
+			String[] commaseparatedStringArray =  org.apache.commons.lang3.StringUtils.split(commaSeparatedString,","); 
+			//logger.debug("commaseparatedStringArray "+commaseparatedStringArray.length);
+			for (int i=0;i<commaseparatedStringArray.length;i++) {
+				convertedList.add(commaseparatedStringArray[i].trim());
+			} 
+		}
+		return convertedList;
+
+	}
+
+	public static String getValueFromStringStringHashMap(HashMap<String,String> stringStringHashMap, String key){
+		String keyValue = stringStringHashMap.containsKey("NAME")?stringStringHashMap.get("NAME"):"";
+		return keyValue;
 	}
 	
 }

@@ -1,4 +1,4 @@
-<html>
+<html> 
 	<%@ include file='../layout/header.jsp' %>
 	<style>
 	.btn-state-1, .btn-state-2 {
@@ -24,125 +24,122 @@
     	resize: vertical;
    	}
 	</style>
-	<link
-	href="${pageContext.servletContext.contextPath}/assets/css/jquery.ime.css"
-	rel="stylesheet" />
-<link
-	href="${pageContext.servletContext.contextPath}/assets/css/jquery-ui-1.10.4.custom.min.css"
-	rel="stylesheet" />
-<link
-	href="${pageContext.servletContext.contextPath}/assets/css/jquery-ui.css"
-	rel="stylesheet" />
-	<div class="container container-center alert alert-success appTable" style="max-width: 60%;">
+	<link href="${pageContext.servletContext.contextPath}/assets/css/jquery.ime.css" rel="stylesheet" />
+	<link href="${pageContext.servletContext.contextPath}/assets/css/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" />
+	<link href="${pageContext.servletContext.contextPath}/assets/css/jquery-ui.css" rel="stylesheet" />
+
+	<div class="container container-center" style="max-width: 90%;margin-left: 220px;">
+	<div class="alert alert-success appTable centerdiv">
 		<div class="form">
 			<div class="alert alert-danger hide" id="msg-container"></div>
 			<%@ include file='../messagecontainer.jsp' %>
 			
 			<h2 class="form-heading">
-				Advanced Search For Manuscripts
+			Search Documents for Editing
 			</h2>
 			<s:form action="searchForManuscript" name="searchform" id="searchForm">
-				<div class="form-group row">
-					<label class="col-xs-3 control-label">Manuscript ID</label>
-					<div class="col-xs-3">
+				<div class="form-group row" style="margin-bottom: 0px;">
+					<label class="col-xs-2 control-label">Document ID</label>
+					<div class="col-xs-4">
 						<s:textfield name="digitalManuscriptVO.manuscriptId" maxlength="50" cssClass="form-control" id="manuscriptId"/>
 					</div>
-					<label class="col-xs-3 control-label">Manuscript Name</label>
-					<div class="col-xs-3">
+					<label class="col-xs-2 control-label">Document Name</label>
+					<div class="col-xs-4">
 						<s:textfield name="digitalManuscriptVO.name" maxlength="50" cssClass="form-control" id="manuscriptName"/>
 					</div>
 				</div>
-				<div class="form-group row">
-					<label class="col-xs-3 control-label">Author Name</label>
-					<div class="col-xs-3">
-						<s:textfield name="digitalManuscriptVO.authorVO.name" maxlength="50" cssClass="form-control" id="authorName"/>
+				<div class="form-group row" style="margin-bottom: 0px;">
+				<label class="col-xs-2 control-label">Subject</label>
+					<div class="col-xs-4">
+						<s:select headerKey="-1" headerValue="Unselected" value="digitalManuscriptVO.categoryFkId" list="categoryVOs" required="true" id="categoryFkId"
+										name="digitalManuscriptVO.categoryFkId" listKey="id" listValue="name" cssClass="form-control"/>
 					</div>
-					<label class="col-xs-3 control-label">Source Name</label>
-					<div class="col-xs-3">
+					<label class="col-xs-2 control-label">Source Name</label>
+					<div class="col-xs-4">
 						<s:textfield name="digitalManuscriptVO.organisationVO.name" maxlength="50" cssClass="form-control" id="organisationName"/>
 					</div>
 				</div>
-				<div class="form-group row">
-					<label class="col-xs-3 control-label">Document Type</label>
-					<div class="col-xs-3">
+				<div class="form-group row" style="margin-bottom: 0px;">
+					<label class="col-xs-2 control-label">Document Type</label>
+					<div class="col-xs-4">
 						<s:select headerKey="-1" headerValue="Unselected" value="digitalManuscriptVO.documentType" list="documentTypes" required="true" id="documentType"
 										name="digitalManuscriptVO.documentType" listKey="value" listValue="label" cssClass="form-control"/>
 					</div>
-					<label class="col-xs-3 control-label">Type Of Work</label>
-					<div class="col-xs-3">
+					<label class="col-xs-2 control-label">Type Of Work</label>
+					<div class="col-xs-4">
 						<s:select value="digitalManuscriptVO.typeOfWork" list="manuscriptWorkTypes" required="true" id="typeOfWork"
 										name="digitalManuscriptVO.typeOfWork" cssClass="form-control"/>
 					</div>
 				</div>
-				<div class="form-group row">
-					<label class="col-xs-3 control-label">Language</label>
-					<div class="col-xs-3">
+				<div class="form-group row" style="margin-bottom: 0px;">
+					<label class="col-xs-2 control-label">Language</label>
+					<div class="col-xs-4">
 						<s:select headerKey="-1" headerValue="Unselected" value="digitalManuscriptVO.languageFkId" list="languageVOs" required="true" id="languageFkId"
 										name="digitalManuscriptVO.languageFkId" listKey="id" listValue="name" cssClass="form-control"/>
 					</div>
-					<label class="col-xs-3 control-label">Script</label>
-					<div class="col-xs-3">
+					<label class="col-xs-2 control-label">Script</label>
+					<div class="col-xs-4">
 						<s:select headerKey="-1" headerValue="Unselected" value="digitalManuscriptVO.scriptFkId" list="scriptVOs" id="scriptFkId"
 										name="digitalManuscriptVO.scriptFkId" listKey="id" listValue="name" cssClass="form-control"/>
 					</div>
 				</div>
 				
-				<div class="form-group row">
-					<label class="col-xs-3 control-label">Workflow Status</label>
-					<div class="col-xs-3">
+				<div class="form-group row" style="margin-bottom: 0px;">
+					<label class="col-xs-2 control-label">Workflow Status</label>
+					<div class="col-xs-4">
 						<s:select value="digitalManuscriptVO.recordStatus" list="documentStatusList" 
 									required="true" id="documentStatusList" name="digitalManuscriptVO.recordStatus" cssClass="form-control"/>
 					</div>
 					
-					<label class="col-xs-3 control-label">Document Category</label>
-					<div class="col-xs-3">
+					<label class="col-xs-2 control-label">Document Category</label>
+					<div class="col-xs-4">
 						<s:select value="digitalManuscriptVO.manuscriptType" list="recordStatusList" 
 									required="true" id="recordStatusList" name="digitalManuscriptVO.manuscriptType" cssClass="form-control"/>
 					</div>
 				</div>
 				
-				<div class="form-group row">
-					<label class="col-xs-3 control-label">Having Content...</label>
-					<div class="col-xs-3">
+				<div class="form-group row" style="margin-bottom: 0px;">
+					<label class="col-xs-2 control-label">Having Content...</label>
+					<div class="col-xs-4">
 						<s:textfield name="digitalManuscriptVO.summary" maxlength="50" cssClass="form-control" id="summary"/>
 					</div>
-					<label class="col-xs-3 control-label">Manuscript Status</label>
-					<div class="col-md-3">
+					<label class="col-xs-2 control-label">Document Status</label>
+					<div class="col-md-4">
 						 <s:select list="manuscriptDocumentationTypes" cssClass="form-control"
 				              name="digitalManuscriptVO.documentationOfManuscript" autoComplete="false" maxlength="50"/>
 					 </div>
 				</div>
 				
-				<div class="form-group row">
-					<label class="col-xs-3 control-label">Beginning Line</label>
-					<div class="col-xs-3">
-						<s:textfield name="digitalManuscriptVO.beginningLine" maxlength="50" cssClass="form-control" id="beginningLine"/>
+				<div class="form-group row" style="margin-bottom: 0px;">
+					<label class="col-xs-2 control-label">Beginning Line</label>
+					<div class="col-xs-4">
+						<s:textfield name="digitalManuscriptVO.beginningLine" maxlength="50" cssClass="form-control" id="beginningLine" placeholder="Multilingual field.."/>
 					</div>
-					<label class="col-xs-3 control-label">Ending Line</label>
-					<div class="col-md-3">
-						<s:textfield name="digitalManuscriptVO.endingLine" maxlength="50" cssClass="form-control" id="endingLine"/>
+					<label class="col-xs-2 control-label">Ending Line</label>
+					<div class="col-md-4">
+						<s:textfield name="digitalManuscriptVO.endingLine" maxlength="50" cssClass="form-control" id="endingLine" placeholder="Multilingual field.."/>
 					 </div>
 				</div>
 				
-				<div class="form-group row">
-					<label class="col-xs-3 control-label">Minimum Folios</label>
-					<div class="col-xs-3">
+				<div class="form-group row" style="margin-bottom: 0px;">
+					<label class="col-xs-2 control-label">Minimum Folios</label>
+					<div class="col-xs-4">
 						<s:textfield name="digitalManuscriptVO.minimumFolios" maxlength="50" cssClass="form-control" id="minFolios"/>
 					</div>
-					<label class="col-xs-3 control-label">Maximum Folios</label>
-					<div class="col-md-3">
+					<label class="col-xs-2 control-label">Maximum Folios</label>
+					<div class="col-md-4">
 						<s:textfield name="digitalManuscriptVO.maximunFolios" maxlength="50" cssClass="form-control" id="maxFolios"/>
 					 </div>
 				</div>
 				
-				<div class="form-group row">
-					<label class="col-xs-3 control-label">Subject</label>
-					<div class="col-xs-3">
-						<s:select headerKey="-1" headerValue="Unselected" value="digitalManuscriptVO.categoryFkId" list="categoryVOs" required="true" id="categoryFkId"
-										name="digitalManuscriptVO.categoryFkId" listKey="id" listValue="name" cssClass="form-control"/>
+				<div class="form-group row" style="margin-bottom: 0px;">
+					<label class="col-xs-2 control-label">Author</label>
+					<div class="col-xs-4">
+						 <s:select list="authorList" required="true" id="authorId"
+										name="digitalManuscriptVO.authorId" listKey="id" listValue="name" cssClass="form-control" multiple="true"/>
 					</div>
-					<label class="col-xs-3 control-label">Specific Category</label>
-					<div class="col-md-3">
+					<label class="col-xs-2 control-label">Specific Category</label>
+					<div class="col-md-4">
 						  <s:select list="specificCategoryVOs" required="true" id="specificCategoryId"
 										name="digitalManuscriptVO.specificCategoryId" listKey="id" listValue="name" cssClass="form-control" multiple="true"/>
 					 </div>
@@ -155,10 +152,14 @@
 				<div class="form-group row buttons">
 					<div class="col-xs-3 col-md-3">
 						<s:hidden name="searchType" id="searchType"></s:hidden>
-						<button type="button" class="btn btn-lg btn-primary btn-block" onClick="findAll();" style="visibility: hidden;">Find All</button>
+                                                <s:if test="#session.currentRole > 1">
+                                                    <button type="button" class="btn btn-lg btn-primary btn-block" onClick="findAll();" style="visibility: hidden;">Find All</button>
+                                                </s:if><s:else>  
+                                                    <button type="button" class="btn btn-lg btn-primary btn-block" onClick="findAll();">Find All</button>
+                                                </s:else>
 					</div>
 					<div class="col-xs-3 col-md-3">
-						<button type="submit" class="btn btn-lg btn-primary btn-block" onclick="searchSpecific();" >Search</button>
+						<button type="button" class="btn btn-lg btn-primary btn-block" onclick="searchSpecific();" >Search</button>
 					</div>
 					<div class="col-xs-3 col-md-3">
 					 <button type="button" class="btn btn-lg btn-success btn-block" onClick="newRecord();">Reset</button>
@@ -185,10 +186,14 @@
 						<%-- <s:text name="((selectedPage-1)*10)+1"></s:text> &nbsp-
 						<s:if test="selectedPage*10 <= totalRecords">
 						<s:text name="selectedPage*10"></s:text></s:if><s:else><s:text name="totalRecords"></s:text></s:else> --%>
-						<input type="button" onclick="nextPrevious(1);" style="background-image: url('./assets/images/last.png');" class="searchbutton"/>
+						<span class="glyphicon glyphicon-backward next-previous" onclick="nextPrevious(1);"></span>
+						<span class="glyphicon glyphicon-chevron-left next-previous" onclick="nextPrevious(2);"></span>
+						<span class="glyphicon glyphicon-chevron-right next-previous" onclick="nextPrevious(3);"></span>
+						<span class="glyphicon glyphicon-forward next-previous" onclick="nextPrevious(4);"></span>
+						<!-- <input type="button" onclick="nextPrevious(1);" style="background-image: url('./assets/images/last.png');" class="searchbutton"/>
 						<input type="button" onclick="nextPrevious(2);" style="background-image: url('./assets/images/previous.png');" class="searchbutton"/>
 						<input type="button" onclick="nextPrevious(3);" style="background-image: url('./assets/images/next.png');" class="searchbutton"/>
-						<input type="button" onclick="nextPrevious(4);" style="background-image: url('./assets/images/lastr.png');" class="searchbutton"/>
+						<input type="button" onclick="nextPrevious(4);" style="background-image: url('./assets/images/lastr.png');" class="searchbutton"/> -->
 						</div>
 						<label class="col-xs-3 control-label" style="width : 20%;">Show page No:</label>
 						<div class="col-xs-3" style="width:10%;">
@@ -197,6 +202,7 @@
 						</div>
 					</div>
 				</s:if>
+
 			</s:form>
 			<div class="errors" id="errorMessageBox">
 				
@@ -209,8 +215,8 @@
 							<th><b>Status</b></th>
 							<th><b>Name</b></th>
 							<th><b>Author</b></th>
-							<th><b>Type</b></th>
-							<th><b>Owner</b></th>
+							<%--<th><b>Type</b></th>
+							<th><b>Owner</b></th>--%>
 							<th><b>Unassign</b></th>
 							<!-- <th><b>Type</b></th>
 							<th><b>Language</b></th>
@@ -219,13 +225,14 @@
 							<th><b>Frames</b></th>
 							<th><b>Update</b></th>
 							<th><b>Delete</b></th>
+							<th><b>View Details</b></th>
 						</thead>
 						<tbody>
 							<s:iterator id="userTO" value="%{objResult.listOfElemnents}">
 								<s:iterator>
 									<tr>
 										<s:hidden value="id" />
-										<s:if test="isUnderWfl == null">
+										 <s:if test="isUnderWfl == null">
 										<td>
 											<s:if test="manuscriptType.equals('Transcription')">
 													
@@ -246,7 +253,7 @@
 													<button type="button" class="btn btn-lg btn-warning btn-block btn-state-1">N/A</button>
 												</s:if>
 												<s:else>
-													<s:if test="presentFrame">
+													 <s:if test="presentFrame">
 														<button type="button" style="width: 68;" id="assignButton<s:property value="id"/>" class="btn btn-lg btn-warning btn-block btn-state-1" onclick="pushintowfl('<s:text name="id" />','<s:text name="name" />')">Assign</button>
 													</s:if>
 													<s:else>
@@ -268,11 +275,20 @@
 											</td>
 										</s:else>
 										
-										<td><s:property value="name" /></td>
-										<td><s:property value="authorVO.name" /></td>
+										<td>
+										<s:property value="name" /><br>
+										<s:property value="regionalName"/><br>
+										<s:property value="diacriticName"/>
+										</td>
+										<td><s:property value="authorName" /></td>
+<%--
 										<td><s:property value="manuscriptType" /></td>
+--%>
+										<%-- <td><s:property value="languageVO.name" /></td> --%>
+<%--
 										<td><s:property value="wflProcessOwner" default="Pool"/></td>
-										
+--%>
+
 										<td>
 											<s:if test="wflProcessOwner != 'N/A' && wflProcessOwner != null">
 												<s:url id="unAssignURL" action="assignprocessfromusertorole.action">
@@ -293,14 +309,14 @@
 												<s:param name="id" value="%{id}"></s:param>
 											</s:url>
 											<s:a href="%{viewFrameURL}">
-												<button type="button" class="btn btn-lg btn-success btn-block btn-state-1">View</button>
+												<button type="button" class="btn btn-lg btn-success btn-block btn-state-1">View (<s:property value="digitalManuscriptFrameVOs.size()" />)</button>
 											</s:a>
 										</s:if><s:else>
 											<button type="button" class="btn btn-lg btn-success btn-block btn-state-1">N/A</button>
 										</s:else>
 										</td>
 										<td>
-											<s:if test="!(manuscriptType.equals('Transcription') || manuscriptType.equals('Translation'))">
+                                                                                        <s:if test="#session.currentRole != 10 && (!(manuscriptType.equals('Transcription') || manuscriptType.equals('Translation')))">
 												<s:url id="editURL"	action="getManuscriptById.action">
 													<s:param name="id" value="%{id}"></s:param>	
 												</s:url>
@@ -310,12 +326,23 @@
 											</s:else>
 										</td>
 										<td>
-											<s:url id="deleteURL" action="deleteManuscriptaction.action">	
+                                                                                    <s:if test="#session.currentRole != 10">
+                                                                                        <s:url id="deleteURL" action="deleteManuscriptaction.action">	
 												<s:param name="id" value="%{id}"></s:param>
 											</s:url>
 											<s:a href="%{deleteURL}" onClick="return deleteManuscript();"><img style="padding-left: 35px;" height="20" alt=""	src="<%=request.getContextPath()%>/assets/images/Delete.jpg"/></s:a>
+                                                                                    </s:if><s:else>
+                                                                                            <button type="button" class="btn btn-lg btn-success btn-block btn-state-1" disabled>N/A</button>
+											</s:else>
 										</td>
-		
+										<td>
+											<s:if test="!(manuscriptType.equals('Transcription') || manuscriptType.equals('Translation'))">
+												<s:url id="viewURL"	action="viewManuscriptById.action">
+													<s:param name="id" value="%{id}"></s:param>
+												</s:url>
+												<s:a href="%{viewURL}"><img style="padding-left: 35px;" height="20" alt=""	src="<%=request.getContextPath()%>/assets/images/if_eye-24_103177.png" /></s:a>
+											</s:if>
+										</td>
 										
 									</tr>
 								</s:iterator>
@@ -332,7 +359,7 @@
 					<s:form>
 						<fieldset>
 							<div class="form-group row manuscript-specific">
-								<label class="col-md-4 control-label">Manuscript :</label>
+								<label class="col-md-4 control-label">Document :</label>
 								<div class="col-md-8">
 									<s:textfield cssClass="form-control" id="commentDate"
 										maxlength="50" readonly="true" />
@@ -343,7 +370,7 @@
 							<div class="form-group row manuscript-specific">
 									<label class="col-md-4 control-label">Language :</label>
 									<div class="col-md-6">
-									<select id="imeLanguage" name="imeLanguage"
+									<select style="padding-top: 0px;" id="imeLanguage" name="imeLanguage"
 										class="form-control"></select>
 										</div>
 							</div>
@@ -351,7 +378,7 @@
 							<div class="form-group row manuscript-specific">
 								<label class="col-md-4 control-label">Script :</label>
 								<div class="col-md-6">
-									<select id="imeSelector" name="imeSelector"
+									<select style="padding-top: 0px;" id="imeSelector" name="imeSelector"
 										class="form-control"></select>
 								</div>
 							</div>
@@ -369,35 +396,35 @@
 						</fieldset>
 					</s:form>
 				</div>
-				
-				
 			</div>
+		</div>
 		</div>
 		
 	</div>
 	
 	<%@ include file='../layout/footer.jsp'%>
 	
-	<script type="text/javascript"
-	src="${pageContext.servletContext.contextPath}/assets/js/Validator.js"></script>
-<script type="text/javascript"
-	src="${pageContext.servletContext.contextPath}/assets/js/rangy-core.js"></script>
-<script type="text/javascript"
-	src="${pageContext.servletContext.contextPath}/assets/js/jquery.ime.js"></script>
-<script type="text/javascript"
-	src="${pageContext.servletContext.contextPath}/assets/js/jquery.ime.selector.js"></script>
-<script type="text/javascript"
-	src="${pageContext.servletContext.contextPath}/assets/js/jquery.ime.preferences.js"></script>
-<script type="text/javascript"
-	src="${pageContext.servletContext.contextPath}/assets/js/jquery.ime.inputmethods.js"></script>
-<script type="text/javascript"
-	src="${pageContext.servletContext.contextPath}/assets/js/jquery-ui.js"></script>
+	<script type="text/javascript" src="${pageContext.servletContext.contextPath}/assets/js/Validator.js"></script>
+<script type="text/javascript" src="${pageContext.servletContext.contextPath}/assets/js/rangy-core.js"></script>
+<script type="text/javascript" src="${pageContext.servletContext.contextPath}/assets/js/jquery.ime.js"></script>
+<script type="text/javascript" src="${pageContext.servletContext.contextPath}/assets/js/jquery.ime.selector.js"></script>
+<script type="text/javascript" src="${pageContext.servletContext.contextPath}/assets/js/jquery.ime.preferences.js"></script>
+<script type="text/javascript" src="${pageContext.servletContext.contextPath}/assets/js/jquery.ime.inputmethods.js"></script>
+<script type="text/javascript" src="${pageContext.servletContext.contextPath}/assets/js/jquery-ui.js"></script>
 
-<script type="text/javascript"
-	src="${pageContext.servletContext.contextPath}/assets/js/jquery.mousewheel.js"></script>
+	<link href="${pageContext.servletContext.contextPath}/assets/css/select2.min.css" rel="stylesheet" />
+
+	<script type="text/javascript" src="${pageContext.servletContext.contextPath}/assets/js/select2.full.min.js"></script>
+<script type="text/javascript" src="${pageContext.servletContext.contextPath}/assets/js/jquery.mousewheel.js"></script>
 	<script type="text/javascript">
+	$(document).ready(function() {
+		$('#beginningLine, #endingLine').ime();
+        $('#authorId').select2();
+        $('#specificCategoryId').select2();
+
+	});
 		function deleteManuscript() {
-			return confirm("Are you sure you want to delete this manuscript?");
+			return confirm("Are you sure you want to delete this document?");
 		};
 		
 		function pushintowfl(recordid , recordname) {

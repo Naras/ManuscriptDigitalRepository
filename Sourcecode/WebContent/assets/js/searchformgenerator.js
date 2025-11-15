@@ -5,7 +5,6 @@ var pageNo = 1;
 var requestId = null;
 
 function sendToPage() {
-	alert('inside method');
 	var link = document.getElementById("createPageURL").value;
 	document.getElementById("mainForm").action = link;
 	document.getElementById("mainForm").submit();
@@ -151,11 +150,10 @@ function getReadyStateHandle(xmlHttpRequest) {
 								strColumn = strColumn + coljs;
 							}
 						}
-						var updateColStr = '<td><a href="'+dataRead.updateAction+'?id='+id+'&requestId='+requestId+'"><img height="20" src="/OMDS/assets/images/update.png" alt="Edit" ></a></td>' ;
-						var deleteColStr = '<td><a onclick="return deleteConfirmation();" href="'+dataRead.deleteAction+'?id='+id+'&requestId='+requestId+'"><img height="20" src="/OMDS/assets/images/Delete.jpg" alt="Delete" ></a></td>' ;
+						var mdrFolder = "mdr";
+						var updateColStr = '<td><a href="'+dataRead.updateAction+'?id='+id+'&requestId='+requestId+'"><img height="20" src="/'+mdrFolder+'/assets/images/update.png" alt="Edit" ></a></td>' ;
+						var deleteColStr = '<td><a onclick="return deleteConfirmation();" href="'+dataRead.deleteAction+'?id='+id+'&requestId='+requestId+'"><img height="20" src="/'+mdrFolder+'/assets/images/Delete.jpg" alt="Delete" ></a></td>' ;
 						
-                                                system.out.println(updateColstr);
-                                                system.out.println(deleteColstr);
 						var htmlTableRow = '<tr>'+strColumn+updateColStr+deleteColStr+'</tr>';
 						
 						htmlStrTableContent = htmlStrTableContent+htmlTableRow;

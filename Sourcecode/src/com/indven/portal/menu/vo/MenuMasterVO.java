@@ -98,6 +98,26 @@ public class MenuMasterVO extends IndvenResultVO{
 	public final void setChild(List<MenuMasterVO> child) {
 		this.child = child;
 	}
-
-	
+	public String toString() {
+            String result="";
+//            result += "id:" + this.id + " parent id:" + this.parentId + " menu name:" + this.menuName + " menu link :" + this.menuLink
+//                  + " left link :" + this.leftPanelLink + " menu order:" + this.menuOrder + " status message:" + this.statusMsg 
+//                  + " request id:" + this.requestId + " default status:" + this.defaultStatus + " checked:" + this.checked
+//                   + "child:" ;
+            for (MenuMasterVO item : child) {
+            result += "\nid:" + item.getId() 
+//                    + " parent id:" + item.getParentId()
+                    + " menu name:" + item.getMenuName() 
+                    + " menu link :" + item.getMenuLink()
+//                  + " left link :" + item.getLeftPanelLink() 
+                    + " menu order:" + item.getMenuOrder() 
+                    + " level:" + item.getMenuLevel() 
+//                    + " status message:" + item.getStatusMsg() 
+                  + " request id:" + item.getRequestId() 
+                    + " default status:" + item.getDefaultStatus()
+                    + " checked:" + item.getChecked()
+                    ;
+            }
+            return result;
+        }
 }

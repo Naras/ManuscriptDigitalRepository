@@ -7,17 +7,21 @@
 	<parameter name="imagePath" class="java.lang.String"/>
 	<parameter name="recordtype" class="java.lang.Short"/>
 	<queryString>
-		<![CDATA[SELECT dd.id,dd.TEXT,fm.filePath,dm.NAME,op.NAME AS Author FROM omds_digitaldocument_details dd
+		<![CDATA[SELECT dd.id,dd.TEXT,fm.filePath,fm.frame_order,dm.NAME,GROUP_CONCAT(op.NAME) AS Author FROM omds_digitaldocument_details dd
 JOIN omds_digitaldocument d
 ON dd.digitalDocumentFkId = d.id
 JOIN omds_digital_manuscript_frame fm
 ON d.digitalManuscriptFrameFkId = fm.id
 JOIN omds_digital_manuscript dm
 ON fm.digitalManuscriptFkId = dm.id
-JOIN omds_person op
-ON dm.AuthorFkId = op.Id
+LEFT JOIN  omds_manuscript_authormapper am
+ON dm.Id = am.manuscriptfkid
+LEFT JOIN omds_person op
+ON am.authorfkid = op.Id
 WHERE fm.digitalManuscriptFkId =$P{id} AND d.recordtype= $P{recordtype}
-AND dd.ismax =1]]>
+AND dd.ismax =1
+GROUP BY fm.frame_order
+ORDER BY fm.frame_order]]>
 	</queryString>
 	<field name="id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -26,6 +30,9 @@ AND dd.ismax =1]]>
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="filePath" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="frame_order" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="NAME" class="java.lang.String">
@@ -75,15 +82,15 @@ AND dd.ismax =1]]>
 	</pageHeader>
 	<detail>
 		<band height="426" splitType="Stretch">
-			<image scaleImage="FillFrame">
-				<reportElement uuid="63b728fc-80a0-4e32-9a77-408cff181cbb" x="28" y="10" width="497" height="281"/>
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement uuid="63b728fc-80a0-4e32-9a77-408cff181cbb" x="28" y="10" width="497" height="298"/>
 				<graphicElement>
 					<pen lineWidth="2.0" lineColor="#009999"/>
 				</graphicElement>
 				<imageExpression><![CDATA[$P{imagePath}+$F{filePath}]]></imageExpression>
 			</image>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="19f7483c-9092-4428-b8c9-da68b74ae01d" x="28" y="324" width="497" height="102"/>
+				<reportElement uuid="19f7483c-9092-4428-b8c9-da68b74ae01d" x="28" y="335" width="497" height="91"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -97,14 +104,14 @@ AND dd.ismax =1]]>
 				<textFieldExpression><![CDATA[$F{TEXT}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="dd6bd89c-77cd-47e7-a249-1f6e7936c52b" x="28" y="295" width="144" height="25"/>
+				<reportElement uuid="dd6bd89c-77cd-47e7-a249-1f6e7936c52b" x="28" y="308" width="144" height="25"/>
 				<textElement textAlignment="Justified">
 					<font size="14" isBold="true" isUnderline="false"/>
 				</textElement>
 				<text><![CDATA[Transcribed Part]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="32611215-56a6-49f4-a4f1-5648c4588afb" x="28" y="320" width="497" height="1" forecolor="#009999"/>
+				<reportElement uuid="32611215-56a6-49f4-a4f1-5648c4588afb" x="28" y="333" width="497" height="1" forecolor="#009999"/>
 			</line>
 		</band>
 	</detail>

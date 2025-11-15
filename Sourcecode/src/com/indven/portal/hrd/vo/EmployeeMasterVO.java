@@ -5,6 +5,7 @@ package com.indven.portal.hrd.vo;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -189,12 +190,13 @@ public class EmployeeMasterVO extends IndvenResultVO implements GenericSearch{
 	}
 	@Override
 	public Map<String, String> getLabelDisplayMap() {
-		Map<String, String> returnMap = new HashMap<String, String>();
-		
+		Map<String, String> returnMap = new LinkedHashMap<String, String>();
+
 		returnMap.put("FirstName" , "firstName");
 		returnMap.put("LastName" , "lastName");
 		returnMap.put("Email" , "email");
 		returnMap.put("Telephone" , "phoneNumber");
+		
 		
 		return returnMap;
 	}
@@ -219,4 +221,11 @@ public class EmployeeMasterVO extends IndvenResultVO implements GenericSearch{
 	public Map<String, String> beanVarName() {
 		return null;
 	}
+        
+        public String toString(){
+            return "id " + this.id + " firstName "+ this.firstName + " lastName " + this.lastName + " email " + this.email
+                    + " address " + this.address1 + " phone " + this.phoneNumber 
+                    + " userType " + this.userType + " roleFkid " + this.roleMasterFkId
+                    ;
+        }
 }

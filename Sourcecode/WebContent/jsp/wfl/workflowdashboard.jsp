@@ -11,7 +11,7 @@
 		<s:if test="#session.currentRole > 1">
 			<div id="mainTableContainer" class="alert alert-success appTable">
 				<div class="table-responsive">
-				<h3>Statistics</h3>
+				<span class="glyphicon glyphicon-stats" style="font-size: x-large;text-decoration: underline;">Statistics</span>
 					<table id="tableContainer" class="table">
 					</table>
 				</div>
@@ -34,8 +34,8 @@
 				    success: function(data) {
 				    	var menu = data.digitalManuscripts;
 				        var string = "";
-				        string +="<tr> <td><a href='/OMDS/getWflDetailedList.action?requestId="+<%=requestd%>+"&id="+menu.processId+"&counttype=COUNT_TYPE_ROLE'> Tasks in the pool</a></td><td>"+menu.cntRole+"</td></tr>";
-				        string +="<tr><td><a href='/OMDS/getWflDetailedList.action?requestId="+<%=requestd%>+"&id="+menu.processId+"&counttype=COUNT_TYPE_DIRECT'>Tasks assigned to me</a></td><td>" + menu.cntDirect + "</a></td></tr>";							
+				        string +="<tr> <td><a href='/mdr-src/getWflDetailedList.action?requestId="+<%=requestd%>+"&id="+menu.processId+"&counttype=COUNT_TYPE_ROLE'> Tasks in the pool</a></td><td>"+menu.cntRole+"</td></tr>";
+				        string +="<tr><td><a href='/mdr-src/getWflDetailedList.action?requestId="+<%=requestd%>+"&id="+menu.processId+"&counttype=COUNT_TYPE_DIRECT'>Tasks assigned to me</a></td><td>" + menu.cntDirect + "</a></td></tr>";							
 						
 				        $('#tableContainer').html(string);
 				        $('#mainTableContainer').fadeIn();

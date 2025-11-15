@@ -7,7 +7,8 @@
 <head>
 <title>FRLHT</title>
 </head>
-<body>
+<body>  <a href='<s:url action="index" namespace="config-browser" />'>Launch the configuration browser</a>
+
    
 	<% 
 		if(session.getAttribute("loginData") != null) {
@@ -18,16 +19,18 @@
 	<div class="login-page">
 		<div class="container container-center">
 			<%@ include file='messagecontainer.jsp' %>
+			<div class="apptable">
 			<s:form role="form" action="loginaction" cssClass="form-signin">
 				<h2 class="form-signin-heading">Please sign in</h2>
-				<s:textfield name="userInfoVO.loginName" maxlength="50" cssClass="form-control" autofocus="" required="true" placeholder="Email address"/>
-				<s:password placeholder="Password" name="userInfoVO.passWord" maxlength="50" cssClass="form-control" required="true" />
+				Email id. <s:textfield name="userInfoVO.loginName" maxlength="50" cssClass="form-control" autofocus="" required="true" placeholder="Email address" cssStyle="padding:5px;font-size: 12px;"/>
+				Password  <s:password placeholder="Password" name="userInfoVO.passWord" maxlength="50" cssClass="form-control" required="true" cssStyle="padding:5px;font-size: 12px;"/>
 				<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-				<a href="<%=request.getContextPath()%>/showResetPasswordPage.action">Forgot Password</a>
+				<a href="<%=request.getContextPath()%>/showResetPasswordPage.action">Forgot password?</a>
 			</s:form>
+			</div>
 		</div>
 	</div>
-
-</body>
 <%@include file='layout/footer.jsp' %>
+</body>
+
 </html>

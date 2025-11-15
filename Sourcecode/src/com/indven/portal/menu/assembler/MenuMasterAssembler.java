@@ -27,9 +27,9 @@ public class MenuMasterAssembler {
 
 		menuMasterVO.setId(menuMasterBean.getId());
 		menuMasterVO.setParentId(menuMasterBean.getParentId());
-		menuMasterVO.setMenuName(menuMasterBean.getMenuName());	
+		menuMasterVO.setMenuName(menuMasterBean.getMenuName());
 		menuMasterVO.setMenuLink(menuMasterBean.getMenuLink());
-		menuMasterVO.setLeftPanelLink(menuMasterBean.getLeftPanelLink());	
+		menuMasterVO.setLeftPanelLink(menuMasterBean.getLeftPanelLink());
 		menuMasterVO.setMenuOrder(menuMasterBean.getMenuOrder());
 		menuMasterVO.setRequestId(menuMasterBean.getRequestId());
 		menuMasterVO.setStatusMsg(menuMasterBean.getStatusMsg());
@@ -39,7 +39,6 @@ public class MenuMasterAssembler {
 
 		return menuMasterVO;
 	}
-	
 
 	public static List<MenuMasterVO> convertEntitiesToVos(List<MenuMasterBean> entities) {
 		List<MenuMasterVO> menuMasterVOs = new ArrayList<MenuMasterVO>();
@@ -50,5 +49,5 @@ public class MenuMasterAssembler {
 
 		return menuMasterVOs;
 	}
-	
+
 }

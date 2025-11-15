@@ -2,7 +2,8 @@
 <%@ page import="java.util.*" %>
 <html>
 <%@ include file='../layout/header.jsp' %>
-	<div class="container container-center alert alert-success appTable" style="max-width: 60%;">
+	<div class="container container-center" style="max-width: 60%;">
+	<div class=" alert alert-success appTable centerdiv">
 	<div class="form">
 		<div>
 			<div class="alert alert-danger hide" id="msg-container"></div>
@@ -28,7 +29,7 @@
 					<div class="col-md-3">
 					</div>
 					<div class="col-md-6">
-						<input type="submit" class="btn btn-lg btn-primary btn-block" value="submit" id="submitForm">
+						<input type="submit" class="btn btn-lg btn-primary btn-block" value="Submit" id="submitForm">
 					</div>
 					<div class="col-md-3">
 					</div>
@@ -36,7 +37,8 @@
 			</s:form>
 		</div>
 	</div>
-	</div>						
+	</div>	
+	</div>					
 	<%@ include file='../layout/footer.jsp' %>
 	
 	<script type="text/javascript" src="<%=request.getContextPath()%>/assets/js/Validator.js"></script>

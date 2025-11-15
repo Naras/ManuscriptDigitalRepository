@@ -18,6 +18,7 @@ import java.util.Map;
 import com.indven.framework.enums.UserStatusEnum;
 import com.indven.framework.exception.IndvenException;
 import com.indven.framework.exceptionhandler.IndvenExceptionMessageResolver;
+import com.indven.framework.logging.IndvenLogger;
 import com.indven.framework.service.BaseEntityCRUDService;
 import com.indven.framework.util.CustomBeanUtil;
 import com.indven.framework.util.IndvenApplicationConstants;
@@ -41,6 +42,9 @@ import com.indven.portal.hrd.exception.HumanResourceException;
  *
  */
 public class UserLoginDetailsServiceImpl implements	BaseEntityCRUDService<UserInfoVO> {
+	private static IndvenLogger logger = IndvenLogger
+            .getInstance(UserLoginDetailsServiceImpl.class);
+        
 
 	private UserLoginDetailsDAOImpl userLoginDetailsDAOImpl = new UserLoginDetailsDAOImpl();
 
@@ -119,19 +123,19 @@ public class UserLoginDetailsServiceImpl implements	BaseEntityCRUDService<UserIn
 	 */
 	public UserInfoVO handleLogin(UserInfoVO userInfoVO) throws AdministrationException{
 		UserLoginDetailsBean userInfoBean = new UserLoginDetailsBean();
-		Map<String, Object> loginResultMap = new HashMap<>();   
+		Map<String, Object> loginResultMap = new HashMap<>();
 		try {
 
 			userInfoBean.setLoginId(userInfoVO.getLoginName());
 			userInfoBean.setPassword(userInfoVO.getPassWord());
 
 			loginResultMap = new UserLoginDetailsDAOImpl().handleLogin(userInfoBean);
-			
 			userInfoBean = (UserLoginDetailsBean) loginResultMap.get("userBean");
-			
+			logger.debug("portal.admiistration.service.UserLoginDetailsServiceImpl() " + userInfoBean);
 			if(userInfoBean != null) {
 				userInfoVO.setName(userLoginDetailsDAOImpl.getEmpNameById(userInfoBean.getRefrenceFkId()));
 				userInfoVO.setId(userInfoBean.getId());
+				userInfoVO.setReferenceFkId(userInfoBean.getRefrenceFkId());
 				userInfoVO.setPassWord(null);
 				userInfoVO.setName((String)loginResultMap.get("userName"));
 			}

@@ -14,11 +14,7 @@ import com.indven.framework.util.IndvenApplicationConstants;
 import com.indven.framework.vo.IndvenResultVO;
 import com.indven.omds.exception.OMDPCoreException;
 import com.indven.omds.service.MasterAddUpdateServiceImpl;
-import com.indven.omds.vo.BundleMasterVO;
-import com.indven.omds.vo.CategoryVO;
-import com.indven.omds.vo.LanguageVO;
-import com.indven.omds.vo.ScriptVO;
-import com.indven.omds.vo.TagMasterVO;
+import com.indven.omds.vo.*;
 
 /**
  * @author Deba Prasad
@@ -35,6 +31,7 @@ public class MasterAddUpdateAction extends BaseAction {
 			.getInstance(MasterAddUpdateAction.class);
 	private LanguageVO languageVO = new LanguageVO();
 	private CategoryVO categoryVO = new CategoryVO();
+	private SpecificCategoryVO specificCategoryVO= new SpecificCategoryVO();
 	private MasterAddUpdateServiceImpl service = new MasterAddUpdateServiceImpl();
 	private ScriptVO script = new ScriptVO();
 	private BundleMasterVO bundleVO = new BundleMasterVO();
@@ -98,6 +95,21 @@ public class MasterAddUpdateAction extends BaseAction {
 	 */
 	public final void setLanguageVO(LanguageVO languageVO) {
 		this.languageVO = languageVO;
+	}
+
+	/**
+	 * @return the specificCategoryVO
+	 */
+	public final SpecificCategoryVO getSpecificCategoryVO() {
+		return specificCategoryVO;
+	}
+
+	/**
+	 * @param specificCategoryVO
+	 *            the specificCategoryVO to set
+	 */
+	public final void setLanguageVO(SpecificCategoryVO specificCategoryVO) {
+		this.specificCategoryVO = specificCategoryVO;
 	}
 
 	public String saveLanguage() {
@@ -502,6 +514,70 @@ public class MasterAddUpdateAction extends BaseAction {
 	 */
 	public void setReplacedTag(TagMasterVO replacedTag) {
 		this.replacedTag = replacedTag;
+	}
+
+	//Changed by Lakshmi Prasad Mandava
+	public String saveSpecificCategory() {
+		String status = ERROR;
+		boolean isUpdating = false;
+		if (specificCategoryVO.getId() != null && specificCategoryVO.getId() > 0) {
+			isUpdating = true;
+		}
+		try {
+			specificCategoryVO = service.saveSpecificCategory(specificCategoryVO);
+			if (!isUpdating) {
+				specificCategoryVO = new SpecificCategoryVO();
+			}
+			status = SUCCESS;
+			addActionMessage("Successfully saved the record");
+		} catch (OMDPCoreException e) {
+			logger.error(e);
+			specificCategoryVO.setStatus(IndvenResultVO.STATUS_FAILURE);
+			specificCategoryVO.setMessage(IndvenMessageResolver.resolveMessage(
+					OMDPCoreException.UNABLE_TO_SAVE_THE_RECORD,
+					IndvenApplicationConstants.LOCALE));
+			addActionError(specificCategoryVO.getMessage());
+		}
+		return status;
+	}
+
+	public String findSpecificCategoryById() {
+		String id = getRequest().getParameter("id");
+		String status = ERROR;
+		try {
+			specificCategoryVO = service.findSpecificCategoryById(Long.parseLong(id));
+			status = SUCCESS;
+		} catch (Exception e) {
+			logger.error(e);
+			specificCategoryVO.setStatus(IndvenResultVO.STATUS_FAILURE);
+			specificCategoryVO.setMessage(IndvenMessageResolver.resolveMessage(
+					OMDPCoreException.UNABLE_TO_FIND_THE_RECORD,
+					IndvenApplicationConstants.LOCALE));
+			addActionError(specificCategoryVO.getMessage());
+		}
+
+		return status;
+
+	}
+
+	public String deleteSpecificCategory() {
+		String id = getRequest().getParameter("id");
+		String status = ERROR;
+		try {
+			service.deleteSpecificCategoryById(Long.parseLong(id));
+			status = SUCCESS;
+			addActionMessage("Successfully deleted the record");
+		} catch (Exception e) {
+			logger.error(e);
+			specificCategoryVO.setStatus(IndvenResultVO.STATUS_FAILURE);
+			specificCategoryVO.setMessage(IndvenMessageResolver.resolveMessage(
+					OMDPCoreException.UNABLE_TO_DELETE_THE_RECORD,
+					IndvenApplicationConstants.LOCALE));
+			addActionError(specificCategoryVO.getMessage());
+		}
+
+		return status;
+
 	}
 
 }

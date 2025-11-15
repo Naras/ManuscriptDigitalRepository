@@ -124,3 +124,24 @@
     margin: 2px;
     border-radious: 3px;
 	}
+	
+	
+	
+	
+	
+.containerAuth {
+    width:100%;
+    border:1px solid #d3d3d3;
+}
+
+.containerAuth .headerAuth {
+    background-color:#d3d3d3;
+    padding: 2px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.authorheaderspan{
+	font-size: 16px; 
+	 cursor: pointer;
+	font-weight: bold;
+}

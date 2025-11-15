@@ -7,7 +7,8 @@
 <body>
 
 	<%@ include file='../layout/header.jsp'%>
-	<div class="container container-center  alert alert-success appTable" style="max-width: 60%;">
+	<div class="container container-center" style="max-width: 60%;">
+	<div class=" alert alert-success appTable centerdiv">
 		<%@ include file='../messagecontainer.jsp'%>
 		<div class="form">
 			<h2 class="form-heading">
@@ -52,6 +53,7 @@
 				</table>
 			</div>
 		</div>
+	</div>
 	</div>
 	
 	<%@ include file='../layout/footer.jsp'%>

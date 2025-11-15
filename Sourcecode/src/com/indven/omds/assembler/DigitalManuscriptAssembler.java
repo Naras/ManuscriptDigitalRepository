@@ -3,19 +3,22 @@
  */
 package com.indven.omds.assembler;
 
+import com.indven.framework.logging.IndvenLogger;
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.indven.framework.util.CustomBeanUtil;
 import com.indven.framework.util.IndvenApplicationConstants;
+import com.indven.omds.dao.ManuscriptMasterDAOImpl;
+import com.indven.omds.entity.ArticleDetailsBean;
 import com.indven.omds.entity.AuthorBean;
 import com.indven.omds.entity.DigitalDocumentBean;
 import com.indven.omds.entity.DigitalManuscriptBean;
@@ -23,13 +26,15 @@ import com.indven.omds.entity.DigitalManuscriptFrame;
 import com.indven.omds.entity.MaterialBean;
 import com.indven.omds.entity.NMMDetailsBean;
 import com.indven.omds.entity.Organisation;
+import com.indven.omds.exception.OMDPCoreException;
 import com.indven.omds.util.DocumentStatusEnum;
-import com.indven.omds.util.ManuscriptConditionType;
+//import com.indven.omds.util.ManuscriptConditionType;
 import com.indven.omds.util.ManuscriptDocumentationType;
 import com.indven.omds.util.ManuscriptTypeEnum;
 import com.indven.omds.util.ManuscriptWorkType;
 import com.indven.omds.util.MaterialTypeEnum;
 import com.indven.omds.util.SourceOfCatalogueEnum;
+import com.indven.omds.vo.ArticleDetailsVO;
 import com.indven.omds.vo.AuthorVO;
 import com.indven.omds.vo.DigitalDocumentDetailsVO;
 import com.indven.omds.vo.DigitalDocumentVO;
@@ -41,7 +46,7 @@ import com.indven.omds.vo.NMMDetailsVO;
 import com.indven.omds.vo.OrganisationVO;
 import com.indven.omds.vo.PublicationVO;
 import com.indven.omds.vo.ScriptVO;
-import com.indven.omds.vo.TagMasterVO;
+//import com.indven.omds.vo.TagMasterVO;
 
 
 /**
@@ -49,13 +54,15 @@ import com.indven.omds.vo.TagMasterVO;
  *
  */
 public class DigitalManuscriptAssembler {
+	private static IndvenLogger logger = IndvenLogger
+            .getInstance(DigitalManuscriptAssembler.class);
 
 	public static DigitalManuscriptVO convertEntityToVo(DigitalManuscriptBean bean) throws JSONException {
 		DigitalManuscriptVO vo = new DigitalManuscriptVO();
 
 		vo = (DigitalManuscriptVO) CustomBeanUtil.entityToVO(bean, vo);
 		vo.setPublicationFkId(bean.getPublicationFKId());
-		
+
 		if(bean.getParentFkObj() != null) {
 			vo.setParentName(bean.getParentFkObj().getName());
 		}
@@ -106,6 +113,10 @@ public class DigitalManuscriptAssembler {
 			vo.setNmmDetailsVO((NMMDetailsVO) CustomBeanUtil.entityToVO(bean.getNmmDetailsFkObj(), new NMMDetailsVO()));
 		}
 		
+		if(bean.getArticleDetailsFkObj() != null) {
+			vo.setArticleDetailsVO((ArticleDetailsVO) CustomBeanUtil.entityToVO(bean.getArticleDetailsFkObj(), new ArticleDetailsVO()));
+		}
+		
 		if(bean.getDigitalManuscriptFrames() != null && bean.getDigitalManuscriptFrames().size() > 0) {
 			/*
 			 * If there are Digital Frames, then convert them to JSON objects 
@@ -138,7 +149,7 @@ public class DigitalManuscriptAssembler {
 		return vo;
 	}
 	
-	public static DigitalManuscriptBean convertVoToEntity(DigitalManuscriptVO vo) throws JSONException {
+	public static DigitalManuscriptBean convertVoToEntity(DigitalManuscriptVO vo) throws JSONException, OMDPCoreException {
 		DigitalManuscriptBean bean = new DigitalManuscriptBean();
 
 		bean.setAuthorFKId(vo.getAuthorFKId());
@@ -150,8 +161,37 @@ public class DigitalManuscriptAssembler {
 		bean.setDiacriticName(vo.getDiacriticName());
 		bean.setAccNumber(vo.getAccNumber());
 		bean.setParentFKId(vo.getParentFKId());		
-		
+		bean.setArticleLaguage(vo.getArticleLaguage());
 		bean.setManuscriptId(vo.getManuscriptId());
+
+		//setting values for newly added fields 26/08/2017
+		//logger.debug("vo.getRedMarked()------ "+vo.getRedMarked()+" vo.getRedLines() "+vo.getRedLines()+" vo.getRedLetters() "+vo.getRedLetters()+" vo.getEditedTypeRemarks() "+vo.getEditedTypeRemarks());
+		bean.setPatha(StringUtils.join(vo.getPathaIds(),","));
+		bean.setLinesPerPage(vo.getLinesPerPage());
+		bean.setCharactersPerLine(vo.getCharactersPerLine());
+		bean.setIllustrationsType(vo.getIllustrationsType());
+		bean.setIllustrations(vo.getIllustrations());
+		bean.setIllustrationsOthers(vo.getIllustrationsOthers());
+		bean.setEdited(vo.getEdited());
+		bean.setEditedType(vo.getEditedType());
+		bean.setEditedTypeRemarks(vo.getEditedTypeRemarks());
+		bean.setInkPigment(vo.getInkPigment());
+		bean.setInkPigmentOthers(vo.getInkPigmentOthers());
+		bean.setMiscellaneousRemarks(vo.getMiscellaneousRemarks());
+		bean.setDecorated(vo.getDecorated());
+		bean.setDecoratedRemarks(vo.getDecoratedRemarks());
+
+		bean.setRedMarked(vo.getRedMarked());
+		bean.setRedMarkedText(vo.getRedMarkedText());
+
+		bean.setRedLines(vo.getRedLines());
+		bean.setRedLinesText(vo.getRedLinesText());
+
+		bean.setRedLetters(vo.getRedLetters());
+		bean.setRedLettersText(vo.getRedLettersText());
+
+		bean.setRedDigits(vo.getRedDigits());
+		bean.setRedDigitsText(vo.getRedDigitsText());
 
 		bean.setTableOfContents(vo.getTableOfContents());
 		bean.setAnyOtherDetails(vo.getAnyOtherDetails());
@@ -164,10 +204,21 @@ public class DigitalManuscriptAssembler {
 		bean.setDigitizerId(vo.getDigitizerId());
 		bean.setIsBound(vo.getIsBound());
 		bean.setNatureOfCollection(vo.getNatureOfCollection());
+//		logger.debug("convertVotoEntity().bean.getSubject1() "+vo.getSubject1Ids());
+		bean.setSubject1(StringUtils.join(vo.getSubject1Ids(),","));
 		if(vo.getSourceOfCatalogue() != null && vo.getSourceOfCatalogue().length() > 0)
 			bean.setSourceOfCatalogue(SourceOfCatalogueEnum.valueOf(vo.getSourceOfCatalogue()));
-		if(vo.getConditionOfManuscript() != null && vo.getConditionOfManuscript().length() > 0)
-			bean.setConditionOfManuscript(ManuscriptConditionType.valueOf( vo.getConditionOfManuscript()));
+
+		//logger.debug("convertVotoEntity() vo.getConditionOfManuscriptIds() ------- + vo.getConditionOfManuscript() comIds "+vo.getComIds());
+		bean.setConditionOfManuscript(StringUtils.join(vo.getComIds(),","));
+	/*	if(vo.getConditionOfManuscriptIds() != null && vo.getConditionOfManuscriptIds().size() > 0) {
+			List<String> conditionOfManuScriptList = new ArrayList();
+			*//*String[] conditionManuScriptArray = vo.getConditionOfManuscriptIds().split(",");
+			for (int i=0;i<conditionManuScriptArray.length;i++) {
+				conditionOfManuScriptList.add(ManuscriptConditionType.valueOf(conditionManuScriptArray[i].trim()).getValue()+"");
+			}*//*
+			//bean.setConditionOfManuscript(StringUtils.join(conditionOfManuScriptList,","));
+		}*/
 		
 		if(vo.getManuscriptType() != null && vo.getManuscriptType().length() > 0)
 			bean.setManuscriptType(ManuscriptTypeEnum.valueOf( vo.getManuscriptType()));
@@ -313,7 +364,18 @@ public class DigitalManuscriptAssembler {
 			}
 		}
 		
+		if(vo.getArticleDetailsVO() != null) {
+			bean.setArticleDetailsFkObj((ArticleDetailsBean) CustomBeanUtil.voToEntity(vo.getArticleDetailsVO(), new ArticleDetailsBean()));
+			if(bean.getArticleDetailsFkObj().getId() != null && bean.getArticleDetailsFkObj().getId() <= 0) {
+				bean.getArticleDetailsFkObj().setId(null);
+			}
+		}
+		
 		if(vo.getFilePathContainer() != null && vo.getFilePathContainer().length() > 0) {
+			Long baseFrameCount = 0L;
+			if(vo.getId() != null && vo.getId() > 0){
+				baseFrameCount = new ManuscriptMasterDAOImpl().findNoOfFrames(vo.getId());
+			}
 			/*
 			 * If file path is not null and length is greater than zero
 			 * Create new DigitalFrameVOs with these file paths
@@ -325,11 +387,14 @@ public class DigitalManuscriptAssembler {
 			}
 			
 			for(int i = 0; i < jsonArray.length(); i++) {
+				logger.debug("convertVotoEntity() ==== 1 "+jsonArray.get(i).toString());
 				JSONObject jsonObj = new JSONObject(jsonArray.get(i).toString());
 				for(@SuppressWarnings("unchecked")
 				Iterator<String> keys = jsonObj.keys(); keys.hasNext();) {
+					String kye = keys.next();
 					DigitalManuscriptFrameVO frameVO = new DigitalManuscriptFrameVO();
-					frameVO.setFilePath(jsonObj.getString(keys.next()));
+					frameVO.setFrameOrder(baseFrameCount+(Long.valueOf(kye)));
+					frameVO.setFilePath(jsonObj.getString(kye));
 					vo.getDigitalManuscriptFrameVOs().add(frameVO);
 				}
 			}
@@ -344,6 +409,7 @@ public class DigitalManuscriptAssembler {
 			for(DigitalManuscriptFrameVO frameVO : vo.getDigitalManuscriptFrameVOs()) {
 				DigitalManuscriptFrame frame = new DigitalManuscriptFrame();
 				frame.setId(frameVO.getId());
+				frame.setFrameOrder(frameVO.getFrameOrder());
 				frame.setFilePath(frameVO.getFilePath());
 				frame.setDigitalManuscriptFkId(vo.getId());
 				frame.setDigitalManuscriptFkObj(bean);
@@ -378,7 +444,9 @@ public class DigitalManuscriptAssembler {
 				if(jsonObj.getString("filePath") != null) {
 					frameVO.setFilePath(jsonObj.getString("filePath"));
 				}
-				
+				if(jsonObj.getString("frameOrder") != null && !jsonObj.getString("id").equals("")) {
+					frameVO.setFrameOrder(Long.parseLong(jsonObj.getString("frameOrder")));
+				}
 				if(jsonObj.getString("text") != null && jsonObj.getString("text").length() > 0) {
 					/* Document details | start here */
 					DigitalDocumentVO documentVO = new DigitalDocumentVO();
@@ -413,6 +481,7 @@ public class DigitalManuscriptAssembler {
 				frame.setId(frameVO.getId());
 				frame.setFilePath(frameVO.getFilePath());
 				frame.setDigitalManuscriptFkId(vo.getId());
+				frame.setFrameOrder(frameVO.getFrameOrder());
 				frame.setIsLast(frameVO.getIsLast());
 				frame.setDigitalManuscriptFkObj(bean);
 				
@@ -435,7 +504,7 @@ public class DigitalManuscriptAssembler {
 		try {
 			BeanUtils.copyProperties(transcribedBean, srcObj);
 			
-			transcribedBean.setAuthorFKId(srcObj.getAuthorFKId());
+			transcribedBean.setAuthorFKId(null);
 			transcribedBean.setLanguageFkId(srcObj.getLanguageFkId());
 			transcribedBean.setScribeFkId(srcObj.getScribeFkId());
 			transcribedBean.setScriptFkId(srcObj.getScriptFkId());

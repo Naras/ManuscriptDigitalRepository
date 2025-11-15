@@ -8,7 +8,8 @@
 
 
 	<%@include file='../layout/header.jsp'%>
-	<div class="container container-center alert alert-success appTable" style="max-width: 60%;">
+	<div class="container container-center" style="max-width: 60%;">
+	<div class=" alert alert-success appTable centerdiv">
 	<div class="form">
 		<div >
 			<%@ include file='../messagecontainer.jsp' %>
@@ -80,6 +81,7 @@
 			</s:form>
 		
 		</div>
+	</div>
 	</div>
 	</div>
 	   <%-- <div style=" display: none;" id="replacediv">

@@ -105,12 +105,13 @@ body {
 }
 
 .nav-tabs > li > a {
-	border:1px solid #DDD;
-}
-
-.nav-tabs > li, .nav-pills > li { 
+	border:1px solid #a4a4a4;
 	background-color:rgb(238,238,238);
 }
+
+/* .nav-tabs > li, .nav-pills > li { 
+	background-color:rgb(238,238,238);
+} */
 
 .nav-tabs > li > a:hover, .nav-pills > li > a:hover {
 	background-color:#DFDDDD;
@@ -198,12 +199,12 @@ margin: 10px;
 	}
 	
 	.appTable {
-		background-color: #f5faf3;
+		background-color: #d8e9f7 ;
 	}
 	
 	.selectedMenu {
-		background-color: #7f7f7f;
-		color : #ffffff !important;
+		background-color: #2585d8;
+   		color: #ffffff !important;
 	}
 	
 	.selectedMenu:hover{
@@ -212,3 +213,266 @@ margin: 10px;
 	}
 	
 /* Manuscript Page | End Here */
+
+/* metro dashboard states */
+.metro-nav {
+    /*font-family: 'MyriadPro-Light';*/
+    font-family: "LatoRegular","Lucida Grande","Lucida Sans Unicode",Helvetica,sans-serif !important;
+}
+
+.metro-nav .nav-block-p-blue {
+    background: #4A8BC2;/*#336D9E;*/
+}
+
+.metro-nav .nav-block-orange {
+    background: #f37b53;
+}
+
+.metro-nav .nav-block-yellow {
+    background: #FFDE07;
+}
+
+.metro-nav .nav-block-blue {
+    background: #0DAED3;
+}
+
+.metro-nav .nav-block-green {
+    background: #74B749;
+}
+
+.metro-nav .nav-block-red {
+    background:#de577b;
+}
+
+.metro-nav .nav-block-purple {
+    background:  #9d4a9c;
+}
+.metro-nav .nav-block-grey {
+    background:  #77808a;
+}
+
+.metro-fix-view .metro-nav-block.double {
+    width: 207px !important;
+}
+
+.metro-fix-view .metro-nav-block.long {
+    width: 211px !important;
+    height: 211px !important;
+}
+
+.metro-fix-view .metro-nav-block.long .value {
+    padding-top: 30px !important;
+    display: inline-block;
+}
+
+.metro-fix-view .metro-nav-block.long .value i {
+    font-size: 90px;
+}
+
+.metro-fix-view .metro-nav-block {
+    color: white;
+    cursor: pointer;
+    display: block;
+    float: left;
+    font-weight: 300;
+    height: 90px;
+    letter-spacing: 0.02em;
+    line-height: 20px;
+    margin: 0 1% 1% 0;
+    overflow: hidden;
+    position: relative;
+    text-decoration: none;
+    width: 100px !important;
+    z-index: 1;
+}
+
+
+.metro-nav .metro-nav-block.double {
+    width: 28%;
+}
+
+.metro-nav .metro-nav-block {
+    color: white;
+    cursor: pointer;
+    display: block;
+    float: left;
+    font-weight: 300;
+    height:90px;
+    letter-spacing: 0.02em;
+    line-height: 20px;
+    margin: 0 1% 1% 0;
+    overflow: hidden;
+    position: relative;
+    text-decoration: none;
+    width: 17%;
+    z-index: 1;
+}
+
+.metro-nav .metro-nav-block i {
+    font-size: 35px;
+    margin-top: 20px;
+    display: inline-block;
+}
+
+.metro-nav .metro-nav-block:last-child {
+    margin-right: 0;
+}
+
+.metro-nav .metro-nav-block a {
+    color: white;
+    font-size: 18px;
+    font-weight: 400;
+    height: 90%;
+    line-height: 16px;
+    overflow: hidden;
+    padding: 5px 10px;
+    position: absolute;
+    text-overflow: ellipsis;
+    vertical-align: top;
+    width: 88%;
+    text-decoration: none;
+}
+
+.metro-nav .metro-nav-block a i {
+    transition: all 0.5s ease-in-out 0s;
+    -moz-transition: all 0.5s ease-in-out 0s;
+    -webkit-transition: all 0.5s ease-in-out 0s;
+    -o-transition: all 0.5s ease-in-out 0s;
+}
+
+.metro-nav .metro-nav-block a .info {
+    transition: all 0.4s ease-in-out 0s;
+    -moz-transition: all 0.4s ease-in-out 0s;
+    -webkit-transition: all 0.4s ease-in-out 0s;
+    -o-transition: all 0.4s ease-in-out 0s;
+}
+
+.metro-nav .metro-nav-block:hover{      
+    border-bottom: 5px solid #FDC93F;
+} 
+
+.metro-nav .metro-nav-block{      
+    border-bottom: 5px solid #F0F0F0;
+} 
+
+.metro-nav .metro-nav-block a:hover i{
+    /*transform:rotate(83deg);
+    -moz-transform:rotate(83deg);
+    -webkit-transform:rotate(83deg);
+    -o-transform:rotate(83deg);
+    font-size: 140px;
+    opacity: 0.2;*/
+}
+
+.metro-nav .metro-nav-block.long a:hover i{
+
+    font-size: 200px;
+}
+.metro-nav .metro-nav-block.long a {
+    height: 96%;
+}
+.metro-nav .metro-nav-block a:hover .info {
+    /*transform:rotate(360deg);
+    -moz-transform:rotate(360deg);
+    -webkit-transform:rotate(360deg);
+    -o-transform:rotate(360deg);
+    font-size: 40px;
+    opacity: 0.6;*/
+}
+
+.metro-nav .metro-nav-block:hover {
+    opacity: 0.8;
+}
+
+.metro-nav .metro-nav-block.double a {
+    width: 94%;
+}
+
+.metro-nav .metro-nav-block .info {
+    font-size: 16px;
+    position: absolute;
+    right: 10px;
+    top: 30px;
+    padding-right: 3px;
+    font-weight: bold;
+}
+
+
+.metro-nav .metro-nav-block .infoline1 {
+    position: absolute;
+    right: 10px;
+    top: 20px;
+}
+.metro-nav .metro-nav-block .infoline2 {
+    position: absolute;
+    right: 10px;
+    top: 50px;
+}
+.metro-nav .metro-nav-block .infoline3 {
+    position: absolute;
+    right: 10px;
+    top: 80px;
+}
+
+.metro-nav .metro-nav-block .infoline1 .info-label , 
+.metro-nav .metro-nav-block .infoline2 .info-label , 
+.metro-nav .metro-nav-block .infoline3 .info-label {    
+    font-size: 14px;
+    float:right;
+}
+
+.metro-nav .metro-nav-block .infoline1 .info-value , 
+.metro-nav .metro-nav-block .infoline2 .info-value , 
+.metro-nav .metro-nav-block .infoline3 .info-value {    
+    font-size: 16px;
+    font-weight: bold;
+    float:right;
+    padding-right: 10px;
+}
+
+.metro-nav .metro-nav-block .status, .metro-nav .metro-nav-block .tile-status {
+    background-color: transparent;
+    bottom: -10px;
+    font-size: 14px;
+    left: 10px;
+    min-height: 30px;
+    position: absolute;
+    font-weight:bold;
+    letter-spacing: 0.06em;
+}
+/* metro dashboard states ends here */
+.top-header{
+	background-color: #9d4a9c;
+	border-bottom: 4px solid #AFAFAF;
+	color: #FFFFFF;
+	/* margin-bottom: 1%; */
+}
+.statistic-span{
+	margin-bottom: 1%;
+	background-color: #d8e9f7;
+	width: 100%;
+	font-size: x-large;
+	border-radius: 4px;
+}
+.chart-tables{
+	border: 2px solid #D6E9C6;
+	 border-radius: 4px;
+	 width:49%;
+}
+.centerdiv{
+	width:100%;
+	margin-top: 2%;
+}
+.next-previous{
+    font-size: large;
+    cursor: pointer;
+    margin: 4px;
+  }
+
+.row {
+    padding-top: 10px;
+}
+.special_font {
+    font-family: trebuchet ms;
+    font-size: 14px;
+}

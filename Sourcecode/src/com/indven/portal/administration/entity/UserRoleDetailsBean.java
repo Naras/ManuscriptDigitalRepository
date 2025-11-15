@@ -100,11 +100,9 @@ public class UserRoleDetailsBean implements Serializable {
 
 	public void setUserLoginDetailsFkId(Long userLoginDetailsFkId) {
 		this.userLoginDetailsFkId = userLoginDetailsFkId;
-	}
-        
+	} 
         public String toString() { 
             return ("id "+ id + " roleMaster FkId " + roleMasterFkId + " user Login FkId " + userLoginDetailsFkId
                     + " location master FkId " + locationMasterFkId);
         }
 }
- 

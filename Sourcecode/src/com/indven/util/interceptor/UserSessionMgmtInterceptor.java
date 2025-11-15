@@ -78,13 +78,13 @@ public class UserSessionMgmtInterceptor implements Interceptor {
 		
 		ServletActionContext.getRequest().getSession().setAttribute("nodeclicked", selectedMenuId);
 		
-		if(actionName.equalsIgnoreCase("faqpageaction") || actionName.equalsIgnoreCase("aboutpageaction") || actionName.equalsIgnoreCase("gofrlhthome")|| actionName.equalsIgnoreCase("getloginform")|| actionName.equalsIgnoreCase("viewManuscriptSearch")|| actionName.equalsIgnoreCase("searchManuscriptPublicUse")|| actionName.equalsIgnoreCase("exportReportForPublic")){
+		if(actionName.equalsIgnoreCase("imageTest") ||actionName.equalsIgnoreCase("faqpageaction") || actionName.equalsIgnoreCase("aboutpageaction") || actionName.equalsIgnoreCase("gofrlhthome")|| actionName.equalsIgnoreCase("getloginform")|| actionName.equalsIgnoreCase("viewManuscriptSearch")|| actionName.equalsIgnoreCase("searchManuscriptPublicUse")){
 			status = invocation.invoke();
 		} else if(actionName.equalsIgnoreCase("loadforguest")) {
 			
 			if(ServletActionContext.getRequest().getSession().getAttribute(IndvenApplicationConstants.LOGGEDIN_USER_SESSION_DATA) != null) {
-				ServletActionContext.getRequest().getSession().setAttribute("nodeclicked", 201L);
-				invocation.getInvocationContext().setName("gofrlhthome");
+				ServletActionContext.getRequest().getSession().setAttribute("nodeclicked", 205L);
+				invocation.getInvocationContext().setName("loginaction");
 			}
 
 			status = invocation.invoke();
@@ -92,20 +92,23 @@ public class UserSessionMgmtInterceptor implements Interceptor {
 				||  actionName.equalsIgnoreCase("showResetPasswordPage")) {
 			//If user is logging in
 			status = invocation.invoke();
+			//TO-DO Need to review
 		} else if(requestId == null && ServletActionContext.getRequest().getHeader("referer") == null) {
-			
+			//System.out.println(" in null requestId == null && ServletActionContext.getRequest().getHeader(\"referer\") == null ");
 			if(userInfoVO == null) {
 				errorMsg = "Please log in";
 				status = "invalid";
 			} else {
+
 				errorMsg = "Invalid Access";
 				status = "invalidLoggedInAccess";
 			}
-			
+
 		} else if(userInfoVO != null && mapOfActiveSessions.get(userInfoVO.getId()) != null && mapOfActiveSessions.get(userInfoVO.getId()) == sessionID) {
 			//If it is active user who has called the action
-			
 			MenuMasterVO menuList = (MenuMasterVO) session.get("headerMenu");
+			//System.out.println(" userInfoVO != null && mapOfActiveSessions.get(userInfoVO.getId()) != null && mapOfActiveSessions.get(userInfoVO.getId()) == sessionID "+menuList.getChild()+" requestId "+requestId);
+
   			if(checkIfValidAccess(menuList.getChild(), requestId)) {
 				//Checks if user is permitted to invoke the given action
   				ServletActionContext.getRequest().setAttribute("requestId", requestId);
@@ -128,6 +131,7 @@ public class UserSessionMgmtInterceptor implements Interceptor {
 		} else {
 			//User has not logged in and does not have permission to call action
 			errorMsg = "Please log in";
+			status = "invalid";
 		}
 		//Add the action error message to result
 		final String error = errorMsg;
@@ -138,6 +142,7 @@ public class UserSessionMgmtInterceptor implements Interceptor {
 			}
 		};
 		invocation.addPreResultListener(preResultListener);
+		
 		return status;
 	}
 	
@@ -148,7 +153,7 @@ public class UserSessionMgmtInterceptor implements Interceptor {
 	 * @return
 	 */
 	public boolean checkIfValidAccess(List<MenuMasterVO> menuList, String requestId) {
-		boolean result = false;
+		boolean result = true;
 		for(Iterator<MenuMasterVO> i = menuList.iterator(); i.hasNext();) {
 			MenuMasterVO node = i.next();
 			if(node.getRequestId().equalsIgnoreCase(requestId)) {

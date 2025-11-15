@@ -64,13 +64,13 @@ a {
 	.image-container {
 		padding-top: 5px;
 		padding-left: 5px;
-		height: 50%;
+		height: 55%;
 		overflow-y:scroll; 
 	}
 	.information-deatsil{
 	   padding-top: 5px;
 		padding-left: 5px;
-		height: 50%;
+		height: 45%;
 	}
 	
 	.thumbnail-close {
@@ -265,7 +265,7 @@ a {
 	}
 	.left-column .panel{
 		margin:1px;
-		padding: 3px;
+		padding: 2px;
 	}
 	.right-column .panel{
 		margin:1px;

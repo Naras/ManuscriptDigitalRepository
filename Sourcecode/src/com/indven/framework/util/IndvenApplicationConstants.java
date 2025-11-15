@@ -48,6 +48,7 @@ public interface IndvenApplicationConstants {
 	 */
 	public static final Long DIGITALMANUSCRIPT_TYPE_BOOK = 1L;
 	public static final Long DIGITALMANUSCRIPT_TYPE_MANUSCRIPT = 2L;
+	public static final Long DIGITALMANUSCRIPT_TYPE_ARTICLE = 3L;
 	
 	/**
 	 * Person type

@@ -9,6 +9,7 @@
 <%@ page import="java.sql.*" %>
 <%@ page import="com.indven.framework.util.IndvenApplicationConstants" %>
 <%@ page import="java.util.ResourceBundle" %>
+<%@ page import="java.net.URLEncoder" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <body style="margin:0px;">
@@ -86,8 +87,6 @@ background-color: #D9534F;
 				@SuppressWarnings("unchecked")
 				Map<String, Object> parameters = (Map<String, Object>) request.getAttribute("parameters");
 				String jasperPath = (String) request.getAttribute("jasperPath");
-				String docType = (String)request.getAttribute("docType");
-		
 				if(jasperPath != null) {
 					File reportFile = new File(request.getServletContext().getRealPath(jasperPath));
 				    if (!reportFile.exists())
@@ -131,9 +130,7 @@ background-color: #D9534F;
 						} else if (pageIndex > lastPageIndex) {
 							pageIndex = lastPageIndex;
 						}
-						
 						StringBuffer sbuffer = new StringBuffer();
-						
 						HtmlExporter exporter = new HtmlExporter();
 						exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
 						exporter.setParameter(JRExporterParameter.OUTPUT_WRITER, out);
@@ -146,25 +143,43 @@ background-color: #D9534F;
 			           // response.setContentType("text/html");
 						exporter.setParameter(JRExporterParameter.PAGE_INDEX, Integer.valueOf(pageIndex));
 						exporter.exportReport(); 
+						/* 
+						 String strBasePath = request.getSession().getServletContext().getRealPath("/");
+						 JRExporter exporter = new JRHtmlExporter();
+						response.setContentType("text/html");
+						request.getSession().setAttribute(net.sf.jasperreports.j2ee.servlets.ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
+						exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+						exporter.setParameter(JRExporterParameter.OUTPUT_WRITER, response.getWriter());
+						exporter.setParameter(JRExporterParameter.OUTPUT_STRING_BUFFER, sbuffer);
+						// Map imagesMap=new HashMap();
+						//request.getSession().setAttribute("IMAGES_MAP",imagesMap);
+						//exporter.setParameter(JRHtmlExporterParameter.IMAGES_MAP,imagesMap);
+						exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI,"image?image="); 
+						//exporter.setParameter(JRHtmlExporterParameter.IS_USING_IMAGES_TO_ALIGN, Boolean.FALSE); 
+						//exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, request.getContextPath() + "/temp/");
+               		 	exporter.setParameter(JRHtmlExporterParameter.IS_OUTPUT_IMAGES_TO_DIR, true);
+                		exporter.setParameter(JRHtmlExporterParameter.IMAGES_DIR, new File(strBasePath + "" + File.separator + "temp" + File.separator + ""));
+						exporter.setParameter(JRExporterParameter.PAGE_INDEX, Integer.valueOf(pageIndex));
+						exporter.exportReport();  */
 				
 				
 			%>
-		<div style="border:2px solid #DDE3E5;width: 99.3%; border-radius:5px;background-color: #F5FAF3;" align="center">
+		<div style="border:2px solid #DDE3E5;width: 99.3%; border-radius:5px;background-color: #DEF4F8;" align="center">
 			<table style="border-width: 0px; width:100% ">
-		      <tr style="background-color: #3C763D;">	
+		      <tr style="background-color: #404040;">	
 		      	<td align="center">
 		      		<table>
 		      			<tr>
 		      			    <td><button style="background-image: url(assets/images/print.jpg);height: 30px; width: 26px;cursor:pointer;" value="Pri" onclick="printDiv();"></button></td>
-		      				<td><a href="pdfReport.action?jasperPath=<%=jasperPath%>&docType=<%=docType%>&status=<%=parameters.get("status")%>&type=pdf">
+		      				<td><a href="pdfReport.action?jasperPath=<%=jasperPath%>&reportfilter=<%=URLEncoder.encode((String)parameters.get("reportfilter"), "UTF-8")%>&type=pdf">
 		      					<button style="background-image: url(assets/images/pdf.jpg);height: 30px; width: 26px;cursor:pointer;"></button></a></td>
-		      				<td><a href="xlsReport.action?jasperPath=<%=jasperPath%>&docType=<%=docType%>&status=<%=parameters.get("status")%>&type=xls">
+		      				<td><a href="xlsReport.action?jasperPath=<%=jasperPath%>&reportfilter=<%=URLEncoder.encode((String)parameters.get("reportfilter"), "UTF-8")%>&type=xlsx">
 		      					<button style="background-image: url(assets/images/xls.png);height: 30px; width: 26px;cursor:pointer;"></button></a></td>
 							<%
 								if (pageIndex > 0) {
 							%>
-							        <td><a href="generateReportForNext.action?jasperPath=<%=jasperPath%>&docType=<%=docType%>&status=<%=parameters.get("status")%>&page=0"><img src="<%=request.getContextPath() %>/assets/images/first.GIF"></a></td>
-							        <td><a href="generateReportForNext.action?jasperPath=<%=jasperPath%>&docType=<%=docType%>&status=<%=parameters.get("status")%>&page=<%=pageIndex - 1%>"><img src="<%=request.getContextPath() %>/assets/images/previous.GIF"></a></td>
+							        <td><a href="generateReportForNext.action?jasperPath=<%=jasperPath%>&reportfilter=<%=URLEncoder.encode((String)parameters.get("reportfilter"), "UTF-8")%>&page=0"><img src="<%=request.getContextPath() %>/assets/images/first.GIF"></a></td>
+							        <td><a href="generateReportForNext.action?jasperPath=<%=jasperPath%>&reportfilter=<%=URLEncoder.encode((String)parameters.get("reportfilter"), "UTF-8")%>&page=<%=pageIndex - 1%>"><img src="<%=request.getContextPath() %>/assets/images/previous.GIF"></a></td>
 							<%
 								} else {
 							%>
@@ -175,8 +190,8 @@ background-color: #D9534F;
 							
 								if (pageIndex < lastPageIndex) {
 							%>
-							        <td><a href="generateReportForNext.action?jasperPath=<%=jasperPath%>&docType=<%=docType%>&status=<%=parameters.get("status")%>&page=<%=pageIndex + 1%>"><img src="<%=request.getContextPath() %>/assets/images/next.GIF"></a></td>
-							        <td><a href="generateReportForNext.action?jasperPath=<%=jasperPath%>&docType=<%=docType%>&status=<%=parameters.get("status")%>&page=<%=lastPageIndex%>"><img src="<%=request.getContextPath() %>/assets/images/last.GIF"></a></td>
+							        <td><a href="generateReportForNext.action?jasperPath=<%=jasperPath%>&reportfilter=<%=URLEncoder.encode((String)parameters.get("reportfilter"), "UTF-8")%>&page=<%=pageIndex + 1%>"><img src="<%=request.getContextPath() %>/assets/images/next.GIF"></a></td>
+							        <td><a href="generateReportForNext.action?jasperPath=<%=jasperPath%>&reportfilter=<%=URLEncoder.encode((String)parameters.get("reportfilter"), "UTF-8")%>&page=<%=lastPageIndex%>"><img src="<%=request.getContextPath() %>/assets/images/last.GIF"></a></td>
 							<%
 								} else {
 							%>

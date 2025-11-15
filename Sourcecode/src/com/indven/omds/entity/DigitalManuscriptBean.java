@@ -23,7 +23,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.indven.omds.util.DocumentStatusEnum;
-import com.indven.omds.util.ManuscriptConditionType;
+//import com.indven.omds.util.ManuscriptConditionType;
 import com.indven.omds.util.ManuscriptDocumentationType;
 import com.indven.omds.util.ManuscriptTypeEnum;
 import com.indven.omds.util.ManuscriptWorkType;
@@ -196,6 +196,15 @@ public class DigitalManuscriptBean implements Serializable {
 	@JoinColumn(name = "nmmDetailsFkId", nullable=true,insertable=false,updatable=false)
 	private NMMDetailsBean nmmDetailsFkObj;
 	
+	
+	@Column(name = "articleDetailFkId", insertable = true, updatable = true, nullable = true)
+	private Long articleDetailFkId;
+	
+	@OneToOne
+	@JoinColumn(name = "articleDetailFkId", nullable=true,insertable=false,updatable=false)
+	private ArticleDetailsBean articleDetailsFkObj;
+	
+	
 	@OneToMany(mappedBy = "digitalManuscriptFkObj", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<DigitalManuscriptFrame> digitalManuscriptFrames;
 
@@ -208,9 +217,20 @@ public class DigitalManuscriptBean implements Serializable {
 	@Column(name = "total_no_of_folios", insertable = true, updatable = true, nullable = true)
 	private Long totalNumberOfFolios;
 	
-	@Enumerated(EnumType.ORDINAL)
+	/*@Enumerated(EnumType.ORDINAL)
 	@Column(name = "condition_of_manuscript", nullable = true)
-	private ManuscriptConditionType conditionOfManuscript;
+	private ManuscriptConditionType conditionOfManuscript;*/
+
+	public String getConditionOfManuscript() {
+		return conditionOfManuscript;
+	}
+
+	public void setConditionOfManuscript(String conditionOfManuscript) {
+		this.conditionOfManuscript = conditionOfManuscript;
+	}
+
+	@Column(name = "condition_of_manuscript", nullable = true)
+	private String conditionOfManuscript;
 	
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "manuscripttype", nullable = true)
@@ -255,7 +275,114 @@ public class DigitalManuscriptBean implements Serializable {
 	@Column(name = "transLanguage", insertable = true, updatable = true, nullable = true)
 	private String language;
 	
+	@Column(name = "fieldsCovered", insertable = true, updatable = true, nullable = true)
+	private String fieldsCovered;
 	
+	@Column(name = "articleLaguage", insertable = true, updatable = true, nullable = true)
+	private Integer articleLaguage;
+	
+	@OneToMany(mappedBy = "manuscriptFkObj", cascade = CascadeType.ALL)
+	private List<ManuscriptAuthorMapperBean> authorMapperList;
+
+
+	@Column(name = "patha", insertable = true, updatable = true , nullable = true,length = 2)
+	private String patha;
+
+	@Column(name = "redMarked", insertable = true, updatable = true , nullable = true,length = 2)
+	private Short redMarked;
+
+	@Column(name = "redLines", insertable = true, updatable = true , nullable = true,length = 2)
+	private Short redLines;
+
+	@Column(name = "redDigits", insertable = true, updatable = true , nullable = true,length = 2)
+	private Short redDigits;
+
+	@Column(name = "redLetters", insertable = true, updatable = true , nullable = true,length = 2)
+	private Short redLetters;
+
+	@Column(name = "redMarkedText", insertable = true, updatable = true , nullable = true,length = 20)
+	private String redMarkedText;
+
+	@Column(name = "redLinesText", insertable = true, updatable = true , nullable = true,length = 20)
+	private String redLinesText;
+
+	@Column(name = "redDigitsText", insertable = true, updatable = true , nullable = true,length = 20)
+	private String redDigitsText;
+
+	@Column(name = "redLettersText", insertable = true, updatable = true , nullable = true,length = 20)
+	private String redLettersText;
+
+	@Column(name = "linesPerPage", insertable = true, updatable = true , nullable = true,length = 20)
+	private String linesPerPage;
+
+	@Column(name = "charactersPerLine", insertable = true, updatable = true , nullable = true,length = 20)
+	private String charactersPerLine;
+
+	@Column(name = "edited", insertable = true, updatable = true , nullable = true,length = 2)
+	private Short edited=0;
+
+	@Column(name = "editedType", insertable = true, updatable = true , nullable = true,length = 100)
+	private String editedType;
+
+	@Column(name = "editedTypeRemarks", insertable = true, updatable = true , nullable = true,length = 500)
+	private String editedTypeRemarks;
+
+	@Column(name = "inkPigment", insertable = true, updatable = true , nullable = true,length = 100)
+	private String inkPigment;
+
+	@Column(name = "inkPigmentOthers", insertable = true, updatable = true , nullable = true,length = 255)
+	private String inkPigmentOthers;
+
+	@Column(name = "illustrations", insertable = true, updatable = true , nullable = true,length = 2)
+	private Short illustrations=0;
+
+	@Column(name = "illustrationsType", insertable = true, updatable = true , nullable = true,length = 100)
+	private String illustrationsType;
+
+	@Column(name = "illustrationsOthers", insertable = true, updatable = true , nullable = true,length = 255)
+	private String illustrationsOthers;
+
+
+	@Column(name = "decorated", insertable = true, updatable = true , nullable = true,length = 2)
+	private Short decorated=0;
+
+	@Column(name = "decoratedRemarks", insertable = true, updatable = true , nullable = true,length = 500)
+	private String decoratedRemarks;
+
+	@Column(name = "miscellaneousRemarks", insertable = true, updatable = true , nullable = true,length = 1000)
+	private String miscellaneousRemarks;
+
+	public Integer getArticleLaguage() {
+		return articleLaguage;
+	}
+
+	/**
+	 * @return the authorMapperList
+	 */
+	public final List<ManuscriptAuthorMapperBean> getAuthorMapperList() {
+		return authorMapperList;
+	}
+
+	/**
+	 * @param authorMapperList the authorMapperList to set
+	 */
+	public final void setAuthorMapperList(
+			List<ManuscriptAuthorMapperBean> authorMapperList) {
+		this.authorMapperList = authorMapperList;
+	}
+
+	public void setArticleLaguage(Integer articleLaguage) {
+		this.articleLaguage = articleLaguage;
+	}
+
+	public String getFieldsCovered() {
+		return fieldsCovered;
+	}
+
+	public void setFieldsCovered(String fieldsCovered) {
+		this.fieldsCovered = fieldsCovered;
+	}
+
 	/*	*//**
 	 * @return the bundleMasterFkObj
 	 *//*
@@ -269,6 +396,22 @@ public class DigitalManuscriptBean implements Serializable {
 	public final void setBundleMasterFkObj(BundleMasterBean bundleMasterFkObj) {
 		this.bundleMasterFkObj = bundleMasterFkObj;
 	}*/
+
+	public Long getArticleDetailFkId() {
+		return articleDetailFkId;
+	}
+
+	public void setArticleDetailFkId(Long articleDetailFkId) {
+		this.articleDetailFkId = articleDetailFkId;
+	}
+
+	public ArticleDetailsBean getArticleDetailsFkObj() {
+		return articleDetailsFkObj;
+	}
+
+	public void setArticleDetailsFkObj(ArticleDetailsBean articleDetailsFkObj) {
+		this.articleDetailsFkObj = articleDetailsFkObj;
+	}
 
 	/**
 	 * @return the language
@@ -423,21 +566,21 @@ public class DigitalManuscriptBean implements Serializable {
 	public final void setTotalNumberOfFolios(Long totalNumberOfFolios) {
 		this.totalNumberOfFolios = totalNumberOfFolios;
 	}
-
-	/**
+/*
+	*//**
 	 * @return the conditionOfManuscript
-	 */
+	 *//*
 	public final ManuscriptConditionType getConditionOfManuscript() {
 		return conditionOfManuscript;
 	}
 
-	/**
+	*//**
 	 * @param conditionOfManuscript the conditionOfManuscript to set
-	 */
+	 *//*
 	public final void setConditionOfManuscript(
 			ManuscriptConditionType conditionOfManuscript) {
 		this.conditionOfManuscript = conditionOfManuscript;
-	}
+	}*/
 
 	/**
 	 * @return the documentationOfManuscript
@@ -498,6 +641,17 @@ public class DigitalManuscriptBean implements Serializable {
 
 	@Column(name = "cataloguedetails", insertable = true, updatable = true, nullable = true)
 	private String catalogueDetails;
+
+	@Column(name = "subject1", insertable = true, updatable = true, nullable = true)
+	private String subject1;
+	
+	public String getSubject1() {
+		return subject1;
+	}
+
+	public void setSubject1(String subject1) {
+		this.subject1 = subject1;
+	}
 
 	/**
 	 * @return the subCommentatorFkId
@@ -1016,4 +1170,186 @@ public class DigitalManuscriptBean implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
+	public String getPatha() {
+		return patha;
+	}
+
+	public void setPatha(String patha) {
+		this.patha = patha;
+	}
+
+	public Short getRedMarked() {
+		return redMarked;
+	}
+
+	public void setRedMarked(Short redMarked) {
+		this.redMarked = redMarked;
+	}
+
+	public Short getRedLines() {
+		return redLines;
+	}
+
+	public void setRedLines(Short redLines) {
+		this.redLines = redLines;
+	}
+
+	public Short getRedDigits() {
+		return redDigits;
+	}
+
+	public void setRedDigits(Short redDigits) {
+		this.redDigits = redDigits;
+	}
+
+	public Short getRedLetters() {
+		return redLetters;
+	}
+
+	public void setRedLetters(Short redLetters) {
+		this.redLetters = redLetters;
+	}
+
+	public String getRedMarkedText() {
+		return redMarkedText;
+	}
+
+	public void setRedMarkedText(String redMarkedText) {
+		this.redMarkedText = redMarkedText;
+	}
+
+	public String getRedLinesText() {
+		return redLinesText;
+	}
+
+	public void setRedLinesText(String redLinesText) {
+		this.redLinesText = redLinesText;
+	}
+
+	public String getRedDigitsText() {
+		return redDigitsText;
+	}
+
+	public void setRedDigitsText(String redDigitsText) {
+		this.redDigitsText = redDigitsText;
+	}
+
+	public String getRedLettersText() {
+		return redLettersText;
+	}
+
+	public void setRedLettersText(String redLettersText) {
+		this.redLettersText = redLettersText;
+	}
+
+	public String getLinesPerPage() {
+		return linesPerPage;
+	}
+
+	public void setLinesPerPage(String linesPerPage) {
+		this.linesPerPage = linesPerPage;
+	}
+
+	public String getCharactersPerLine() {
+		return charactersPerLine;
+	}
+
+	public void setCharactersPerLine(String charactersPerLine) {
+		this.charactersPerLine = charactersPerLine;
+	}
+
+	public Short getEdited() {
+		return edited;
+	}
+
+	public void setEdited(Short edited) {
+		this.edited = edited;
+	}
+
+	public String getEditedType() {
+		return editedType;
+	}
+
+	public void setEditedType(String editedType) {
+		this.editedType = editedType;
+	}
+
+	public String getEditedTypeRemarks() {
+		return editedTypeRemarks;
+	}
+
+	public void setEditedTypeRemarks(String editedTypeRemarks) {
+		this.editedTypeRemarks = editedTypeRemarks;
+	}
+
+	public String getInkPigment() {
+		return inkPigment;
+	}
+
+	public void setInkPigment(String inkPigment) {
+		this.inkPigment = inkPigment;
+	}
+
+	public String getInkPigmentOthers() {
+		return inkPigmentOthers;
+	}
+
+	public void setInkPigmentOthers(String inkPigmentOthers) {
+		this.inkPigmentOthers = inkPigmentOthers;
+	}
+
+	public Short getIllustrations() {
+		return illustrations;
+	}
+
+	public void setIllustrations(Short illustrations) {
+		this.illustrations = illustrations;
+	}
+
+	public String getIllustrationsType() {
+		return illustrationsType;
+	}
+
+	public void setIllustrationsType(String illustrationsType) {
+		this.illustrationsType = illustrationsType;
+	}
+
+	public String getIllustrationsOthers() {
+		return illustrationsOthers;
+	}
+
+	public void setIllustrationsOthers(String illustrationsOthers) {
+		this.illustrationsOthers = illustrationsOthers;
+	}
+
+	public Short getDecorated() {
+		return decorated;
+	}
+
+	public void setDecorated(Short decorated) {
+		this.decorated = decorated;
+	}
+
+	public String getDecoratedRemarks() {
+		return decoratedRemarks;
+	}
+
+	public void setDecoratedRemarks(String decoratedRemarks) {
+		this.decoratedRemarks = decoratedRemarks;
+	}
+
+	public String getMiscellaneousRemarks() {
+		return miscellaneousRemarks;
+	}
+
+	public void setMiscellaneousRemarks(String miscellaneousRemarks) {
+		this.miscellaneousRemarks = miscellaneousRemarks;
+	}
+    public String toString(){
+        return "DigitalMansucriptBean id:" + this.id + " name:" + this.name 
+//                + " languageFkId:" +this.languageFkId + " scribeFkId:" + this.scribeFkId
+                + " frames size:" +this.getDigitalManuscriptFrames().size()
+                ;
+    }
 }

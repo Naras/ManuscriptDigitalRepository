@@ -7,7 +7,7 @@
 .table {
     margin-bottom: 20px;
     width: 100%;
-    background-color: #f5faf3;
+    background-color: #d8e9f7;
 }
 
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
@@ -15,7 +15,7 @@
     line-height: 1.42857;
     padding: 8px;
     vertical-align: top;
-    background-color: #f5faf3;
+    background-color: #d8e9f7;
 }
 
 </style>
@@ -29,7 +29,8 @@ SearchVO searchVO = (SearchVO)request.getAttribute("respectiveVO");
 tableName = searchVO.getTableName();
 %>
 	<%@include file='../layout/header.jsp'%>
-	<div class="container container-center alert alert-success appTable" style="max-width: 60%;">
+	<div class="container container-center" style="max-width: 60%;">
+	<div class=" alert alert-success appTable centerdiv">
 	<div class="form" style="padding-top: 0px;">
 		<div>
 			<%@ include file='../messagecontainer.jsp' %>
@@ -55,7 +56,7 @@ tableName = searchVO.getTableName();
 				<input type="hidden" id="createPageURL" value = "<%=request.getContextPath() %><%= searchVO.getCreatePageURL()%>"/>
 				<div class="form-group row buttons">
 					<div class="col-xs-4 col-md-4">
-						<button type="button" class="btn btn-lg btn-primary btn-block" onclick="findAllRecord(1, 20);" >Find All</button>
+						<button type="button" class="btn btn-lg btn-primary btn-block" onclick="findAllRecord(1, 20);" >List All</button>
 					</div>
 					<div class="col-xs-4 col-md-4">
 						<button type="button" class="btn btn-lg btn-primary btn-block" onclick="searchSpecificRecord(1,20);" >Search</button>
@@ -77,6 +78,7 @@ tableName = searchVO.getTableName();
 				</div>
 			</s:form>
 		</div>
+	</div>
 	</div>
 	</div>
 	<%@ include file="../layout/footer.jsp" %>
@@ -118,7 +120,7 @@ tableName = searchVO.getTableName();
 				isConditionalSearch = true;
 				pageNo = pageNumber;
 			} else {
-				alert("Please enter any value to search.");
+				alert("Please enter some value to search.");
 			}
 			
 		}

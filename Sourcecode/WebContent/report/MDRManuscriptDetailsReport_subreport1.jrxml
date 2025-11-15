@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MDRManuscriptDetailsReport_subreport1" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="013e3330-bddb-4ddd-bb44-6e8bb1114cae">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="imagePath" class="java.lang.String"/>
+	<parameter name="parentid" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT (SELECT filePath FROM omds_digital_manuscript_frame WHERE digitalManuscriptFkId=$P{parentid} AND frame_order =1) AS frame1,
+(SELECT filePath FROM omds_digital_manuscript_frame WHERE digitalManuscriptFkId=$P{parentid} AND frame_order =2) AS frame2,
+(SELECT filePath FROM omds_digital_manuscript_frame WHERE digitalManuscriptFkId=$P{parentid} AND frame_order =3) AS frame3]]>
+	</queryString>
+	<field name="frame1" class="java.lang.String"/>
+	<field name="frame2" class="java.lang.String"/>
+	<field name="frame3" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="162" splitType="Stretch">
+			<image hAlign="Center" vAlign="Middle" isLazy="true">
+				<reportElement uuid="6fa6622c-22a2-423f-9684-d8c6162e9406" x="10" y="1" width="173" height="160"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+				<imageExpression><![CDATA[$P{imagePath}+($F{frame1}==null?"/Reportlogo.png":$F{frame1})]]></imageExpression>
+			</image>
+			<image hAlign="Center" vAlign="Middle" isLazy="true">
+				<reportElement uuid="85dc1ad2-a34c-4479-bd67-24dfdfec2bf8" x="374" y="1" width="173" height="160"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+				<imageExpression><![CDATA[$P{imagePath}+($F{frame3}==null?"/Reportlogo.png":$F{frame3})]]></imageExpression>
+			</image>
+			<image hAlign="Center" vAlign="Middle" isLazy="true">
+				<reportElement uuid="bdb04e03-5671-45a7-bf23-47efe0b6e4af" x="190" y="1" width="173" height="160"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+				<imageExpression><![CDATA[$P{imagePath}+($F{frame2}==null?"/Reportlogo.png":$F{frame2})]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+</jasperReport>

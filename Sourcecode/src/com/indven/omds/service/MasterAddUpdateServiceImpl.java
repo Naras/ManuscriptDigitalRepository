@@ -4,21 +4,13 @@ import java.util.ArrayList;
 
 import java.util.List;
 
+import com.indven.omds.entity.*;
+import com.indven.omds.vo.*;
 import org.hibernate.HibernateException;
 
 import com.indven.framework.util.CustomBeanUtil;
 import com.indven.omds.dao.MasterAddUpdateDAOImpl;
-import com.indven.omds.entity.BundleMasterBean;
-import com.indven.omds.entity.CategoryBean;
-import com.indven.omds.entity.LanguageBean;
-import com.indven.omds.entity.ScriptBean;
-import com.indven.omds.entity.TagMasterBean;
 import com.indven.omds.exception.OMDPCoreException;
-import com.indven.omds.vo.BundleMasterVO;
-import com.indven.omds.vo.CategoryVO;
-import com.indven.omds.vo.LanguageVO;
-import com.indven.omds.vo.ScriptVO;
-import com.indven.omds.vo.TagMasterVO;
 
 public class MasterAddUpdateServiceImpl {
 
@@ -74,8 +66,8 @@ public class MasterAddUpdateServiceImpl {
 		}
 	}
 	
-	
-	
+
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public CategoryVO saveCategory(CategoryVO vo) throws OMDPCoreException {
 		CategoryBean bean = new CategoryBean();
@@ -86,7 +78,7 @@ public class MasterAddUpdateServiceImpl {
 			if(bean.getId() != null && bean.getId() <= 0) {
 				bean.setId(null);
 			}
-			
+
 			if(bean.getParentFKId() != null && bean.getParentFKId() <= 0) {
 				bean.setParentFKId(null);
 			}
@@ -310,4 +302,58 @@ public class MasterAddUpdateServiceImpl {
 			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_FIND_THE_RECORD, e);
 		}
 	}
+
+ 	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public SpecificCategoryVO saveSpecificCategory(SpecificCategoryVO specificCategoryVO) throws OMDPCoreException {
+		SpecificCategoryBean bean = new SpecificCategoryBean();
+		bean = (SpecificCategoryBean) CustomBeanUtil.voToEntity(specificCategoryVO, bean);
+		bean.setIsDeleted(false);
+		MasterAddUpdateDAOImpl dao = new MasterAddUpdateDAOImpl(SpecificCategoryBean.class);
+		try {
+			if(bean.getId() != null && bean.getId() <= 0) {
+				bean.setId(null);
+			}
+			bean = (SpecificCategoryBean) dao.saveOrUpdate(bean);
+			specificCategoryVO = (SpecificCategoryVO) CustomBeanUtil.entityToVO(bean, specificCategoryVO);
+		} catch (HibernateException e) {
+			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_SAVE_THE_RECORD, e);
+		}catch (Exception  e) {
+			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_SAVE_THE_RECORD, e);
+		}
+		return specificCategoryVO;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public SpecificCategoryVO findSpecificCategoryById(Long id) throws OMDPCoreException {
+		SpecificCategoryBean bean = new SpecificCategoryBean();
+		SpecificCategoryVO vo = new SpecificCategoryVO();
+
+		MasterAddUpdateDAOImpl dao = new MasterAddUpdateDAOImpl(SpecificCategoryBean.class);
+		try {
+			bean = (SpecificCategoryBean) dao.findById(id);
+			vo = (SpecificCategoryVO) CustomBeanUtil.entityToVO(bean, vo);
+			/*if(bean.getParentFkObj() != null) {
+				vo.setParentName(bean.getParentFkObj().getName());
+				vo.setParentFKId(bean.getParentFkObj().getId());
+			}*/
+		} catch (HibernateException e) {
+			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_FIND_THE_RECORD, e);
+		} catch (Exception e) {
+			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_FIND_THE_RECORD, e);
+		}
+		return vo;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void deleteSpecificCategoryById(Long id) throws OMDPCoreException {
+		MasterAddUpdateDAOImpl dao = new MasterAddUpdateDAOImpl(SpecificCategoryBean.class);
+		try {
+			dao.deleteById(id);
+		} catch (HibernateException e) {
+			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_FIND_THE_RECORD, e);
+		} catch (Exception e) {
+			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_FIND_THE_RECORD, e);
+		}
+	}
+
 }

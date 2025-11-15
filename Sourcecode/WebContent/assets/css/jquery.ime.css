@@ -1,11 +1,11 @@
 .imeselector {
 	position: absolute;
 	/* @embed */
-	background: url('/WEB-INF/assets/images/ime/ime-active.png') no-repeat left center;
+	background: url('/MDR/assets/images/ime/ime-active.png') no-repeat left center;
 	/* @embed */
-	background-image: -webkit-linear-gradient(transparent, transparent), url('/WEB-INF/assets/images/ime/ime-active.svg');
+	background-image: -webkit-linear-gradient(transparent, transparent), url('/MDR/assets/images/ime/ime-active.svg');
 	/* @embed */
-	background-image: linear-gradient(transparent, transparent), url('/WEB-INF/assets/images/ime/ime-active.svg');
+	background-image: linear-gradient(transparent, transparent), url('/MDR/assets/images/ime/ime-active.svg');
 	background-color: rgba(255,255,255,0.75);
 	background-position: left 3px center;
 	background-position-x: 3px;
@@ -170,11 +170,11 @@ span.ime-disable-shortcut {
 
 .imeselector-menu .ime-checked {
 	/* @embed */
-	background: url('/WEB-INF/assets/images/ime/tick.png') no-repeat left center;
+	background: url('/MDR/assets/images/ime/tick.png') no-repeat left center;
 	/* @embed */
-	background-image: -webkit-linear-gradient(transparent, transparent), url('/WEB-INF/assets/images/ime/tick.svg');
+	background-image: -webkit-linear-gradient(transparent, transparent), url('/MDR/assets/images/ime/tick.svg');
 	/* @embed */
-	background-image: linear-gradient(transparent, transparent), url('/WEB-INF/assets/images/ime/tick.svg');
+	background-image: linear-gradient(transparent, transparent), url('/MDR/assets/images/ime/tick.svg');
 	background-position: left 4px center;
 	background-position-x: 4px;
 }

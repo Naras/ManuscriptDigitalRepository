@@ -22,6 +22,9 @@ public class SpecificCategoryBean implements Serializable {
 	
 	@Column(name = "name")
 	private String name = null;
+
+	@Column(name = "isdeleted")
+	private Boolean isDeleted;
 	
 	public Long getId() {
 		return id;
@@ -37,5 +40,13 @@ public class SpecificCategoryBean implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(Boolean deleted) {
+		isDeleted = deleted;
 	}
 }

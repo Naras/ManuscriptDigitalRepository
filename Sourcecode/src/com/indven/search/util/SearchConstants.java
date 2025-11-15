@@ -24,6 +24,10 @@ public class SearchConstants {
 		CREATE_ACTION_URL.put("CategoryMaster", "/addcategory.action");
 		CREATE_ACTION_URL.put("ScriptMaster", "/addscript.action");
 		CREATE_ACTION_URL.put("BundleMaster", "/addbundle.action");
+
+
+		CREATE_ACTION_URL.put("SpecificCategoryMaster", "/addspecificcategory.action");
+
 		
 		VALUES_BY_NAME.put("EmployeeMaster", "com.indven.portal.hrd.vo.EmployeeMasterVO");
 	    VALUES_BY_NAME.put("DigitalManuscript", "com.indven.omds.vo.DigitalManuscriptVO");
@@ -31,6 +35,9 @@ public class SearchConstants {
 	    VALUES_BY_NAME.put("CategoryMaster", "com.indven.omds.vo.CategoryVO");
 	    VALUES_BY_NAME.put("ScriptMaster", "com.indven.omds.vo.ScriptVO");
 	    VALUES_BY_NAME.put("BundleMaster", "com.indven.omds.vo.BundleMasterVO");
+
+	    //Added Newly on 19/08/2017
+		VALUES_BY_NAME.put("SpecificCategoryMaster", "com.indven.omds.vo.SpecificCategoryVO");
 	    
 	   	    
 	    ENTITY_FOR_VO.put("com.indven.portal.hrd.vo.EmployeeMasterVO", "EmployeeMasterBean");
@@ -39,6 +46,9 @@ public class SearchConstants {
 	    ENTITY_FOR_VO.put("com.indven.omds.vo.CategoryVO", "CategoryBean");
 	    ENTITY_FOR_VO.put("com.indven.omds.vo.ScriptVO", "ScriptBean");
 	    ENTITY_FOR_VO.put("com.indven.omds.vo.BundleMasterVO", "BundleMasterBean");
+
+		//Added Newly on 19/08/2017
+		ENTITY_FOR_VO.put("com.indven.omds.vo.SpecificCategoryVO", "SpecificCategoryBean");
 	    
 	}
 }

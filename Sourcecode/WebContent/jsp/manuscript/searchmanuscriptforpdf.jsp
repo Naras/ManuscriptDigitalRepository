@@ -24,7 +24,8 @@
 <link href="${pageContext.servletContext.contextPath}/assets/css/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" />
 <link href="${pageContext.servletContext.contextPath}/assets/css/viewimage.css" rel="stylesheet" />
 <link href="${pageContext.servletContext.contextPath}/assets/css/jquery-ui.css" rel="stylesheet" />
-	<div class="container container-center alert alert-success appTable" style="max-width: 60%;">
+	<div class="container container-center" style="max-width: 60%;">
+	<div class=" alert alert-success appTable centerdiv">
 		<div class="form">
 			<div class="alert alert-danger hide" id="msg-container"></div>
 			<%@ include file='../messagecontainer.jsp' %>
@@ -34,11 +35,11 @@
 			</h2>
 			<s:form action="searchManuscriptRecordForPDF" name="searchform" id="searchForm">
 				<div class="form-group row">
-					<label class="col-xs-3 control-label">Manuscript ID</label>
+					<label class="col-xs-3 control-label">Document ID</label>
 					<div class="col-xs-3">
 						<s:textfield name="digitalManuscriptVO.manuscriptId" maxlength="50" cssClass="form-control" id="manuscriptId"/>
 					</div>
-					<label class="col-xs-3 control-label">Manuscript Name</label>
+					<label class="col-xs-3 control-label">Document Name</label>
 					<div class="col-xs-3">
 						<s:textfield name="digitalManuscriptVO.name" maxlength="50" cssClass="form-control" id="manuscriptName"/>
 					</div>
@@ -83,7 +84,7 @@
 						<s:select headerKey="-1" headerValue="Unselected" value="digitalManuscriptVO.categoryFkId" list="categoryVOs" required="true" id="categoryFkId"
 										name="digitalManuscriptVO.categoryFkId" listKey="id" listValue="name" cssClass="form-control"/>
 					</div>
-					<label class="col-xs-3 control-label">Manuscript Status</label>
+					<label class="col-xs-3 control-label">Document Status</label>
 					<div class="col-md-3">
 						 <s:select list="manuscriptDocumentationTypes" cssClass="form-control"
 				              name="digitalManuscriptVO.documentationOfManuscript" autoComplete="false" maxlength="50"/>
@@ -135,10 +136,14 @@
 						<%-- <s:text name="((selectedPage-1)*10)+1"></s:text> &nbsp-
 						<s:if test="selectedPage*10 <= totalRecords">
 						<s:text name="selectedPage*10"></s:text></s:if><s:else><s:text name="totalRecords"></s:text></s:else> --%>
-						<input type="button" onclick="nextPrevious(1);" style="background-image: url('./assets/images/last.png');" class="searchbutton"/>
+						<span class="glyphicon glyphicon-backward next-previous" onclick="nextPrevious(1);"></span>
+						<span class="glyphicon glyphicon-chevron-left next-previous" onclick="nextPrevious(2);"></span>
+						<span class="glyphicon glyphicon-chevron-right next-previous" onclick="nextPrevious(3);"></span>
+						<span class="glyphicon glyphicon-forward next-previous" onclick="nextPrevious(4);"></span>
+						<!-- <input type="button" onclick="nextPrevious(1);" style="background-image: url('./assets/images/last.png');" class="searchbutton"/>
 						<input type="button" onclick="nextPrevious(2);" style="background-image: url('./assets/images/previous.png');" class="searchbutton"/>
 						<input type="button" onclick="nextPrevious(3);" style="background-image: url('./assets/images/next.png');" class="searchbutton"/>
-						<input type="button" onclick="nextPrevious(4);" style="background-image: url('./assets/images/lastr.png');" class="searchbutton"/>
+						<input type="button" onclick="nextPrevious(4);" style="background-image: url('./assets/images/lastr.png');" class="searchbutton"/> -->
 						</div>
 						<label class="col-xs-3 control-label" style="width : 20%;">Show page No:</label>
 						<div class="col-xs-3" style="width:10%;">
@@ -199,7 +204,7 @@
 				</table>
 			</div>
 		</div>
-		
+		</div>
 	</div>
 	   <div id="exportingForm" style="display:none">
          <fieldset>
@@ -212,17 +217,17 @@
 				        </div>
                        <div class="form-group row">
 				          <div class="col-md-10">
-				                  <input type="radio" name="selectreport" value="2" id="rd1"/>Export Full Manuscript
+				                  <input type="radio" name="selectreport" value="2" id="rd1"/>Export Full Document
 				          </div>
 				        </div>
 				        <div class="form-group row ">
 				          <div class="col-md-10">
-				              <input type="radio" name="selectreport"  value="3" id="rd2"/>Export Manuscript With Derivedwork
+				              <input type="radio" name="selectreport"  value="3" id="rd2"/>Export Document With Derivedwork
 				          </div>
 				        </div>
 				        <div class="form-group row ">
 				          <div class="col-md-10">
-				                <input type="radio" name="selectreport"  value="4" id="rd3"/>Export Manuscript For Selected Page
+				                <input type="radio" name="selectreport"  value="4" id="rd3"/>Export Document For Selected Page
 				          </div>
 				        </div>
 				         <div class="form-group row " style="display:none" id="fromto">

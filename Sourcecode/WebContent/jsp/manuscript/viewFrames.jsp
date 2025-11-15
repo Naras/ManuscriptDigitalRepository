@@ -4,7 +4,7 @@
 <link href="${pageContext.servletContext.contextPath}/assets/css/jquery.ime.css" rel="stylesheet" />
 <link href="${pageContext.servletContext.contextPath}/assets/css/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" />
 <link href="${pageContext.servletContext.contextPath}/assets/css/viewframe.css" rel="stylesheet" />
-<div class="form" style="height: 90%;">
+<div class="form" style="height: 90%;width:81%;margin-left: 220px;">
 	<div class="container">
 		<div class="alert alert-danger hide container-center" id="msg-container"></div>
 		<div class="container-center">
@@ -17,50 +17,130 @@
 			<s:hidden name="digitalDocumentVO.id"/>
 			<s:hidden name="digitalDocumentVO.digitalManuscriptFkId"/>
 			<br>
-			<h3>View Frames -
+			<div class="panel panel-default">
+				<div class="panel-heading special_font">Manuscript/Article/Book Information</div>
+				<div class="panel-body special_font"
+						 style="">
+						<div class="col-md-4 special_font">
+							<label class="control-label">Document Id:</label>
+							<s:property value="digitalManuscriptVO.manuscriptId" />
+						</div>
+						<div class="col-md-4">
+							<label class="control-label">Document Name:</label>
+							<s:property value="digitalManuscriptVO.name" />
+						</div>
+						<div class="col-md-4">
+							<label class="control-label">Author:</label>
+							<s:property value="digitalManuscriptVO.authorName" />
+						</div>
+						<div class="col-md-4">
+							<label class="control-label">Source:</label>
+							<s:property value="digitalManuscriptVO.organisationVO.name" />
+						</div>
+						<div class="col-md-4">
+							<label class="control-label">Language:</label>
+							<s:property value="digitalManuscriptVO.languageVO.name" />
+						</div>
+						<div class="col-md-4">
+							<label class="control-label">Script:</label>
+							<s:property value="digitalManuscriptVO.scriptVO.name" />
+						</div>
+						<div class="col-md-4">
+							<label class="control-label">Document Type</label>
+							<s:if test="digitalManuscriptVO.documentType==1">
+								Book
+							</s:if>
+							<s:if test="digitalManuscriptVO.documentType==2">
+								Manuscript
+							</s:if>
+							<s:if test="digitalManuscriptVO.documentType==3">
+								Article
+							</s:if>
+<%--
+							<s:property value="digitalManuscriptVO.documentType" />
+--%>
+						</div>
+						<div class="col-md-4">
+							<label class="control-label">No Of frames:</label>
+							<s:property value="digitalManuscriptVO.digitalManuscriptFrameVOs.size()" />
+						</div>
+						<%--<div class="col-md-4">
+							<label class="control-label">No Of frames:</label>
+							<s:property value="digitalManuscriptVO.totalNumberOfFolios" />
+						</div>--%>
+
+
+					</div>
+				</div>
+			</div>
+			<h3>View Frames
 				<span style="color: #FFA500;"><s:text name="digitalManuscriptVO.name"></s:text></span>
 			</h3>
-			
+
 			<div id="frame">
 				<div class="image-details">
 					<div class="left-column frame-filter-container resizable-h ui-widget-content ui-resizable">
 						<div class="image-container panel">
 							<div class="panel-header">
-								Frame
+								<div style="float:left"> Frame</div>
+								<div style="float:right">
+									<s:url id="viewFramesForReSortingURL" action="viewFramesForReSorting.action">
+										<s:param name="id">${digitalManuscriptVO.id}</s:param>
+									</s:url>
+									<s:a href="%{viewFramesForReSortingURL}">
+										<%--<button type="button" class="btn btn-lg btn-success btn-block btn-state-1">View (<s:property value="digitalManuscriptFrameVOs.size()" />)</button>--%>
+										Change Sort Order
+									</s:a>
+
+								</div>
 							</div>
 							<div class="panel-body" oncontextmenu="return false"></div>
 						</div>
 						<div class="information-deatsil panel">
 							<div class="panel-group" id="accordion">
 									<div id="accordionPanelHeader" class="panel">
-										<div class="panel-heading" data-target="#collapseOne" data-toggle="collapse" data-parent="#accordion" style="background: #DFDDDD;">
-											<label style="font-weight: normal;font-size: 14px;cursor: pointer;">Summary</label>	<span class="glyphicon glyphicon-paperclip" style=" float:right;margin-right: 20px;"></span>
+										<div class="panel-heading" data-target="#collapseOne" data-toggle="collapse" data-parent="#accordion" style="background: #DFDDDD;padding: 0px;">
+											<label style="font-weight: normal;font-size: 14px;cursor: pointer; margin-left: 5px;">Summary</label>	<span class="glyphicon glyphicon-paperclip" style=" float:right;margin-right: 20px;margin-top: 5px;"></span>
 										</div>
 										<div id="collapseOne" class="panel-collapse collapse in">
 											<div class="panel-body"
-												style="background:#ffffff; overflow-y: scroll; display: block; margin-top: 1%; height: 70%;font-family: trebuchet ms ; font-size: 11.5px;font-style: italic;">
-												<s:textarea name="digitalManuscriptVO.summary" readonly="true" cssStyle="width:100%;height:100%;font-size: 13px;font-style: italic;background-image: url('/OMDS/assets/images/images.jpg');" />
+												style="background:#ffffff; overflow-y: scroll; display: block; margin-top: 1%; height: 75%;font-family: trebuchet ms ; font-size: 11.5px;font-style: italic;">
+												<!-- <s:textarea name="digitalManuscriptVO.summary" readonly="true" cssStyle="width:100%;height:100%;font-size: 13px;font-style: italic;"/>
+												background-image: url('/MDR/assets/images/images.jpg');" -->
+												<s:property value="digitalManuscriptVO.summary" />
 											</div>
 										</div>
 										</div>
 										<div id="accordionPanelHeader1" class="panel">
-										<div class="panel-heading" data-target="#collapseTwo" data-toggle="collapse" data-parent="#accordion" style="background: #DFDDDD;">
-											<label style="font-weight: normal;font-size: 14px;cursor: pointer;">Other Information</label>
+										<div class="panel-heading" data-target="#collapseTwo" data-toggle="collapse" data-parent="#accordion" style="background: #DFDDDD;padding: 0px;">
+											<label style="font-weight: normal;font-size: 14px;cursor: pointer;margin-left: 5px;">Other Information</label><span class="glyphicon glyphicon-list-alt" style=" float:right;margin-right: 20px;margin-top: 5px;"></span>
 										</div>
 										<div id="collapseTwo" class="panel-collapse collapse">
 											<div class="panel-body"
-												style="background:#ffffff; overflow-y: scroll; display: block; margin-top: 1%; height: 70%;font-family: trebuchet ms ; font-size: 14px;font-style: italic;background-image: url('/OMDS/assets/images/images.jpg');">
+												style="background:#ffffff; overflow-y: scroll; display: block; margin-top: 1%; height: 75%;font-family: trebuchet ms ; font-size: 14px;font-style: italic;">
+												<div>
+													<label class="control-label">Document Id:</label>
+														<s:property value="digitalManuscriptVO.manuscriptId" />
+												</div>
+												<div>
+													<label class="control-label">Document Name:</label>
+														<s:property value="digitalManuscriptVO.name" />
+												</div>
 												<div>
 													<label class="control-label">Author:</label>
-														<s:property value="digitalManuscriptVO.authorVO.name" />
+														<s:property value="digitalManuscriptVO.authorName" />
 												</div>
 												<div>
 													<label class="control-label">Source:</label>
 														<s:property value="digitalManuscriptVO.organisationVO.name" />
 												</div>
 												<div>
-													<label class="control-label">Manuscript Id:</label>
-														<s:property value="digitalManuscriptVO.manuscriptId" />
+													<label class="control-label">Language:</label>
+														<s:property value="digitalManuscriptVO.languageVO.name" />
+												</div>
+												<div>
+													<label class="control-label">Script:</label>
+														<s:property value="digitalManuscriptVO.scriptVO.name" />
 												</div>
 											</div>
 										</div>
@@ -100,12 +180,8 @@
 				<span >/</span>
 			 <span id="totalImg"></span>
 			 </div>
-		   <div class="container-center">
-				<s:url id="assignedToMe" action="searchManuscript.action">
-				</s:url>
-				<s:a href="%{assignedToMe}" cssClass="assignRecord">
-					<button  type="button" class="btn btn-lg btn-danger btn-block ">Cancel</button>
-				</s:a>
+		   <div class="container-center" style="width: 200px;">
+					<button  type="button" class="btn btn-lg btn-danger btn-block " onclick="goBack()">Cancel</button>
 		</div>
 	</div>
 	<%@ include file='../layout/footer.jsp' %>
@@ -131,10 +207,10 @@
 			var htmlString = "";
 			var str="";
 			for(var i = 0; i < Object.keys(fileDiskPathObject).length; i++) {
-				var filePath = fileDiskPathObject[i].filePath.replace(/\\/g, "/");
+				var filePath = fileDiskPathObject[i].filePathReal.replace(/\\/g, "/");
 				htmlString += "<div id='div-"+countImage+"' class='img-thumbnail'>";
-				//htmlString += "<a href='#' class='thumbnail-close'>×</a>";
-				htmlString += "<img src='" + contextPath + '/temp/'+ filePath + "' id='frame_" + fileDiskPathObject[i].id + "' width=35em height=35em class='image-link-container'>";
+				//htmlString += "<a href='#' class='thumbnail-close'>ï¿½</a>";
+				//htmlString += "<img src='" + contextPath + '/imageAction.action?isThumbnail=true&imagePath='+ filePath + "' id='frame_" + fileDiskPathObject[i].id + "' title='" + fileDiskPathObject[i].id + "'  width=35em height=35em class='image-link-container'>";
 				htmlString += "</div>";
 				countImage++;
 			}
@@ -181,12 +257,21 @@
 		String requestd = (String) request.getAttribute("requestId");
 	%>
 	var audioPath = "";
+	$('#frame-img').css('height','150px');
+	$('#frame-img').css('width','150px');
+	$('#frame-img').css('position','relative');
+	$('#frame-img').css('margin-top','250px');
+	$('#frame-img').css('margin-left','230px');
 	$('.frame-container #frame-img').attr('src',"<%=request.getContextPath()%>/assets/images/loading.gif");
 		var xmlHttpRequest = getXMLHttpRequest();
-	
-		xmlHttpRequest.onreadystatechange = getReadyStateHandlerTOSaveResponse(xmlHttpRequest);
-		xmlHttpRequest.open("POST", "findRealImage.action?requestId=" + <%=requestd%>
-				+ "&filePath=" + sapData+"&audioPath="+audioPath, false);
+		var filePath = "<%=request.getContextPath()%>/imageAction.action?requestId="+ <%=requestd%>
+		+ "&imagePath=" + sapData+"&audioPath="+audioPath
+		xmlHttpRequest.onreadystatechange = getReadyStateHandlerTOSaveResponse(xmlHttpRequest,filePath);
+		<%-- xmlHttpRequest.open("POST", "findRealImage.action?requestId="+ <%=requestd%>
+				+ "&filePath=" + sapData+"&audioPath="+audioPath, false); --%>
+		
+			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/imageAction.action?requestId="+ <%=requestd%>
+				+ "&imagePath=" + sapData+"&audioPath="+audioPath, false);
 		xmlHttpRequest.setRequestHeader("Content-Type",	"application/x-www-form-urlencoded");
 		xmlHttpRequest.send();
 	}
@@ -195,16 +280,19 @@
 	 * Returns a function that waits for the state change in XMLHttpRequest
 	 */
 	
-	function getReadyStateHandlerTOSaveResponse(xmlHttpRequest) {
+	function getReadyStateHandlerTOSaveResponse(xmlHttpRequest,filePath) {
 		
 		// an anonymous function returned it listens to the XMLHttpRequest instance
 		return function() {
 			if (xmlHttpRequest.readyState == 4) {
-				if (xmlHttpRequest.status == 200) {
-					
-					var dataRead = JSON.parse(xmlHttpRequest.responseText);
-
-					$('.frame-container #frame-img').attr('src',contextPath + '/temp/' + dataRead.realPath);
+				if (xmlHttpRequest.status == 200) { 
+					//var dataRead = JSON.parse(xmlHttpRequest.responseText);
+			 
+					//$('.frame-container #frame-img').attr('src',contextPath + '/temp/' + dataRead.realPath);
+					$('.frame-container #frame-img').attr('src',filePath);
+					$('#frame-img').css('margin-top','0px');
+					$('#frame-img').css('margin-left','0px');
+					$('#frame-img').css('position','absolute');
 				} else {
 					alert("HTTP error ");
 				};
@@ -243,7 +331,7 @@
 			 $('#div-'+parseInt($("#currentImg").text())).css('border','1px solid #0f4d0d');
 		     $('#div-'+parseInt($("#currentImg").text())).css('background-color','#88cb8a');
 			$("#currentImg").text(imgno+1);
-			ajaxCallTest(fileDiskPathObject[imgno].filePathReal);
+			ajaxCallTest(fileDiskPathObject[imgno].filePathReal); 
 			 }else{
 				alert("This Is The Last Image");
 			} 
@@ -291,5 +379,9 @@
 		
 		$('#fit').click();
 	}; 
+	
+	function goBack(){
+		window.history.back();
+	}
 </script>
 </html>

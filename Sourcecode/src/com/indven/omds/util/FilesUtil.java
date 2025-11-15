@@ -1,10 +1,11 @@
 package com.indven.omds.util;
 
+import com.indven.framework.logging.IndvenLogger;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Random;
+//import java.util.Random;
 
 import com.indven.omds.exception.OMDPCoreException;
 
@@ -13,11 +14,13 @@ import com.indven.omds.exception.OMDPCoreException;
  * @author Saurabh
  */
 public class FilesUtil {
-	
+	private static IndvenLogger logger = IndvenLogger
+            .getInstance(FilesUtil.class);
 	/*
 	 * Saves the file to the given target path
 	 */
 	public static String saveFile(File file, String fileName, String targetPath) throws IOException, OMDPCoreException{
+                logger.debug("saveFile()"+targetPath);
 		FileInputStream in = null;
 		FileOutputStream out = null;
 		File destinationFile = new File (targetPath);
@@ -42,6 +45,36 @@ public class FilesUtil {
 		return destinationFile.getName();
 	}
 	
+	
+	public static String saveFileFromPath(String filePath, String fileName, String targetPath) throws IOException, OMDPCoreException{
+		logger.debug("saveFileFromPath()"+targetPath);
+                File file = new File(filePath);
+		FileInputStream in = null;
+		FileOutputStream out = null;
+		File destinationFile = new File (targetPath);
+		try {
+			in = new FileInputStream( file );
+			out = new FileOutputStream( destinationFile );
+			int c;
+			while ((c = in.read()) != -1) {
+				out.write(c);
+			}
+		}catch (Exception e) {
+			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_PROCESS_THE_RECORD);
+		}finally {
+			if (in != null) {
+				in.close();
+			}
+			if (out != null) {
+				out.close();
+			}
+		}
+		
+		return destinationFile.getName();
+	}
+	
+	
+	
 	/**
 	 * Deletes the file from disk
 	 * Using absolute path
@@ -50,12 +83,13 @@ public class FilesUtil {
 	 * @return boolean
 	 */
 	public static boolean deleteFile(String targetPath) {
-		
+		logger.debug("deleteFile() path:" + targetPath);
 		boolean status = false;
 		
 		File file  = new File(targetPath); //Load file from path
 		status = file.delete(); //Delete file
 		
+		logger.debug("deleteFile() status:" + status);
 		return status;
 	}
 	
@@ -71,7 +105,7 @@ public class FilesUtil {
 	 */
 	public static String copyFileToDirectory(String currentPath, String folderPath, boolean append) throws IOException, OMDPCoreException {
 		String diskPath = null; //Contains the path in file system where the file is to be stored
-		
+		logger.debug("copyFileToDirectory() currentPath:"+ currentPath + " folderpath:"+folderPath+" append:"+append);
 		folderPath = (folderPath.replace("/", File.separator)).trim();
 		currentPath = (currentPath.replace("/", File.separator)).trim();
 		currentPath = (currentPath.replace("\\", File.separator)).trim();

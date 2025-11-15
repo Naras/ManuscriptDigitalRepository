@@ -6,18 +6,22 @@
 	<parameter name="id" class="java.lang.Long"/>
 	<parameter name="recordtype" class="java.lang.Short"/>
 	<queryString>
-		<![CDATA[SELECT (@cnt := @cnt + 1) AS rowNumber,dd.id,dd.TEXT,dm.NAME,op.NAME AS Author FROM omds_digitaldocument_details dd
+		<![CDATA[SELECT (@cnt := @cnt + 1) AS rowNumber,dd.id,dd.TEXT,dm.NAME,GROUP_CONCAT(op.NAME) AS Author FROM omds_digitaldocument_details dd
 JOIN omds_digitaldocument d
 ON dd.digitalDocumentFkId = d.id
 JOIN omds_digital_manuscript_frame fm
 ON d.digitalManuscriptFrameFkId = fm.id
 JOIN omds_digital_manuscript dm
 ON fm.digitalManuscriptFkId = dm.id
-JOIN omds_person op
-ON dm.AuthorFkId = op.Id
+LEFT JOIN  omds_manuscript_authormapper am
+ON dm.Id = am.manuscriptfkid
+LEFT JOIN omds_person op
+ON am.authorfkid = op.Id
  CROSS JOIN (SELECT @cnt := 0) AS dummy
 WHERE fm.digitalManuscriptFkId =$P{id} AND d.recordtype= $P{recordtype}
-AND dd.ismax =1]]>
+AND dd.ismax =1
+GROUP BY dd.id
+ORDER BY dd.id]]>
 	</queryString>
 	<field name="rowNumber" class="java.lang.Long"/>
 	<field name="id" class="java.lang.Long">
@@ -31,15 +35,7 @@ AND dd.ismax =1]]>
 	</field>
 	<field name="Author" class="java.lang.String"/>
 	<background>
-		<band height="802" splitType="Stretch">
-			<staticText>
-				<reportElement uuid="3bdd5d67-94f0-457f-8477-b1d0438d7bc9" mode="Opaque" x="79" y="200" width="428" height="428" forecolor="#9999FF"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
-					<font fontName="SansSerif" size="40" isItalic="true"/>
-				</textElement>
-				<text><![CDATA[FRLHT!]]></text>
-			</staticText>
-		</band>
+		<band height="802" splitType="Stretch"/>
 	</background>
 	<title>
 		<band height="69" splitType="Stretch">

@@ -19,11 +19,14 @@ import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
+import com.indven.omds.entity.*;
+import com.indven.omds.vo.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.indven.framework.exception.IndvenException;
+import com.indven.framework.logging.IndvenLogger;
 import com.indven.framework.service.BaseEntityCRUDService;
 import com.indven.framework.util.CustomBeanUtil;
 import com.indven.framework.util.IndvenApplicationConstants;
@@ -32,42 +35,10 @@ import com.indven.omds.assembler.DigitalDocumentAssembler;
 import com.indven.omds.assembler.DigitalManuscriptAssembler;
 import com.indven.omds.assembler.PublicationAssembler;
 import com.indven.omds.dao.ManuscriptMasterDAOImpl;
-import com.indven.omds.entity.AuthorBean;
-import com.indven.omds.entity.BundleMasterBean;
-import com.indven.omds.entity.CategoryBean;
-import com.indven.omds.entity.DigitalDocumentBean;
-import com.indven.omds.entity.DigitalManuscriptBean;
-import com.indven.omds.entity.DigitalManuscriptFrame;
-import com.indven.omds.entity.DocumentCommentBean;
-import com.indven.omds.entity.LanguageBean;
-import com.indven.omds.entity.ManuscriptSpecificcategoryMapper;
-import com.indven.omds.entity.ManuscriptTagMapper;
-import com.indven.omds.entity.MaterialBean;
-import com.indven.omds.entity.Organisation;
-import com.indven.omds.entity.PublicationBean;
-import com.indven.omds.entity.PublisherBean;
-import com.indven.omds.entity.ScriptBean;
-import com.indven.omds.entity.SpecificCategoryBean;
-import com.indven.omds.entity.TagMasterBean;
 import com.indven.omds.exception.OMDPCoreException;
 import com.indven.omds.util.DocumentStatusEnum;
 import com.indven.omds.util.FilesUtil;
 import com.indven.omds.util.ManuscriptTypeEnum;
-import com.indven.omds.vo.AuthorVO;
-import com.indven.omds.vo.BundleMasterVO;
-import com.indven.omds.vo.CategoryVO;
-import com.indven.omds.vo.DigitalDocumentVO;
-import com.indven.omds.vo.DigitalManuscriptFrameVO;
-import com.indven.omds.vo.DigitalManuscriptVO;
-import com.indven.omds.vo.DocumentCommentVO;
-import com.indven.omds.vo.LanguageVO;
-import com.indven.omds.vo.MaterialVO;
-import com.indven.omds.vo.OrganisationVO;
-import com.indven.omds.vo.PublicationVO;
-import com.indven.omds.vo.PublisherVO;
-import com.indven.omds.vo.ScriptVO;
-import com.indven.omds.vo.SpecificCategoryVO;
-import com.indven.omds.vo.TagMasterVO;
 import com.indven.portal.administration.vo.UserInfoVO;
 import com.indven.portal.hrd.entity.EmployeeMasterBean;
 import com.indven.portal.hrd.vo.EmployeeMasterVO;
@@ -80,7 +51,8 @@ import com.opensymphony.xwork2.ActionContext;
 public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<IndvenResultVO> {
 
 	public ManuscriptMasterDAOImpl dao = new ManuscriptMasterDAOImpl();
-	
+	private static IndvenLogger logger = IndvenLogger
+            .getInstance(ManuscriptMasterServiceImpl.class);
 	@Override
 	public IndvenResultVO save(IndvenResultVO valueObject)
 			throws IndvenException {
@@ -115,6 +87,7 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 	
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> searchManuscriptRecord(DigitalManuscriptVO vo, boolean isFindAll, int setFirst , int recordPerPage) throws OMDPCoreException, JSONException {
+                logger.debug("service.ManuscriptMasterServiceImpl.searchManuscriptRecord() isfindAll:" + isFindAll);
 		List<DigitalManuscriptVO> digitalManuscriptVOs = new ArrayList<>();
 		List<DigitalManuscriptBean> beans = new ArrayList<>();
 		List<DigitalManuscriptBean> beansInWfl = new ArrayList<>();
@@ -143,14 +116,21 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 				maxFolio = 10000L;
 			}
 		}
+                
 		if(isFindAll){
-			map = dao.searchManuscriptRecord(new DigitalManuscriptBean(), new AuthorBean() , new Organisation() , setFirst , recordPerPage , null , minFolio , maxFolio);
-			
-		}else{
+			map = dao.searchManuscriptRecord(new DigitalManuscriptBean(), new AuthorBean(), new Organisation(),
+                                setFirst , recordPerPage , null , null, minFolio , maxFolio);		
+		} else {
+                        Map<String, Object> sessionX = ActionContext.getContext().getSession();
+                        UserInfoVO userInfoVO = (UserInfoVO) sessionX.get(IndvenApplicationConstants.LOGGEDIN_USER_SESSION_DATA);
+                        Long digitizerId = userInfoVO.getReferenceFkId();
+                        logger.debug("service.ManuscriptMasterServiceImpl.saveMergedImages():searchManuscriptRecord() user: "  + userInfoVO);
 			DigitalManuscriptBean digitalManuscriptBean = DigitalManuscriptAssembler.convertVoToEntity(vo);
 //			DocumentStatusEnum documentstatus = DocumentStatusEnum.valueOf(vo.getDocumentPublicationStatus());
 //			short documentstatusShort = (short)documentstatus.ordinal();
-			map = dao.searchManuscriptRecord(digitalManuscriptBean, digitalManuscriptBean.getAuthorFkObj() , digitalManuscriptBean.getOrganisationFkObj(), setFirst , recordPerPage , vo.getSpecificCategoryId(), minFolio , maxFolio);
+			map = dao.searchManuscriptRecordByDigitizerId(digitalManuscriptBean, digitalManuscriptBean.getAuthorFkObj() , 
+                                digitalManuscriptBean.getOrganisationFkObj(), setFirst , recordPerPage , vo.getSpecificCategoryId(),
+                                vo.getAuthorId(), minFolio , maxFolio, digitizerId);
 		}
 		
 		beans = (List<DigitalManuscriptBean>) map.get("manuscriptListFree");
@@ -163,10 +143,16 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 		noOfRecords = (Long) map.get("totalCount");
 		
 		if(beansInWfl != null && beansInWfl.size() > 0) {
-			for(Iterator<DigitalManuscriptBean> i = beansInWfl.iterator(); i.hasNext();) {
-				DigitalManuscriptVO dmVo = DigitalManuscriptAssembler.convertEntityToVo(i.next());
+			//for(Iterator<DigitalManuscriptBean> i = beansInWfl.iterator(); i.hasNext();) {
+			for(int i=0 ; i<beansInWfl.size() ; i++){
+				DigitalManuscriptVO dmVo = DigitalManuscriptAssembler.convertEntityToVo(beansInWfl.get(i));
 				if(dmVo.getManuscriptType().equals("Original")) {
 					dmVo.setIsUnderWfl((short)1);
+				}
+				if(beansInWfl.get(i).getAuthorMapperList().size() > 1){
+					dmVo.setAuthorName(beansInWfl.get(i).getAuthorMapperList().size() + "Authors");
+				}else if(beansInWfl.get(i).getAuthorMapperList().size() == 1){
+					dmVo.setAuthorName(beansInWfl.get(i).getAuthorMapperList().get(0).getAuthorFkObj().getName());
 				}
 				
 				digitalManuscriptVOs.add(dmVo);
@@ -184,6 +170,12 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 				
 				dmVo.setWflProcessOwner(listOfRecordOwners.get(i).getFirstName()+" "+listOfRecordOwners.get(i).getLastName());
 				dmVo.setActivewflProcessId(listOfRecordIds.get(i));
+				
+				if(beansInWflUnderUser.get(i).getAuthorMapperList().size() > 1){
+					dmVo.setAuthorName(beansInWflUnderUser.get(i).getAuthorMapperList().size() + " Authors");
+				}else if(beansInWflUnderUser.get(i).getAuthorMapperList().size() == 1){
+					dmVo.setAuthorName(beansInWflUnderUser.get(i).getAuthorMapperList().get(0).getAuthorFkObj().getName());
+				}
 				digitalManuscriptVOs.add(dmVo);
 			}
 		}
@@ -197,6 +189,21 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 			for(int i=0 ; i<beans.size() ; i++) {
 				DigitalManuscriptVO dmVo = DigitalManuscriptAssembler.convertEntityToVo(beans.get(i));
 				dmVo.setWflProcessOwner("N/A");
+				StringBuffer autherName = new StringBuffer("");
+				if(beans.get(i).getAuthorMapperList().size() > 1){
+					autherName.append(beans.get(i).getAuthorMapperList().size() + " Authors");
+					//dmVo.setAuthorName(beans.get(i).getAuthorMapperList().size() + " Authors");
+				}else if(beans.get(i).getAuthorMapperList().size() == 1){
+					autherName.append(beans.get(i).getAuthorMapperList().get(0).getAuthorFkObj().getName());
+					if(beans.get(i).getAuthorMapperList().get(0).getAuthorFkObj().getDiacriticName() != null){
+						autherName.append(", "+beans.get(i).getAuthorMapperList().get(0).getAuthorFkObj().getDiacriticName());
+					}
+					if(beans.get(i).getAuthorMapperList().get(0).getAuthorFkObj().getRegionalName() != null){
+						autherName.append(", "+beans.get(i).getAuthorMapperList().get(0).getAuthorFkObj().getRegionalName());
+					}
+					//dmVo.setAuthorName(beans.get(i).getAuthorMapperList().get(0).getAuthorFkObj().getName());
+				}
+				dmVo.setAuthorName(autherName.toString());
 				digitalManuscriptVOs.add(dmVo);
 			}
 		}
@@ -216,9 +223,6 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 		returnmap.put("totalCount", noOfRecords);
 		return returnmap;
 	}
-	
-	
-	
 	
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> searchManuscriptForMerging(DigitalManuscriptVO vo, boolean isFindAll) throws OMDPCoreException, JSONException {
@@ -323,21 +327,7 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 		returnmap.put("totalCount", noOfRecords);
 		return returnmap;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	public List<LanguageVO> findAllLanguages() throws OMDPCoreException {
 		List<LanguageVO> languageList = new ArrayList<>();
 		List<LanguageBean> languageBeanList = new ArrayList<>();
@@ -364,6 +354,34 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 			vos.add(vo);
 		}
 		
+		return vos;
+	}
+
+	public List<PathaVO> findAllPathas() throws OMDPCoreException {
+		List<PathaVO> vos = new ArrayList<>();
+		List<PathaBean> beans = new ArrayList<>();
+
+		beans = dao.findAllPathas();
+		PathaVO vo = null;
+		for(Iterator<PathaBean> i = beans.iterator(); i.hasNext();) {
+			vo = (PathaVO) CustomBeanUtil.entityToVO(i.next(), new PathaVO());
+			vos.add(vo);
+		}
+
+		return vos;
+	}
+
+	public List<ConditionOfManuscriptVO> findAllConditionOfManuscripts() throws OMDPCoreException {
+		List<ConditionOfManuscriptVO> vos = new ArrayList<>();
+		List<ConditionOfManuscriptBean> beans = new ArrayList<>();
+
+		beans = dao.findAllConditionOfManuscripts();
+		ConditionOfManuscriptVO vo = null;
+		for(Iterator<ConditionOfManuscriptBean> i = beans.iterator(); i.hasNext();) {
+			vo = (ConditionOfManuscriptVO) CustomBeanUtil.entityToVO(i.next(), new ConditionOfManuscriptVO());
+			vos.add(vo);
+		}
+
 		return vos;
 	}
 	
@@ -596,7 +614,7 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 		List<TagMasterVO> tagVOs = new ArrayList<>();
 		List<Long> specificcategorylist= new ArrayList<>();
 		Map<String, Object> returnMap = dao.findById(id);
-		
+//		logger.debug("service.ManuscriptMasterServiceImpl.findManuscriptById returnMap keyset " + returnMap.keySet());
 		DigitalManuscriptBean bean = (DigitalManuscriptBean) returnMap.get("manuscriptBean");
 		List<DigitalManuscriptFrame> frames = new ArrayList<>();
 		for(DigitalManuscriptFrame frame : bean.getDigitalManuscriptFrames()) {
@@ -629,6 +647,7 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 			jsonObject.put("filePath", bean.getDigitalManuscriptFrames().get(i).getFilePath());
 			jsonObject.put("isLast", bean.getDigitalManuscriptFrames().get(i).getIsLast());
 			jsonObject.put("filePathReal", pathList.get(i));
+			jsonObject.put("frameOrder", bean.getDigitalManuscriptFrames().get(i).getFrameOrder());
 			if(bean.getDigitalManuscriptFrames().get(i).getDigitalDocumentBean() != null) {
 				jsonObject.put("documentId", bean.getDigitalManuscriptFrames().get(i).getDigitalDocumentBean().getId());
 				jsonObject.put("text", bean.getDigitalManuscriptFrames().get(i).getDigitalDocumentBean().getDocumentDetailsBean().getText());
@@ -679,8 +698,21 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 		for(ManuscriptSpecificcategoryMapper specificcategory : (List<ManuscriptSpecificcategoryMapper>)returnMap.get("specificCategoryList")){
 			specificcategorylist.add(specificcategory.getSpecificcategoryFkId());
 		}
+		
+		List<ManuscriptAuthorMapperBean> author = bean.getAuthorMapperList();
+		List<AuthorVO> authorVOs = new ArrayList<>();
+		for (ManuscriptAuthorMapperBean authorMapper : author) {
+			authorVOs.add((AuthorVO) CustomBeanUtil.entityToVO(authorMapper.getAuthorFkObj(), new AuthorVO()));
+		}
+		StringBuffer autherName = new StringBuffer("");
+		for(AuthorVO avo : authorVOs){
+			autherName.append(avo.getName()+",");
+		}
+		vo.setAuthorName(autherName.toString());
 		vo.setSpecificCategoryId(specificcategorylist);
 		vo.setTagList(tagVOs);
+		vo.setAuthors(authorVOs);
+		
 		return vo;
 	}
 	
@@ -698,6 +730,19 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 	}
 	
 	public DigitalManuscriptVO saveDigitalManuscript(DigitalManuscriptVO vo, PublicationVO publicationVO, String serverPath) throws OMDPCoreException, JSONException, IOException {
+//		logger.debug("service.ManuscriptMastesrServiceImpl.saveDigitalManuscript() stage 1");
+		List<AuthorBean> authorList=new ArrayList<>();
+		if(vo.getAuthors() != null && vo.getAuthors().size()>0){
+		for(AuthorVO authorVO : vo.getAuthors()) {
+			if(authorVO != null && authorVO.getName().trim().length() > 0){
+			AuthorBean authBean = new AuthorBean();
+			authBean = (AuthorBean) CustomBeanUtil.voToEntity(authorVO, authBean);
+			authBean.setType(IndvenApplicationConstants.PERSON_TYPE_AUTHOR);
+			authorList.add(authBean);
+			}
+		}
+		}
+//		logger.debug("service.ManuscriptMastesrServiceImpl.saveDigitalManuscript() stage 2 vo:"+vo.getSubject1Ids());
 		DigitalManuscriptBean bean = DigitalManuscriptAssembler.convertVoToEntity(vo);
 		if(bean.getRecordStatus() == null) {
 			bean.setRecordStatus(DocumentStatusEnum.fromValue((short)-1));
@@ -706,13 +751,14 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 		publicationBean = PublicationAssembler.convertVOToEntity(publicationVO);
 		List<TagMasterBean> tagList= new ArrayList<TagMasterBean>();
 		if(vo.getTagList() != null){
-		for(TagMasterVO tagvo: vo.getTagList() ){
-			if(tagvo != null){
-			TagMasterBean tagBean= new TagMasterBean();
-			tagList.add((TagMasterBean) CustomBeanUtil.voToEntity(tagvo,tagBean));
+			for(TagMasterVO tagvo: vo.getTagList() ){
+				if(tagvo != null){
+					TagMasterBean tagBean= new TagMasterBean();
+					tagList.add((TagMasterBean) CustomBeanUtil.voToEntity(tagvo,tagBean));
+				}
 			}
 		}
-		}
+//		logger.debug(""ManuscriptMasterServiceImpl.saveDigitalManuscript():"+saveDigitalManuscript() stage 3");
 		bean.setIsDeleted((short)0);
 		publicationBean.setIsDeleted((short)0);
 		if(bean.getParentFKId() != null && bean.getParentFKId() <= 0 ) {
@@ -731,9 +777,10 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 		
 		/* Move images that are on the server to the file system */
 	//	bean = convertFilePaths(bean, folderPath);
-		
-		bean = dao.saveDigitalManuscript(bean , publicationBean,tagList,vo.getSpecificCategoryId()); //Save the beans
-		
+		//logger.debug("service.ManuscriptMastesrServiceImpl.saveDigitalManuscript() vo getSpecificCategoryId----------- "+vo.getSpecificCategoryId());
+		logger.debug("service.ManuscriptMastesrServiceImpl.saveDigitalManuscript():"+bean.getName());
+		bean = dao.saveDigitalManuscript(bean , publicationBean,tagList,vo.getSpecificCategoryId(),authorList); //Save the beans
+		logger.debug("service.ManuscriptMastesrServiceImpl.saveDigitalManuscript() converFilePath()");
 		/* Convert resultant image paths back to relative paths
 		 * So that they can be displayed on the web */
 		bean = convertFilePathsForDisplay(bean, serverPath); 
@@ -753,7 +800,7 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 		CustomBeanUtil.setBaseValues(bean.getDocumentDetailsBean(), true);
 		bean = dao.saveOrUpdateDigitalDocument(bean , isWFLForwarded);
 		vo = DigitalDocumentAssembler.convertEntityToVO(bean);
-		
+		logger.debug("service.MansucriptMasterServiceImpl.saveOrUpdateDigitalDocument() vo");
 		return vo;
 	}
 	
@@ -787,6 +834,7 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 		vo = DigitalManuscriptAssembler.convertEntityToVo(bean);
 		vo.setTagList(vo2.getTagList());
 		vo.setNmmDetailsVO(vo2.getNmmDetailsVO());
+		logger.debug("service.MansucriptMasterServiceImpl.saveOrUpdateDigitalDocument() vo2");
 		return vo;
 	}
 	
@@ -798,14 +846,13 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 		return dao.framePartialSaveTrans (text,frameId,ManuscriptId,type,language);
 	}
 	
-	
 	public boolean deleteManuscriptRecord(Long id) throws OMDPCoreException {
-		return (dao.deleteManuscriptRecord(id));
+		return (dao.deleteManuscriptRecord(id)); 
 	}
 	/**
 	 * This method will returns total number of records for a particular Acronym 
 	 * @author Rakesh kumar sahoo
-	 * @param String Acronym, String Organization name
+	 * @param -- String Acronym, String Organization name
 	 * @throws Exception
 	 */
 	public String findNumberOfRecords(String acronym,String name) throws OMDPCoreException{
@@ -863,6 +910,7 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 			/*bean.setDigitalManuscriptFrames(frames);*/
 		}
 		
+		logger.debug("service.MansucriptMasterServiceImpl.convertFilePathsForDisplay() bean");
 		return bean;
 	}
 	
@@ -883,7 +931,7 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 						IndvenApplicationConstants.LOCALE)
 				.getObject("images.system.path").toString()
 				+ fldPath;
-
+		logger.debug("service.ManuscriptMasterServiceImpl.convertFilePaths() fldPath:"+fldPath + " bean:"+bean );
 		if (bean.getDigitalManuscriptFrames() != null
 				&& bean.getDigitalManuscriptFrames().size() > 0) {
 
@@ -892,10 +940,15 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 			/* List<DigitalManuscriptFrame> frames = new ArrayList<>(); */
 			String newPath = null;
 			for (DigitalManuscriptFrame frame : bean.getDigitalManuscriptFrames()) {
+		logger.debug("service.ManuscriptMasterServiceImpl.convertFilePaths() DigitalManuscriptFrame:"+frame.getFilePath() );
 				if (frame.getFilePath() != null) {
 					if (frame.getId() == null) {
 						new File(folderPath).mkdirs();
-						newPath = FilesUtil.copyFileToDirectory(frame.getFilePath(), folderPath, false); // Copies file to server
+						boolean append = false;
+						if (frame.getFilePath().lastIndexOf(".pdf")>0) {
+							append=true;
+						}
+						newPath = FilesUtil.copyFileToDirectory(frame.getFilePath(), folderPath, append); // Copies file to server
 						if (newPath == null || newPath.length() <= 0) {
 							/*
 							 * Image for frame is not found Hence, do not add
@@ -903,8 +956,13 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 							 */
 							continue;
 						} else {
-							frame.setFilePath(cropImage(folderPath + "/"
-									+ newPath, fldPath));
+							if (frame.getFilePath().lastIndexOf(".pdf")==-1) {
+								frame.setFilePath(cropImage(folderPath + "/"
+										+ newPath, fldPath));
+							} else {
+								//frame.setFilePath(fldPath+"/"+new File(frame.getFilePath()).getName());
+								frame.setFilePath(new File(frame.getFilePath()).getName());
+							}
 						}
 					} else {
 						frame.setFilePath(new File(frame.getFilePath())
@@ -938,7 +996,7 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 		cropedPath = resFolder+"/"+cropName; 
 		
 		}catch(IOException e){
-			System.out.println(e.getMessage());
+			logger.debug("service.ManuscriptMastesrServiceImpl.cropImage()IOexception:"+e.getMessage());
 		}
 		return cropedPath; 
 	}
@@ -971,13 +1029,14 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 	public List<EmployeeMasterVO> findAllDigitisersForTerm(String term) throws OMDPCoreException {
 		List<EmployeeMasterVO> disitiserVOS = new ArrayList<>();
 		List<EmployeeMasterBean> disitiserBeans = new ArrayList<>();
-		
+				
 		disitiserBeans = dao.findAllDigitisersForTerm(term);
 		
 		EmployeeMasterVO vo = null;
 		for(EmployeeMasterBean bean : disitiserBeans) {
 			vo = new EmployeeMasterVO();
 			vo = (EmployeeMasterVO) CustomBeanUtil.entityToVO(bean, vo);
+                        logger.debug("ManuscriptMasterServiceImpl.findAllDigitisersForTerm term " + term + " EmployeeMasterVo "+vo.getEmail());
 			disitiserVOS.add(vo);
 		}
 		return disitiserVOS;
@@ -986,7 +1045,6 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 	public boolean createTranslateRecordAndSaveInfo(String language , String script , Long transcribedManId) throws OMDPCoreException {
 		return dao.createTranslateRecordAndSaveInfo(language, script, transcribedManId);
 	}
-	
 	
 	public String getAvailableLanguages(Long transcribedManId) throws OMDPCoreException {
 		StringBuffer availableLanguages = new StringBuffer("");
@@ -999,7 +1057,6 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 		
 		return availableLanguages.toString();
 	}
-	
 	
 	@SuppressWarnings("unchecked")
 	public Map<Object, Object> findManuscriptByIdTrans(Long id, String folderPath) throws OMDPCoreException, JSONException, IOException {
@@ -1120,7 +1177,6 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 		return rtrnMap;
 	}
 	
-	
 	@SuppressWarnings({ "unchecked" })
 	public DigitalManuscriptVO mergeManuscript(List<String> allListStr, List<DigitalManuscriptVO> originalLists , String folderPath) throws OMDPCoreException , Exception {
 		List<Long> manuscriptIds = new ArrayList<>();
@@ -1228,10 +1284,10 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 		}
 		mergedVo = getMergedVo(originalLists);
 		mergedVo.setParentIdsStr(jsonA.toString());
+		logger.debug("service.MansucriptMasterServiceImpl.mergeManuscript() mergedVO");
 		
 		return mergedVo;
 	}
-	
 	
 	public DigitalManuscriptVO getMergedVo(List<DigitalManuscriptVO> vosToBeMerged) {
 		DigitalManuscriptVO mergedVO = new DigitalManuscriptVO();
@@ -1300,13 +1356,13 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 			String year = String.valueOf(now.get(Calendar.YEAR));
 			String month =  String.valueOf(now.get(Calendar.MONTH)+1);
 			String day =  String.valueOf(now.get(Calendar.DAY_OF_MONTH));
-			
+
 			folderDateYearStruct = "/"+year+"/"+month+"/"+day+"/";
 			temporaryName = userInfoVO.getLoginName()+now.getTimeInMillis();
 			
 			folderPath = folderDateYearStruct+temporaryName ;
 			
-			System.out.println(resizeFolderPath+folderPath);
+			logger.debug("service.ManuscriptMasterServiceImpl.saveMergedImages():"+resizeFolderPath+folderPath);
 			
 			new File(resizeFolderPath+folderPath).mkdirs();
 			new File(thumbnailFolderPath+folderPath).mkdirs();
@@ -1315,7 +1371,7 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 				 framebean = new DigitalManuscriptFrame();
 				 JSONObject jObj = jArray.getJSONObject(i);
 				 
-				 System.out.println(resizeFolderPath+jObj.get("filePathReal"));
+				 logger.debug("service.ManuscriptMasterServiceImpl.saveMergedImages():"+resizeFolderPath+jObj.get("filePathReal"));
 				 
 				 File file = new File(resizeFolderPath+jObj.get("filePathReal"));
 				 
@@ -1340,6 +1396,20 @@ public class ManuscriptMasterServiceImpl implements BaseEntityCRUDService<Indven
 		bean = dao.saveDigitalManuscriptMerging(bean,publicationBean,tagList,vo.getSpecificCategoryId(),temporaryName,folderDateYearStruct,list);
 		status = true;
 		return status;
+	}
+
+	public List<Subject1VO> findAllSubject1() throws OMDPCoreException {
+		List<Subject1VO> vos = new ArrayList<>();
+		List<Subject1Bean> beans = new ArrayList<>();
+
+		beans = dao.findAllSubject1();
+		Subject1VO vo = null;
+		for(Iterator<Subject1Bean> i = beans.iterator(); i.hasNext();) {
+			vo = (Subject1VO) CustomBeanUtil.entityToVO(i.next(), new Subject1VO());
+			vos.add(vo);
+		}
+
+		return vos;
 	}
 }
   

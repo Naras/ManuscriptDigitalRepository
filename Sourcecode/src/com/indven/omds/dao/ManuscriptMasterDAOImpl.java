@@ -3,6 +3,7 @@
  */
 package com.indven.omds.dao;
 
+import com.indven.framework.logging.IndvenLogger;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -13,6 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import com.indven.omds.entity.*;
+
+import com.indven.portal.administration.vo.UserInfoVO;
+import com.opensymphony.xwork2.ActionContext;
+import org.apache.commons.io.FilenameUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -27,24 +33,6 @@ import com.indven.framework.util.CustomBeanUtil;
 import com.indven.framework.util.HibernateUtil;
 import com.indven.framework.util.IndvenApplicationConstants;
 import com.indven.omds.assembler.DigitalManuscriptAssembler;
-import com.indven.omds.entity.AuthorBean;
-import com.indven.omds.entity.BundleMasterBean;
-import com.indven.omds.entity.CategoryBean;
-import com.indven.omds.entity.DigitalDocumentBean;
-import com.indven.omds.entity.DigitalDocumentDetailsBean;
-import com.indven.omds.entity.DigitalManuscriptBean;
-import com.indven.omds.entity.DigitalManuscriptFrame;
-import com.indven.omds.entity.DocumentCommentBean;
-import com.indven.omds.entity.LanguageBean;
-import com.indven.omds.entity.ManuscriptSpecificcategoryMapper;
-import com.indven.omds.entity.ManuscriptTagMapper;
-import com.indven.omds.entity.MaterialBean;
-import com.indven.omds.entity.Organisation;
-import com.indven.omds.entity.PublicationBean;
-import com.indven.omds.entity.PublisherBean;
-import com.indven.omds.entity.ScriptBean;
-import com.indven.omds.entity.SpecificCategoryBean;
-import com.indven.omds.entity.TagMasterBean;
 import com.indven.omds.exception.OMDPCoreException;
 import com.indven.omds.service.ManuscriptMasterServiceImpl;
 import com.indven.omds.util.DocumentStatusEnum;
@@ -62,9 +50,12 @@ import com.indven.workflow.core.vo.WorkflowCoreDataPacket;
  *
  */
 public class ManuscriptMasterDAOImpl {
-	
+	private static IndvenLogger logger = IndvenLogger
+            .getInstance(ManuscriptMasterDAOImpl.class);
+        
 	@SuppressWarnings({ "unchecked", "unused" })
-	public Map<String, Object> searchManuscriptRecord(DigitalManuscriptBean manuscriptBean , AuthorBean authorBean , Organisation orgBean , int setFirst , int noOfRecords , List<Long> specificCategoryIds,Long minFolio , Long maxFolio) throws OMDPCoreException {
+	public Map<String, Object> searchManuscriptRecord(DigitalManuscriptBean manuscriptBean , AuthorBean authorBean , Organisation orgBean , int setFirst , int noOfRecords , List<Long> specificCategoryIds,List<Long> authorIds,Long minFolio , Long maxFolio) throws OMDPCoreException {
+             logger.debug("dao.ManuscriptMasterDAOImpl.searchManuscriptRecord()");
 		List<DigitalManuscriptBean> manuscriptBeanList = new ArrayList<DigitalManuscriptBean>();
 		List<DigitalManuscriptBean> manuscriptBeanListUnderWfl = new ArrayList<DigitalManuscriptBean>();
 		List<DigitalManuscriptBean> manuscriptBeanListFree = new ArrayList<DigitalManuscriptBean>();
@@ -83,10 +74,17 @@ public class ManuscriptMasterDAOImpl {
 			session = HibernateUtil.getSessionFactory().openSession();		
 			tx = session.beginTransaction();
 			
-			StringBuffer qryBfrNoSpCategory = new StringBuffer("from DigitalManuscriptBean digitalmanuscriptbean  ");
-			StringBuffer qryBfrWithSpCategory = new StringBuffer("from DigitalManuscriptBean digitalmanuscriptbean , ManuscriptSpecificcategoryMapper spcfcCat ");
+			StringBuffer qryBfrNoSpCategory = new StringBuffer("from DigitalManuscriptBean digitalmanuscriptbean ");
+			if(authorIds != null && authorIds.size() > 0){
+				for(Long autherId : authorIds){
+					if(autherId !=null && autherId > 0){
+						qryBfrNoSpCategory = qryBfrNoSpCategory.append(" join digitalmanuscriptbean.authorMapperList authorList"+autherId);
+					}
+				}
+			}
+			StringBuffer qryBfrWithSpCategory = new StringBuffer(qryBfrNoSpCategory.toString()+", ManuscriptSpecificcategoryMapper spcfcCat ");
 			
-			StringBuffer queryStrBuffer = new StringBuffer(" where digitalmanuscriptbean.authorFKId = digitalmanuscriptbean.authorFkObj.id and  digitalmanuscriptbean.isDeleted = 0 ");
+			StringBuffer queryStrBuffer = new StringBuffer(" where  digitalmanuscriptbean.isDeleted = 0 ");
 			
 			if(manuscriptBean.getDocumentType() != null &&  manuscriptBean.getDocumentType() > 0) {
 				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.documentType = :documentTypeId ");
@@ -120,9 +118,9 @@ public class ManuscriptMasterDAOImpl {
 				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.typeOfWork = :workType ");
 			}
 			
-			if(authorBean.getName() != null && authorBean.getName().length() > 0) {
+			/*if(authorBean.getName() != null && authorBean.getName().length() > 0) {
 				queryStrBuffer = queryStrBuffer.append(" and (digitalmanuscriptbean.authorFkObj.name LIKE :authorName or digitalmanuscriptbean.authorFkObj.regionalName LIKE :authorName or digitalmanuscriptbean.authorFkObj.diacriticName LIKE :authorName)");
-			}
+			}*/
 			
 			if(manuscriptBean.getName() != null && manuscriptBean.getName().length() > 0) {
 				queryStrBuffer = queryStrBuffer.append(" and (digitalmanuscriptbean.name LIKE :manuscriptName or digitalmanuscriptbean.regionalName LIKE :manuscriptName or digitalmanuscriptbean.diacriticName LIKE :manuscriptName) ");
@@ -160,6 +158,14 @@ public class ManuscriptMasterDAOImpl {
 			if(manuscriptBean.getDocumentationOfManuscript() != null && manuscriptBean.getDocumentationOfManuscript().ordinal() > 0) {
 				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.documentationOfManuscript = "+(short)manuscriptBean.getDocumentationOfManuscript().ordinal());
 			}
+			if(authorIds != null && authorIds.size() > 0){
+				for(Long autherId : authorIds){
+					if(autherId !=null && autherId > 0){
+						queryStrBuffer = queryStrBuffer.append(" and authorList"+autherId+".authorFkId ="+autherId);
+					}
+					
+				}
+			}
 			
 			if(specificCategoryIds != null && specificCategoryIds.size() > 0) {
 				queryStrBuffer = qryBfrWithSpCategory.append(queryStrBuffer);
@@ -173,26 +179,30 @@ public class ManuscriptMasterDAOImpl {
 					}
 					buff2.append("spcfcCat.specificcategoryFkId = "+specificCategoryIds.get(i));
 				}
-				buff2.append(") GROUP BY spcfcCat.manuscriptFkId ");
+				buff2.append(")");
+				//buff2.append(") GROUP BY spcfcCat.manuscriptFkId ");
 				buff.append(buff2);
 				queryStrBuffer.append(buff);
 			} else {
 				queryStrBuffer = qryBfrNoSpCategory.append(queryStrBuffer);
 			}
-			
+			if((authorIds != null && authorIds.size() > 0) || (specificCategoryIds != null && specificCategoryIds.size() > 0)){
+			 queryStrBuffer.append(" GROUP BY digitalmanuscriptbean.id");
+			}
 			String queryStr = queryStrBuffer.toString();		
-			String countQueryStr = "select count(digitalmanuscriptbean) "+queryStr;
+			String countQueryStr = "select count(digitalmanuscriptbean.id) "+queryStr;
 			//queryStr = queryStr+" order by digitalmanuscriptbean.id asc";
 			Query countQuery = session.createQuery(countQueryStr);
 			
 			queryStr = "select digitalmanuscriptbean "+queryStr;
+                        logger.debug("dao.ManuscriptMasterDAOImpl.searchManuscriptRecord() query:" + queryStr);
 			query = session.createQuery(queryStr.toString());
 			
-			if(authorBean.getName() != null && authorBean.getName().length() > 0) {
+			/*if(authorBean.getName() != null && authorBean.getName().length() > 0) {
 				query.setParameter("authorName", "%"+authorBean.getName().trim()+"%");
 				countQuery.setParameter("authorName", "%"+authorBean.getName().trim()+"%");
 			}
-			
+			*/
 			if(manuscriptBean.getName() != null && manuscriptBean.getName().length() > 0) {
 				query.setParameter("manuscriptName", "%" + manuscriptBean.getName().trim() + "%");
 				countQuery.setParameter("manuscriptName", "%" + manuscriptBean.getName().trim() + "%");
@@ -256,6 +266,7 @@ public class ManuscriptMasterDAOImpl {
 			manuscriptBeanList = query.list();
 			
 			for (int i = 0; i < manuscriptBeanList.size(); i++) {
+				Hibernate.initialize(manuscriptBeanList.get(i).getAuthorMapperList());
 				query = session.createQuery("from DigitalManuscriptFrame frame where frame.digitalManuscriptFkId ="+ manuscriptBeanList.get(i).getId());
 				List<DigitalManuscriptFrame> frameList = query.list();
 				
@@ -316,12 +327,13 @@ public class ManuscriptMasterDAOImpl {
 				}
 				
 			}
-			
-			if(specificCategoryIds != null && specificCategoryIds.size() > 0) {
+			//count = (long)manuscriptBeanList.size();
+			if((authorIds != null && authorIds.size() > 0) || (specificCategoryIds != null && specificCategoryIds.size() > 0)){
 				List<Object> countList =  countQuery.list();
 				count =  Long.valueOf(countList.size());
 			} else {
 				count = (Long) countQuery.uniqueResult();
+				//(Long) countQuery.uniqueResult()
 			}
 			
 			tx.commit();
@@ -394,9 +406,9 @@ public class ManuscriptMasterDAOImpl {
 				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.typeOfWork = :workType ");
 			}
 			
-			if(authorBean.getName() != null && authorBean.getName().length() > 0) {
+			/*if(authorBean.getName() != null && authorBean.getName().length() > 0) {
 				queryStrBuffer = queryStrBuffer.append(" and (digitalmanuscriptbean.authorFkObj.name LIKE :authorName or digitalmanuscriptbean.authorFkObj.regionalName LIKE :authorName or digitalmanuscriptbean.authorFkObj.diacriticName LIKE :authorName)");
-			}
+			}*/
 			
 			if(manuscriptBean.getName() != null && manuscriptBean.getName().length() > 0) {
 				queryStrBuffer = queryStrBuffer.append(" and (digitalmanuscriptbean.name LIKE :manuscriptName or digitalmanuscriptbean.regionalName LIKE :manuscriptName or digitalmanuscriptbean.diacriticName LIKE :manuscriptName) ");
@@ -461,10 +473,10 @@ public class ManuscriptMasterDAOImpl {
 			queryStr = "select digitalmanuscriptbean "+queryStr;
 			query = session.createQuery(queryStr.toString());
 			
-			if(authorBean.getName() != null && authorBean.getName().length() > 0) {
+			/*if(authorBean.getName() != null && authorBean.getName().length() > 0) {
 				query.setParameter("authorName", "%"+authorBean.getName().trim()+"%");
 				countQuery.setParameter("authorName", "%"+authorBean.getName().trim()+"%");
-			}
+			}*/
 			
 			if(manuscriptBean.getName() != null && manuscriptBean.getName().length() > 0) {
 				query.setParameter("manuscriptName", "%" + manuscriptBean.getName().trim() + "%");
@@ -614,6 +626,314 @@ public class ManuscriptMasterDAOImpl {
 		return returnMap;
 	}
 	
+	@SuppressWarnings({ "unchecked", "unused" })
+	public Map<String, Object> searchManuscriptRecordByDigitizerId(DigitalManuscriptBean manuscriptBean , AuthorBean authorBean , Organisation orgBean , int setFirst , int noOfRecords , List<Long> specificCategoryIds,List<Long> authorIds,Long minFolio , Long maxFolio,Long digitizerId) throws OMDPCoreException {
+             logger.debug("dao.ManuscriptMasterDAOImpl.searchManuscriptRecordByDigitizerId() id:" + digitizerId);
+		List<DigitalManuscriptBean> manuscriptBeanList = new ArrayList<DigitalManuscriptBean>();
+		List<DigitalManuscriptBean> manuscriptBeanListUnderWfl = new ArrayList<DigitalManuscriptBean>();
+		List<DigitalManuscriptBean> manuscriptBeanListFree = new ArrayList<DigitalManuscriptBean>();
+		
+		List<DigitalManuscriptBean> manuscriptBeanListUnderWflUser = new ArrayList<DigitalManuscriptBean>();
+		List<EmployeeMasterBean> listOfRecordOwners = new ArrayList<EmployeeMasterBean>();
+		List<Long> listOfRecordIds = new ArrayList<Long>();
+		
+		List<Boolean> framePresence = new ArrayList<Boolean>();
+		
+		Session session = null;
+		Transaction tx = null;
+		Query query  = null;
+		Long count ;
+		try {
+			session = HibernateUtil.getSessionFactory().openSession();		
+			tx = session.beginTransaction();
+			
+			StringBuffer qryBfrNoSpCategory = new StringBuffer("from DigitalManuscriptBean digitalmanuscriptbean ");
+			if(authorIds != null && authorIds.size() > 0){
+				for(Long autherId : authorIds){
+					if(autherId !=null && autherId > 0){
+						qryBfrNoSpCategory = qryBfrNoSpCategory.append(" join digitalmanuscriptbean.authorMapperList authorList"+autherId);
+					}
+				}
+			}
+			StringBuffer qryBfrWithSpCategory = new StringBuffer(qryBfrNoSpCategory.toString()+", ManuscriptSpecificcategoryMapper spcfcCat ");
+			
+			StringBuffer queryStrBuffer = new StringBuffer(" where  digitalmanuscriptbean.isDeleted = 0");
+
+//			if(manuscriptBean.getDigitizerId() != null && manuscriptBean.getDigitizerId() > 0) {
+				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.digitizerId = " + digitizerId);
+//			}
+                        
+			if(manuscriptBean.getDocumentType() != null &&  manuscriptBean.getDocumentType() > 0) {
+				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.documentType = :documentTypeId ");
+			}
+			
+			if(manuscriptBean.getLanguageFkId() != null  && manuscriptBean.getLanguageFkId() > 0) {
+				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.languageFkId = :languageFkId ");
+			}
+			
+			if(manuscriptBean.getCategoryFkId() != null && manuscriptBean.getCategoryFkId() > 0 ) {
+				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.categoryFkId = :categoryFkId ");
+			}
+			
+			if(minFolio != null && minFolio > 0) {
+				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.totalNumberOfFolios > "+minFolio );
+			}
+			
+			if(maxFolio != null && maxFolio > 0) {
+				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.totalNumberOfFolios <="+maxFolio);
+			}
+			
+			/*if(manuscriptBean.getSpecificCategoryFkId() != null && manuscriptBean.getSpecificCategoryFkId() > 0) {
+				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.specificCategoryFkId = :specificCategoryFkId ");
+			}*/
+			
+			if(manuscriptBean.getScriptFkId() != null && manuscriptBean.getScriptFkId() > 0) {
+				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.scriptFkId = :scriptFkId ");
+			}
+			
+			if(manuscriptBean.getTypeOfWork() != null && manuscriptBean.getTypeOfWork().getValue() >= 0) {
+				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.typeOfWork = :workType ");
+			}
+			
+			/*if(authorBean.getName() != null && authorBean.getName().length() > 0) {
+				queryStrBuffer = queryStrBuffer.append(" and (digitalmanuscriptbean.authorFkObj.name LIKE :authorName or digitalmanuscriptbean.authorFkObj.regionalName LIKE :authorName or digitalmanuscriptbean.authorFkObj.diacriticName LIKE :authorName)");
+			}*/
+			
+			if(manuscriptBean.getName() != null && manuscriptBean.getName().length() > 0) {
+				queryStrBuffer = queryStrBuffer.append(" and (digitalmanuscriptbean.name LIKE :manuscriptName or digitalmanuscriptbean.regionalName LIKE :manuscriptName or digitalmanuscriptbean.diacriticName LIKE :manuscriptName) ");
+			}
+			
+			if(manuscriptBean.getSummary() != null && manuscriptBean.getSummary().length() > 0) {
+				queryStrBuffer = queryStrBuffer.append(" and (digitalmanuscriptbean.summary LIKE :summary or digitalmanuscriptbean.tableOfContents LIKE :summary or digitalmanuscriptbean.uniquenessOfWork LIKE :summary or digitalmanuscriptbean.contributionToAyurveda LIKE :summary) ");
+			}
+			
+			if(manuscriptBean.getBeginningLine() != null && manuscriptBean.getBeginningLine().length() > 0) {
+				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.beginningLine LIKE :beginningLine ");
+			}
+			
+			if(manuscriptBean.getEndingLine() != null && manuscriptBean.getEndingLine().length() > 0) {
+				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.endingLine LIKE :endingLine ");
+			}
+			
+			if(orgBean.getName() != null && orgBean.getName().length() > 0) {
+				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.organisationFkObj.name LIKE :orgName");
+			}
+			
+			if(manuscriptBean.getManuscriptId() != null && manuscriptBean.getManuscriptId().length() > 0) {
+				queryStrBuffer = queryStrBuffer.append("and digitalmanuscriptbean.manuscriptId LIKE :manuscriptId");
+			}
+			
+			if(manuscriptBean.getRecordStatus()!= null && manuscriptBean.getRecordStatus().ordinal() > 0) {
+				short jd = (short)manuscriptBean.getRecordStatus().ordinal();
+				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.recordStatus = "+(short)manuscriptBean.getRecordStatus().ordinal());
+			}
+			
+			if(manuscriptBean.getManuscriptType() != null && manuscriptBean.getManuscriptType().ordinal() > 0) {
+				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.manuscriptType = "+(short)manuscriptBean.getManuscriptType().ordinal());
+			}
+			
+			if(manuscriptBean.getDocumentationOfManuscript() != null && manuscriptBean.getDocumentationOfManuscript().ordinal() > 0) {
+				queryStrBuffer = queryStrBuffer.append(" and digitalmanuscriptbean.documentationOfManuscript = "+(short)manuscriptBean.getDocumentationOfManuscript().ordinal());
+			}
+			if(authorIds != null && authorIds.size() > 0){
+				for(Long autherId : authorIds){
+					if(autherId !=null && autherId > 0){
+						queryStrBuffer = queryStrBuffer.append(" and authorList"+autherId+".authorFkId ="+autherId);
+					}
+					
+				}
+			}
+			
+			if(specificCategoryIds != null && specificCategoryIds.size() > 0) {
+				queryStrBuffer = qryBfrWithSpCategory.append(queryStrBuffer);
+				
+				StringBuffer buff = new StringBuffer(" and spcfcCat.manuscriptFkId = digitalmanuscriptbean.id AND (");
+				StringBuffer buff2 = new StringBuffer();
+				
+				for(int i=0 ; i<specificCategoryIds.size() ; i++) {
+					if(i > 0) {
+						buff2.append(" or ");
+					}
+					buff2.append("spcfcCat.specificcategoryFkId = "+specificCategoryIds.get(i));
+				}
+				buff2.append(")");
+				//buff2.append(") GROUP BY spcfcCat.manuscriptFkId ");
+				buff.append(buff2);
+				queryStrBuffer.append(buff);
+			} else {
+				queryStrBuffer = qryBfrNoSpCategory.append(queryStrBuffer);
+			}
+			if((authorIds != null && authorIds.size() > 0) || (specificCategoryIds != null && specificCategoryIds.size() > 0)){
+			 queryStrBuffer.append(" GROUP BY digitalmanuscriptbean.id");
+			}
+			String queryStr = queryStrBuffer.toString();		
+			String countQueryStr = "select count(digitalmanuscriptbean.id) "+queryStr;
+			//queryStr = queryStr+" order by digitalmanuscriptbean.id asc";
+			Query countQuery = session.createQuery(countQueryStr);
+			
+			queryStr = "select digitalmanuscriptbean " + queryStr;
+                        logger.debug("dao.ManuscriptMasterDAOImpl.searchManuscriptRecordByDigitizerId() query:" + queryStr);
+			query = session.createQuery(queryStr.toString());
+			
+			/*if(authorBean.getName() != null && authorBean.getName().length() > 0) {
+				query.setParameter("authorName", "%"+authorBean.getName().trim()+"%");
+				countQuery.setParameter("authorName", "%"+authorBean.getName().trim()+"%");
+			}
+			*/
+			if(manuscriptBean.getName() != null && manuscriptBean.getName().length() > 0) {
+				query.setParameter("manuscriptName", "%" + manuscriptBean.getName().trim() + "%");
+				countQuery.setParameter("manuscriptName", "%" + manuscriptBean.getName().trim() + "%");
+			}
+			
+			if(manuscriptBean.getSummary() != null && manuscriptBean.getSummary().length() > 0) {
+				query.setParameter("summary", "%" + manuscriptBean.getSummary().trim() + "%");
+				countQuery.setParameter("summary", "%" + manuscriptBean.getSummary().trim() + "%");
+			}
+			
+			if(manuscriptBean.getBeginningLine() != null && manuscriptBean.getBeginningLine().length() > 0) {
+				query.setParameter("beginningLine", "%" + manuscriptBean.getBeginningLine().trim() + "%");
+				countQuery.setParameter("beginningLine", "%" + manuscriptBean.getBeginningLine().trim() + "%");
+			}
+			
+			if(manuscriptBean.getEndingLine() != null && manuscriptBean.getEndingLine().length() > 0) {
+				query.setParameter("endingLine", "%" + manuscriptBean.getEndingLine().trim() + "%");
+				countQuery.setParameter("endingLine", "%" + manuscriptBean.getEndingLine().trim() + "%");
+			}
+			
+			if(orgBean.getName() != null && orgBean.getName().length() > 0) {
+				query.setParameter("orgName", "%" + orgBean.getName() + "%");
+				countQuery.setParameter("orgName", "%" + orgBean.getName() + "%");
+			}
+			
+			if(manuscriptBean.getTypeOfWork() != null && manuscriptBean.getTypeOfWork().getValue() >= 0) {
+				query.setParameter("workType", manuscriptBean.getTypeOfWork());
+				countQuery.setParameter("workType", manuscriptBean.getTypeOfWork());
+			}
+			
+			if(manuscriptBean.getDocumentType() != null &&  manuscriptBean.getDocumentType() > 0) {
+				query.setParameter("documentTypeId", manuscriptBean.getDocumentType());
+				countQuery.setParameter("documentTypeId", manuscriptBean.getDocumentType());
+			}
+			
+			if(manuscriptBean.getLanguageFkId() != null && manuscriptBean.getLanguageFkId() > 0) {
+				query.setParameter("languageFkId", manuscriptBean.getLanguageFkId());
+				countQuery.setParameter("languageFkId", manuscriptBean.getLanguageFkId());
+			}
+			
+			if(manuscriptBean.getCategoryFkId() != null && manuscriptBean.getCategoryFkId() > 0) {
+				query.setParameter("categoryFkId", manuscriptBean.getCategoryFkId());
+				countQuery.setParameter("categoryFkId", manuscriptBean.getCategoryFkId());
+			}
+			
+		/*	if(manuscriptBean.getSpecificCategoryFkId() != null && manuscriptBean.getSpecificCategoryFkId() > 0) {
+				query.setParameter("specificCategoryFkId", manuscriptBean.getSpecificCategoryFkId());
+				countQuery.setParameter("specificCategoryFkId", manuscriptBean.getSpecificCategoryFkId());
+			}*/
+			
+			if(manuscriptBean.getScriptFkId() != null && manuscriptBean.getScriptFkId() > 0) {
+				query.setParameter("scriptFkId", manuscriptBean.getScriptFkId());
+				countQuery.setParameter("scriptFkId", manuscriptBean.getScriptFkId());
+			}
+			if(manuscriptBean.getManuscriptId() != null && manuscriptBean.getManuscriptId().length() > 0) {
+				query.setParameter("manuscriptId", "%"+manuscriptBean.getManuscriptId()+"%");
+				countQuery.setParameter("manuscriptId", "%"+manuscriptBean.getManuscriptId()+"%");
+			}
+			query.setFirstResult(setFirst);
+			query.setMaxResults(noOfRecords);
+			manuscriptBeanList = query.list();
+			
+			for (int i = 0; i < manuscriptBeanList.size(); i++) {
+				Hibernate.initialize(manuscriptBeanList.get(i).getAuthorMapperList());
+				query = session.createQuery("from DigitalManuscriptFrame frame where frame.digitalManuscriptFkId ="+ manuscriptBeanList.get(i).getId());
+				List<DigitalManuscriptFrame> frameList = query.list();
+				
+				if(frameList != null && frameList.size() >0) {
+					manuscriptBeanList.get(i).setPresentFrame(true);
+				}else {
+					manuscriptBeanList.get(i).setPresentFrame(false);
+				}
+			
+				query = session
+						.createQuery("select processMaster.id from CurrentProcessMasterBean processMaster where processMaster.ReferenceFkId = :referenceId");
+				query.setParameter("referenceId", manuscriptBeanList.get(i)
+						.getId());
+				List<Long> idList = new ArrayList<Long>();
+				idList = query.list();
+				if (idList.size() <= 0) {
+					manuscriptBeanListFree.add(manuscriptBeanList.get(i));
+				} else {
+					Long id = idList.get(idList.size() - 1);
+					query = session
+							.createQuery("select dtlsBean from CurrentProcessDetailsBean dtlsBean where "
+									+ "dtlsBean.status < 2 and dtlsBean.CurrentProcessMasterFkId ="
+									+ id);
+
+					List<CurrentProcessDetailsBean> dtlsBeanList = query.list();
+					Long count1 = new Long((long) dtlsBeanList.size());
+					if (count1 > 0) {
+						boolean isUnderUser = false;
+						for (CurrentProcessDetailsBean bean : dtlsBeanList) {
+							if (bean.getStatus() == (short) 1
+									&& bean.getIsUserRoleId() == (short) 1) {
+								isUnderUser = true;
+
+								query = session
+										.createQuery("select empl from UserLoginDetailsBean userLoginDtls , LocationUserRolesDetailsBean lur , EmployeeMasterBean empl "
+												+ " where lur.userInfoFkId = userLoginDtls.id and empl.id=userLoginDtls.refrenceFkId and lur.id = :locUserRoleId");
+
+								query.setParameter("locUserRoleId",
+										bean.getLocationUserRoleFkId());
+								EmployeeMasterBean usrLognDtl = (EmployeeMasterBean) query
+										.uniqueResult();
+								listOfRecordOwners.add(usrLognDtl);
+								listOfRecordIds.add(bean.getId());
+							}
+						}
+
+						if (isUnderUser) {
+							manuscriptBeanListUnderWflUser
+									.add(manuscriptBeanList.get(i));
+						} else {
+							manuscriptBeanListUnderWfl.add(manuscriptBeanList
+									.get(i));
+						}
+
+					} else {
+						manuscriptBeanListFree.add(manuscriptBeanList.get(i));
+					}
+				}
+				
+			}
+			//count = (long)manuscriptBeanList.size();
+			if((authorIds != null && authorIds.size() > 0) || (specificCategoryIds != null && specificCategoryIds.size() > 0)){
+				List<Object> countList =  countQuery.list();
+				count =  Long.valueOf(countList.size());
+			} else {
+				count = (Long) countQuery.uniqueResult();
+				//(Long) countQuery.uniqueResult()
+			}
+			
+			tx.commit();
+		} catch(Exception e) {
+			tx.rollback();
+			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_FIND_MANUSCRIPT_DETAILS, e);
+		} finally {
+			session.close();
+		}
+		
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		
+		returnMap.put("manuscriptListFree", manuscriptBeanListFree);
+		returnMap.put("manuscriptListUndWfl", manuscriptBeanListUnderWfl);
+		returnMap.put("totalCount", count);
+		
+		
+		returnMap.put("manuscriptListUndWflUser", manuscriptBeanListUnderWflUser);
+		returnMap.put("ownerOfWflProcess", listOfRecordOwners);
+		returnMap.put("idOfWflProcess", listOfRecordIds);
+		
+		return returnMap;
+	}
 	
 	
 	
@@ -654,7 +974,7 @@ public class ManuscriptMasterDAOImpl {
 			tx = session.beginTransaction();
 			Query query = null;
 			
-			query = session.createQuery("From LanguageBean bean where bean.isDeleted = 0");
+			query = session.createQuery("From LanguageBean bean where bean.isDeleted = 0 order by bean.name asc");
 			entities = query.list();
 			
 			tx.commit();
@@ -681,7 +1001,7 @@ public class ManuscriptMasterDAOImpl {
 			tx = session.beginTransaction();
 			Query query = null;
 			
-			query = session.createQuery("From Organisation");
+			query = session.createQuery("From Organisation bean order by bean.name asc");
 			entities = query.list();
 			
 			tx.commit();
@@ -713,7 +1033,7 @@ public class ManuscriptMasterDAOImpl {
 			tx = session.beginTransaction();
 			Query query = null;
 			
-			query = session.createQuery("From BundleMasterBean");
+			query = session.createQuery("From BundleMasterBean bean order by bean.name asc");
 			entities = query.list();
 			
 			tx.commit();
@@ -768,7 +1088,8 @@ public class ManuscriptMasterDAOImpl {
 			tx = session.beginTransaction();
 			Query query = null;
 			
-			query = session.createQuery("From AuthorBean");
+			query = session.createQuery("From AuthorBean bean where bean.type =:type order by bean.name asc");
+			query.setParameter("type",(short)1);
 			entities = query.list();
 			
 			tx.commit();
@@ -795,7 +1116,7 @@ public class ManuscriptMasterDAOImpl {
 			tx = session.beginTransaction();
 			Query query = null;
 			
-			query = session.createQuery("From AuthorBean ab where (ab.name like :name or ab.regionalName like :name or ab.diacriticName like :name) and ab.type = :type");
+			query = session.createQuery("From AuthorBean ab where (ab.name like :name or ab.regionalName like :name or ab.diacriticName like :name) and ab.type = :type order by ab.name asc");
 			query.setParameter("name", "%"+term+"%");
 			query.setParameter("type", authorType);
 			entities = query.list();
@@ -852,9 +1173,12 @@ public class ManuscriptMasterDAOImpl {
 			tx = session.beginTransaction();
 			Query query = null;
 			
-			query = session.createQuery("select ab From EmployeeMasterBean ab , LocationUserRolesDetailsBean lur , UserLoginDetailsBean userlogin " +
-					"where userlogin.refrenceFkId = ab.id and lur.userInfoFkId = userlogin.refrenceFkId " +
-					"and lur.roleMasterFkId = 9 and ab.firstName like :name");
+//			query = session.createQuery("select ab From EmployeeMasterBean ab , LocationUserRolesDetailsBean lur , UserLoginDetailsBean userlogin " +
+			query = session.createQuery("select ab From EmployeeMasterBean ab, UserLoginDetailsBean userlogin " +
+//					"where userlogin.refrenceFkId = ab.id and lur.userInfoFkId = userlogin.refrenceFkId " +
+					"where userlogin.refrenceFkId = ab.id " +
+				//	"and lur.roleMasterFkId = 9 and ab.firstName like :name"); remove digitizer role restriction
+					"and ab.email like :name");
 			query.setParameter("name", "%"+term+"%");
 			entities = query.list();
 			
@@ -882,7 +1206,7 @@ public class ManuscriptMasterDAOImpl {
 			tx = session.beginTransaction();
 			Query query = null;
 			
-			query = session.createQuery("From CategoryBean bean where bean.name like :name");
+			query = session.createQuery("From CategoryBean bean where bean.name like :name order by bean.name asc");
 			query.setParameter("name", "%"+term+"%");
 			entities = query.list();
 			
@@ -910,7 +1234,7 @@ public class ManuscriptMasterDAOImpl {
 			tx = session.beginTransaction();
 			Query query = null;
 			
-			query = session.createQuery("From PublisherBean pb where pb.name like :name");
+			query = session.createQuery("From PublisherBean pb where pb.name like :name order by pb.name asc");
 			query.setParameter("name", "%"+term+"%");
 			entities = query.list();
 			
@@ -938,7 +1262,7 @@ public class ManuscriptMasterDAOImpl {
 			tx = session.beginTransaction();
 			Query query = null;
 			
-			query = session.createQuery("From TagMasterBean tag where tag.name like :name");
+			query = session.createQuery("From TagMasterBean tag where tag.name like :name order by tag.name asc");
 			query.setParameter("name", "%"+term+"%");
 			entities = query.list();
 			
@@ -966,7 +1290,7 @@ public class ManuscriptMasterDAOImpl {
 			tx = session.beginTransaction();
 			Query query = null;
 			
-			query = session.createQuery("From Organisation org where org.name like :name");
+			query = session.createQuery("From Organisation org where org.name like :name order by org.name asc");
 			query.setParameter("name", "%"+term+"%");
 			entities = query.list();
 			
@@ -996,7 +1320,7 @@ public class ManuscriptMasterDAOImpl {
 			tx = session.beginTransaction();
 			Query query = null;
 			
-			query = session.createQuery("From ScriptBean bean where bean.isDeleted = 0");
+			query = session.createQuery("From ScriptBean bean where bean.isDeleted = 0 order by bean.name asc");
 			beans = query.list();
 			
 			tx.commit();
@@ -1013,6 +1337,68 @@ public class ManuscriptMasterDAOImpl {
 		return beans;
 		
 	}
+
+	@SuppressWarnings("unchecked")
+	public List<PathaBean> findAllPathas() throws OMDPCoreException {
+
+		List<PathaBean> beans = null;
+
+		Session session = null;
+		Transaction tx = null;
+
+		try {
+			session = HibernateUtil.getSessionFactory().openSession();
+			tx = session.beginTransaction();
+			Query query = null;
+
+			query = session.createQuery("From PathaBean bean where bean.isDeleted = 0 order by bean.name asc");
+			beans = query.list();
+
+			tx.commit();
+		}  catch (HibernateException he) {
+			tx.rollback();
+			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_FIND_ALL_SCRIPTS, he);
+		} catch (Exception e) {
+			tx.rollback();
+			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_FIND_ALL_SCRIPTS, e);
+		}finally {
+			session.close();
+		}
+
+		return beans;
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ConditionOfManuscriptBean> findAllConditionOfManuscripts() throws OMDPCoreException {
+
+		List<ConditionOfManuscriptBean> beans = null;
+
+		Session session = null;
+		Transaction tx = null;
+
+		try {
+			session = HibernateUtil.getSessionFactory().openSession();
+			tx = session.beginTransaction();
+			Query query = null;
+
+			query = session.createQuery("From ConditionOfManuscriptBean bean where bean.isDeleted = 0 order by bean.name asc");
+			beans = query.list();
+
+			tx.commit();
+		}  catch (HibernateException he) {
+			tx.rollback();
+			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_FIND_ALL_SCRIPTS, he);
+		} catch (Exception e) {
+			tx.rollback();
+			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_FIND_ALL_SCRIPTS, e);
+		}finally {
+			session.close();
+		}
+
+		return beans;
+
+	}
 	
 	@SuppressWarnings("unchecked")
 	public List<CategoryBean> findAllCategories() throws OMDPCoreException {
@@ -1025,7 +1411,7 @@ public class ManuscriptMasterDAOImpl {
 			tx = session.beginTransaction();
 			Query query = null;
 			
-			query = session.createQuery("From CategoryBean cb where cb.isDeleted = 0");
+			query = session.createQuery("From CategoryBean cb where cb.isDeleted = 0 order by cb.name asc");
 			beans = query.list();
 			
 			tx.commit();
@@ -1106,7 +1492,7 @@ public class ManuscriptMasterDAOImpl {
 	 * @return DigitalManuscriptBean
 	 * @throws OMDPCoreException
 	 */
-	public DigitalManuscriptBean saveDigitalManuscript(DigitalManuscriptBean bean , PublicationBean publicationBean,List<TagMasterBean> tagList,List<Long>specificCategoryList) throws OMDPCoreException {
+	public DigitalManuscriptBean saveDigitalManuscript(DigitalManuscriptBean bean , PublicationBean publicationBean,List<TagMasterBean> tagList,List<Long>specificCategoryList,List<AuthorBean> authorList) throws OMDPCoreException {
 		Session session = null;
 		Transaction tx = null;
 		Query query=null;
@@ -1121,12 +1507,17 @@ public class ManuscriptMasterDAOImpl {
 			
 			session = HibernateUtil.getSessionFactory().openSession();
 			tx = session.beginTransaction();
-			session.saveOrUpdate(bean.getAuthorFkObj());
-			bean.setAuthorFKId(bean.getAuthorFkObj().getId());
+			//session.saveOrUpdate(bean.getAuthorFkObj());
+			//bean.setAuthorFKId(bean.getAuthorFkObj().getId());
 			
 			if(bean.getNmmDetailsFkObj() != null && bean.getNmmDetailsFkObj().getHeight().length() > 0) {
 				session.saveOrUpdate(bean.getNmmDetailsFkObj());
 				bean.setNmmDetailsFkId(bean.getNmmDetailsFkObj().getId());
+			}
+			
+			if(bean.getArticleDetailsFkObj() != null) {
+				session.saveOrUpdate(bean.getArticleDetailsFkObj());
+				bean.setArticleDetailFkId(bean.getArticleDetailsFkObj().getId());
 			}
 
 			if(bean.getScribeFkObj() != null && (bean.getScribeFkObj().getName() != null && bean.getScribeFkObj().getName().length() > 0)
@@ -1173,6 +1564,30 @@ public class ManuscriptMasterDAOImpl {
 			} else {
 				bean.setOrganisationFkId(null);
 			}
+			
+			if(bean.getId() != null && bean.getId() > 0){
+				query=session.createQuery("delete ManuscriptAuthorMapperBean mapper where mapper.manuscriptFkId= :id");
+				query.setParameter("id", bean.getId());
+				query.executeUpdate();
+				}
+			if(authorList !=null && authorList.size()>0){
+				List<ManuscriptAuthorMapperBean> authorMapperList = new ArrayList<ManuscriptAuthorMapperBean>();
+				ManuscriptAuthorMapperBean authorMapper= null;
+				for(AuthorBean auth : authorList){
+					if(auth .getId() <= 0){
+						auth .setId(null);
+						session.save(auth);
+					} else {
+						session.update(auth);
+					}
+					authorMapper= new ManuscriptAuthorMapperBean();
+					authorMapper.setManuscriptFkObj(bean);
+					authorMapper.setAuthorFkId(auth.getId());
+					authorMapperList.add(authorMapper);
+					//session.saveOrUpdate(tg);
+				}
+				bean.setAuthorMapperList(authorMapperList);
+			}
 			session.saveOrUpdate(bean);
 			
 			List<TagMasterBean> tagListSave=new ArrayList<TagMasterBean>();
@@ -1215,14 +1630,37 @@ public class ManuscriptMasterDAOImpl {
 				mapperBean.setTagsFkId(tg.getId());
 				session.save(mapperBean);
 			}
-			tx.commit();
+			
+			
+			/*query=session.createQuery("delete ManuscriptAuthorMapperBean mapper where mapper.manuscriptFkId= :id");
+			query.setParameter("id", bean.getId());
+			query.executeUpdate();
+			
+			for(AuthorBean auth : authorList){
+				if(auth .getId() <= 0){
+					auth .setId(null);
+					session.save(auth);
+				} else {
+					session.update(auth);
+				}
+				//session.saveOrUpdate(tg);
+			}
+		
+			ManuscriptAuthorMapperBean authorMapper= null;
+			for(AuthorBean author : authorList){
+				authorMapper= new ManuscriptAuthorMapperBean();
+				authorMapper.setManuscriptFkId(bean.getId());
+				authorMapper.setAuthorFkId(author.getId());
+				session.save(authorMapper);
+			}*/
+			tx.commit(); 
 			if(frameList != null && frameList.size() > 0)
 				saveFramesForDocument(bean, frameList, session);
 		}  catch (HibernateException he) {
-			tx.rollback();
+			//tx.rollback();
 			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_SAVE_DIGITAL_MANUSCRIPT, he);
 		} catch (Exception e) {
-			tx.rollback();
+			//tx.rollback();
 			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_SAVE_DIGITAL_MANUSCRIPT, e);
 		}finally {
 			session.close();
@@ -1241,14 +1679,27 @@ public class ManuscriptMasterDAOImpl {
 		String day =  String.valueOf(now.get(Calendar.DAY_OF_MONTH));
 		
 		folderPath = "/"+year+"/"+month+"/"+day+"/"+bean.getId() ;
+		logger.debug("dao.ManuscriptMasterDAOImpl.saveFramesForDocument frameList "+folderPath);
 		bean.setDigitalManuscriptFrames(frameList);
+
 		bean = new ManuscriptMasterServiceImpl().convertFilePaths(bean, folderPath);
 		
 		//session.update(bean);
 	//	session.saveOrUpdate(bean.getDigitalManuscriptFrames());
 		
 		for(int i= 0 ; i<bean.getDigitalManuscriptFrames().size() ; i++)  {
-			session.saveOrUpdate(bean.getDigitalManuscriptFrames().get(i));
+			logger.debug("dao.ManuscriptMasterDAOImpl.saveFramesForDocument frame  "+bean.getDigitalManuscriptFrames().get(i).getFilePath());
+
+			DigitalManuscriptFrame digitalManuscriptFrame = bean.getDigitalManuscriptFrames().get(i);
+			File pdfFile = new File(digitalManuscriptFrame.getFilePath());
+			if (FilenameUtils.isExtension(pdfFile.getName(), "pdf")) {
+				Map<String, Object> session1 = ActionContext.getContext().getSession();
+				UserInfoVO userInfoVO = (UserInfoVO) session1.get(IndvenApplicationConstants.LOGGEDIN_USER_SESSION_DATA);
+				Long userId = userInfoVO.getId();
+				//.replaceAll(String.valueOf(userId),"")
+				digitalManuscriptFrame.setFilePath(folderPath+"/"+pdfFile.getName());
+			}
+			session.saveOrUpdate(digitalManuscriptFrame);
 		}
 		tx.commit();
 		return bean;
@@ -1495,6 +1946,7 @@ public class ManuscriptMasterDAOImpl {
 				entity = digitalManuscriptBeans.get(0);
 				
 				Hibernate.initialize(entity.getDigitalManuscriptFrames());
+				Hibernate.initialize(entity.getAuthorMapperList());
 				for(int i=0 ; i<entity.getDigitalManuscriptFrames().size() ; i++) {
 					//Hibernate.initialize(entity.getDigitalManuscriptFrames().get(i).getFrameCommentsList());
 					frameCommentsList = new ArrayList<DocumentCommentBean>();
@@ -1514,13 +1966,22 @@ public class ManuscriptMasterDAOImpl {
 			query2=session.createQuery("from ManuscriptSpecificcategoryMapper msc where msc.manuscriptFkId = :manuacriptId");
 			query2.setParameter("manuacriptId", id);
 			List<ManuscriptSpecificcategoryMapper> specificCategoryMapper = query2.list();
+			
+			
+			/*query2=session.createQuery("from ManuscriptAuthorMapperBean msc where msc.manuscriptFkId = :manuacriptId");
+			query2.setParameter("manuacriptId", id);
+			List<ManuscriptAuthorMapperBean> authMapper = query2.list();*/
+			
 		    returnMap = new HashMap<String, Object>();
 			returnMap.put("manuscriptBean", entity);
 			returnMap.put("tagList", manuscriptTagMappers);
 			returnMap.put("specificCategoryList", specificCategoryMapper);
+			//returnMap.put("authorList", authMapper);
+			
 			String digitiserName = "";
 			if(entity.getDigitizerId() != null && entity.getDigitizerId() > 0) {
-				query = session.createQuery("select e.firstName from EmployeeMasterBean e where e.id=:digitiserId");
+//				query = session.createQuery("select e.firstName from EmployeeMasterBean e where e.id=:digitiserId");
+				query = session.createQuery("select e.email from EmployeeMasterBean e where e.id=:digitiserId");
 				query.setParameter("digitiserId", entity.getDigitizerId());
 				digitiserName = (String) query.uniqueResult();
 			}
@@ -2030,15 +2491,21 @@ public class ManuscriptMasterDAOImpl {
 			//DigitalManuscriptBean transcribedBean = (DigitalManuscriptBean) query.uniqueResult();
 			
 			DigitalManuscriptBean transcribedBean = (DigitalManuscriptBean)session.get(DigitalManuscriptBean.class, transcribedManId);
-			System.out.println(transcribedBean.getName());
 			
 			DigitalManuscriptBean translatedBean = new DigitalManuscriptBean()	;
 			DigitalManuscriptAssembler.copyObjToNewState(translatedBean, transcribedBean);
 			translatedBean.setManuscriptType(ManuscriptTypeEnum.Translation);
 			translatedBean.setRecordStatus(DocumentStatusEnum.Under_Translator);
 			translatedBean.setLanguage(language);
-			
-			
+			List<ManuscriptAuthorMapperBean> autherMapperList = new ArrayList<>();
+			ManuscriptAuthorMapperBean newAuthorBean ;
+			for(ManuscriptAuthorMapperBean authorBean:translatedBean.getAuthorMapperList()){
+				newAuthorBean = new ManuscriptAuthorMapperBean();
+				newAuthorBean.setAuthorFkId(authorBean.getAuthorFkId());
+				newAuthorBean.setManuscriptFkObj(translatedBean);
+				autherMapperList.add(newAuthorBean);
+			}
+			translatedBean.setAuthorMapperList(autherMapperList);
 			query = session.createQuery("from LanguageBean bean where bean.unicodePoint = :mappedLangIdStr");
 			query.setParameter("mappedLangIdStr", language);
 			LanguageBean lang = (LanguageBean) query.uniqueResult();
@@ -2447,6 +2914,68 @@ public class ManuscriptMasterDAOImpl {
 			session.close();
 		}
 		return bean;
+	}
+	/**
+	 * used to find the no of frames
+	 * @param parentId
+	 * @return
+	 * @throws OMDPCoreException
+	 */
+	public Long findNoOfFrames(Long parentId) throws OMDPCoreException {
+		Long numberOfRecords = null;
+		Session session = null;
+		Transaction tx = null;
+		try {
+			session = HibernateUtil.getSessionFactory().openSession();
+			tx = session.beginTransaction();
+			Query query = null;
+			
+			query = session.createQuery("select count(e) from DigitalManuscriptFrame e where e.digitalManuscriptFkId =:parentId");
+			query.setParameter("parentId", parentId);
+			numberOfRecords = (Long) query.uniqueResult();
+
+			tx.commit();
+		}  catch (HibernateException he) {
+			tx.rollback();
+			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_FIND_FRAME_COUNT, he);
+		} catch (Exception e) {
+			tx.rollback();
+			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_FIND_FRAME_COUNT, e);
+		}finally {
+			session.close();
+		}
+		return numberOfRecords;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Subject1Bean> findAllSubject1() throws OMDPCoreException {
+
+		List<Subject1Bean> beans = null;
+
+		Session session = null;
+		Transaction tx = null;
+
+		try {
+			session = HibernateUtil.getSessionFactory().openSession();
+			tx = session.beginTransaction();
+			Query query = null;
+
+			query = session.createQuery("From Subject1Bean bean where bean.isDeleted = 0 order by bean.name asc");
+			beans = query.list();
+
+			tx.commit();
+		}  catch (HibernateException he) {
+			tx.rollback();
+			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_FIND_ALL_SCRIPTS, he);
+		} catch (Exception e) {
+			tx.rollback();
+			throw new OMDPCoreException(OMDPCoreException.UNABLE_TO_FIND_ALL_SCRIPTS, e);
+		}finally {
+			session.close();
+		}
+
+		return beans;
+
 	}
 	
 }

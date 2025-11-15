@@ -15,7 +15,9 @@ public final class IndvenLogger {
 	 * The Log used to log.
 	 * 
 	 */
-	private static Log log = null;
+//	private static Log log = null;
+        private Log log = null; // suggested by Gemini AI ..NarasMG
+
 
 	/**
 	 * The private constructor for ProjectLogger.
