@@ -6,6 +6,18 @@
     </description>
 	<property file="build.properties"/>
 
+	<path id="junit.classpath">
+		<fileset dir="${lib.home}">
+			<include name="junit*.jar"/>
+		</fileset>
+		<fileset dir="${deploy.home}/lib" erroronmissingdir="true">
+			<include name="junit*.jar"/>
+		</fileset>
+	</path>
+
+	<taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
+		classpathref="junit.classpath"/>
+
 
 
 	<!-- ==================== Clean Target ==================================== -->
@@ -55,6 +67,41 @@
 		<copy todir="${build.home}/WEB-INF/classes">
 			<fileset dir="${source.home}" excludes="CVS,**/*.java" />
 		</copy>
+	</target>
+
+	<!-- ==================== Test Target ================================== -->
+	<target name="test" depends="build" description="Compile and run unit tests">
+		<mkdir dir="${build.home}/test-classes" />
+		<mkdir dir="${build.home}/test-reports" />
+		<javac srcdir="${test.source.home}"
+			destdir="${build.home}/test-classes"
+			debug="${compile.debug}"
+			deprecation="${compile.deprecation}"
+			optimize="${compile.optimize}"
+			source="1.8"
+			target="1.8"
+			includeantruntime="false">
+			<classpath>
+				<pathelement path="${build.home}/WEB-INF/classes" />
+				<fileset dir="${lib.home}" />
+				<fileset dir="${deploy.home}/lib" />
+			</classpath>
+		</javac>
+
+		<junit printsummary="on" haltonfailure="true" fork="true">
+			<classpath>
+				<pathelement path="${build.home}/test-classes" />
+				<pathelement path="${build.home}/WEB-INF/classes" />
+				<fileset dir="${lib.home}" />
+				<fileset dir="${deploy.home}/lib" />
+			</classpath>
+			<formatter type="plain" />
+			<batchtest todir="${build.home}/test-reports">
+				<fileset dir="${test.source.home}">
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
 	</target>
 	
 	<!-- ==================== Archive Target ================================== -->

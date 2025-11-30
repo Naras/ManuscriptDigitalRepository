@@ -26,6 +26,7 @@
 		<mapping class="com.indven.portal.administration.entity.UserLoginDetailsBean"/>
 		<mapping class="com.indven.portal.administration.entity.RoleMasterBean"/>
 		<mapping class="com.indven.portal.administration.entity.UserRoleDetailsBean"/>
+		<mapping class="com.indven.tools.bootstrap.UserRoleDetailsBootstrapBean"/>
 
 		<mapping class="com.indven.portal.hrd.entity.EmployeeMasterBean"/>
 		

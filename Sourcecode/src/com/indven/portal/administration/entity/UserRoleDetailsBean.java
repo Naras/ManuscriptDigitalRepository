@@ -11,6 +11,9 @@
 package com.indven.portal.administration.entity;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -42,14 +45,27 @@ public class UserRoleDetailsBean implements Serializable {
 
 	@Column(name = "UserInfoFkId", insertable = true, updatable = true)
 	private Long userLoginDetailsFkId = null;
-	
+
 	@Column(name = "locationmasterfkid", nullable = false)
 	private Long locationMasterFkId;
 
 	@ManyToOne
-	@JoinColumn(name = "rolemasterfkid", nullable=true,insertable=false,updatable=false)
+	@JoinColumn(name = "rolemasterfkid", nullable = true, insertable = false, updatable = false)
 	private RoleMasterBean roleMasterFKObj;
-	
+
+	@Column(name = "ValidFromDate", nullable = true)
+	private Date validFromDate;
+
+	@Column(name = "ValidToDate", nullable = true)
+	private Date validToDate;
+
+	public UserRoleDetailsBean() {
+		Calendar cal = new GregorianCalendar(1900, Calendar.JANUARY, 1, 0, 0, 0);
+		this.validFromDate = cal.getTime();
+		cal = new GregorianCalendar(2199, Calendar.DECEMBER, 12, 0, 0, 0);
+		this.validToDate = cal.getTime();
+	}
+
 	/**
 	 * @return the locationMasterFkId
 	 */
@@ -100,9 +116,26 @@ public class UserRoleDetailsBean implements Serializable {
 
 	public void setUserLoginDetailsFkId(Long userLoginDetailsFkId) {
 		this.userLoginDetailsFkId = userLoginDetailsFkId;
-	} 
-        public String toString() { 
-            return ("id "+ id + " roleMaster FkId " + roleMasterFkId + " user Login FkId " + userLoginDetailsFkId
-                    + " location master FkId " + locationMasterFkId);
-        }
+	}
+
+	public Date getValidFromDate() {
+		return validFromDate;
+	}
+
+	public void setValidFromDate(Date validFromDate) {
+		this.validFromDate = validFromDate;
+	}
+
+	public Date getValidToDate() {
+		return validToDate;
+	}
+
+	public void setValidToDate(Date validToDate) {
+		this.validToDate = validToDate;
+	}
+
+	public String toString() {
+		return ("id " + id + " roleMaster FkId " + roleMasterFkId + " user Login FkId " + userLoginDetailsFkId
+				+ " location master FkId " + locationMasterFkId);
+	}
 }
