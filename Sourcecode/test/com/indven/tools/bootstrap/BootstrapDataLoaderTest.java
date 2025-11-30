@@ -50,10 +50,11 @@ public class BootstrapDataLoaderTest {
 		configuration.addAnnotatedClass(EmployeeMasterBean.class);
 		configuration.addAnnotatedClass(LocationLevelMasterBean.class);
 		configuration.addAnnotatedClass(LocationMasterBean.class);
+		configuration.addAnnotatedClass(UserRoleDetailsBootstrapBean.class);
 
 		configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
 		configuration.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
-		configuration.setProperty("hibernate.connection.url", "jdbc:h2:mem:mdr_bootstrap;DB_CLOSE_DELAY=-1");
+		configuration.setProperty("hibernate.connection.url", "jdbc:h2:mem:mdr_bootstrap;DB_CLOSE_DELAY=-1;MODE=MYSQL");
 		configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
 		configuration.setProperty("hibernate.show_sql", "false");
 		configuration.setProperty("hibernate.format_sql", "false");
@@ -87,7 +88,7 @@ public class BootstrapDataLoaderTest {
 
 			UserLoginDetailsBean adminLogin = (UserLoginDetailsBean) session
 					.createQuery("from UserLoginDetailsBean where loginId = :login")
-					.setParameter("login", "admin")
+					.setParameter("login", "CTO@samskriti.org")
 					.uniqueResult();
 			assertNotNull("Administrator login must exist", adminLogin);
 
