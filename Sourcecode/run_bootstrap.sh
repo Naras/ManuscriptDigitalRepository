@@ -13,7 +13,7 @@ if [ $? -eq 0 ]; then
     echo "Compilation successful. Running BootstrapDataLoader..."
     # Run with classpath including libs, source (for compiled classes), and resources (for config)
     # Set catalina.home to current directory so logs go to ./logs/omds.log
-    java -Dcatalina.home=. -cp "WebContent/WEB-INF/lib/*:src:resources" com.indven.tools.bootstrap.BootstrapDataLoader
+    java --add-opens java.base/java.lang=ALL-UNNAMED -Dcatalina.home=. -cp "WebContent/WEB-INF/lib/*:src:resources" com.indven.tools.bootstrap.BootstrapDataLoader
 else
     echo "Compilation failed."
 fi
