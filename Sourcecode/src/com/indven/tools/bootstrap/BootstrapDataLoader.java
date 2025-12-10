@@ -37,6 +37,14 @@ public class BootstrapDataLoader {
 	private final SessionFactory sessionFactory;
 
 	private static final String ADMIN_ROLE_NAME = "administrator";
+	private static final String GUEST_ROLE_NAME = "guest";
+	private static final String USER_ROLE_NAME = "user";
+	private static final String SCHOLAR_ROLE_NAME = "scholar";
+	private static final String ADMIN_ROLE_DESC = "System administrator";
+	private static final String GUEST_ROLE_DESC = "Default guest";
+	private static final String USER_ROLE_DESC = "Normal user";
+	private static final String SCHOLAR_ROLE_DESC = "Scholar";
+
 
 	private String adminLogin = "CTO@Samskriti.org";
 	private String adminPassword = "CTO123$%^";
@@ -63,7 +71,7 @@ public class BootstrapDataLoader {
 							"Update Role"),
 					new MenuSeed(10301L, "0", null, 1, "/addUserPageWithRoles.action", "New", 0, 103L, "10301", null,
 							"Add User"),
-					new MenuSeed(10302L, "0", null, 1, "/searchPageAction.action", "Search", 1, 103L, "10302", null,
+					new MenuSeed(10302L, "0", null, 1, "/createSearchFormAction.action?vo=EmployeeMaster", "Search", 1, 103L, "10302", null,
 							"Search Users"),
 					new MenuSeed(10303L, "0", null, 1, "/generateResetPasswordIdPageAction.action", "Reset Password", 1,
 							103L, "10303", null,
@@ -76,27 +84,33 @@ public class BootstrapDataLoader {
 							104L, "10402", null, "Change Password"),
 					new MenuSeed(10501L, "0", null, 1, "/addManuscript.action", "New", 0, 105L, "10501", null,
 							"Add Manuscript"),
-					new MenuSeed(10502L, "0", null, 1, "/searchForManuscript.action", "Search", 1, 105L, "10502", null,
+					new MenuSeed(10502L, "0", null, 1, "/searchManuscript.action", "Search", 1, 105L, "10502", null,
 							"Search Manuscripts"),
-					new MenuSeed(10601L, "0", null, 1, "/createSearchFormAction.action", "Language", 0, 106L, "10601",
+					new MenuSeed(10601L, "0", null, 1, "/createSearchFormAction.action?vo=LanguageMaster", "Language", 0, 106L, "10601",
 							null,
 							"Language"),
-					new MenuSeed(10602L, "0", null, 1, "/createSearchFormAction.action", "Subject", 0, 106L, "10602",
+					new MenuSeed(10602L, "0", null, 1, "/createSearchFormAction.action?vo=CategoryMaster", "Subject", 0, 106L, "10602",
 							null,
 							"Subject"),
-					new MenuSeed(10603L, "0", null, 1, "/createSearchFormAction.action", "Script", 0, 106L, "10603",
+					new MenuSeed(10603L, "0", null, 1, "/createSearchFormAction.action?vo=ScriptMaster", "Script", 0, 106L, "10603",
 							null,
 							"Script"),
-					new MenuSeed(10604L, "0", null, 1, "/createSearchFormAction.action", "Bundle", 0, 106L, "10604",
+					new MenuSeed(10604L, "0", null, 1, "/createSearchFormAction.action?vo=BundleMaster", "Bundle", 0, 106L, "10604",
 							null, ""),
-					new MenuSeed(10605L, "0", null, 1, "/createSearchFormAction.action", "Tag", 0, 106L, "10605", null,
+					new MenuSeed(10605L, "0", null, 1, "/tagFormAction.action", "Tag", 0, 106L, "10605", null,
 							""),
-					new MenuSeed(10606L, "0", null, 1, "/createSearchFormAction.action", "Specific Category", 0, 106L,
+					new MenuSeed(10606L, "0", null, 1, "/createSearchFormAction.action??vo=SpecificCategoryMaster", "Specific Category", 0, 106L,
 							"10606", null, ""));
 
 	private static final Set<Long> ADMIN_MENU_IDS = new HashSet<>(
 			Arrays.asList(101L, 102L, 10201L, 10202L, 103L, 10301L, 10302L, 10303L, 104L, 10401L, 10402L, 105L, 10501L,
 					10502L, 106L, 10601L, 10602L, 10603L, 10604L, 10605L, 10606L, 107L));
+
+	private static final Set<Long> USER_MENU_IDS = new HashSet<>(Arrays.asList(101L, 104L, 10401L, 10402L, 105L, 10501L, 10502L));
+	private static final Set<Long> SCHOLAR_MENU_IDS = new HashSet<>(Arrays.asList(101L, 104L, 10401L, 10402L, 105L, 10501L, 10502L,
+																				 106L, 10601L, 10602L, 10603L, 10604L, 10605L, 10606L));
+	private static final Set<Long> GUEST_MENU_IDS = new HashSet<>(Arrays.asList(101L, 104L, 10401L, 10402L));
+
 
 	public BootstrapDataLoader() {
 		this(HibernateUtil.getSessionFactory());
@@ -138,8 +152,14 @@ public class BootstrapDataLoader {
 		try {
 			tx = session.beginTransaction();
 			seedMenuMaster(session);
-			Long adminRoleId = seedAdminRole(session);
-			seedAccessControl(session, adminRoleId);
+			Long adminRoleId = seedRole(session, ADMIN_ROLE_NAME, ADMIN_ROLE_DESC);
+			seedAccessControl(session, adminRoleId, ADMIN_MENU_IDS);
+			Long userRoleId = seedRole(session, USER_ROLE_NAME, USER_ROLE_DESC);
+			seedAccessControl(session, userRoleId, USER_MENU_IDS);
+			Long scholarRoleId = seedRole(session, SCHOLAR_ROLE_NAME, SCHOLAR_ROLE_DESC);
+			seedAccessControl(session, scholarRoleId, SCHOLAR_MENU_IDS);
+			Long guestRoleId = seedRole(session, GUEST_ROLE_NAME, GUEST_ROLE_DESC);
+			seedAccessControl(session, guestRoleId, GUEST_MENU_IDS);
 			Long defaultLocationId = seedDefaultLocation(session);
 			seedAdministrator(session, adminRoleId, defaultLocationId);
 			tx.commit();
@@ -178,27 +198,30 @@ public class BootstrapDataLoader {
 		}
 	}
 
-	private Long seedAdminRole(Session session) throws Exception {
+	private Long seedRole(Session session, String role_name, String role_description) throws Exception {
 		RoleMasterBean role = (RoleMasterBean) session
 				.createQuery("from RoleMasterBean where lower(name) = :name")
-				.setParameter("name", ADMIN_ROLE_NAME.toLowerCase())
+				.setParameter("name", role_name.toLowerCase())
 				.uniqueResult();
 		if (role != null) {
 			return role.getId();
 		}
 
 		role = new RoleMasterBean();
-		role.setName(ADMIN_ROLE_NAME);
-		role.setDescription("System administrator");
+		role.setName(role_name);
+		role.setDescription(role_description);
 		role.setIsDeleted(false);
 		CustomBeanUtil.setBaseValues(role, false);
 		session.save(role);
-		System.out.println("Created administrator role");
+		System.out.println("Created "+ role_name + " role - " + role_description);
+
 		return role.getId();
 	}
 
-	private void seedAccessControl(Session session, Long roleId) {
-		for (Long menuId : ADMIN_MENU_IDS) {
+	private void seedAccessControl(Session session, Long roleId, Set<Long> menuIds) {
+                String[] roleName = {ADMIN_ROLE_NAME, USER_ROLE_NAME, SCHOLAR_ROLE_NAME, GUEST_ROLE_NAME};
+                int role = roleId.intValue() - 1;
+		for (Long menuId : menuIds) {
 			BigInteger count = (BigInteger) session.createSQLQuery(
 					"SELECT COUNT(1) FROM omds_accesscontrol WHERE RoleMasterFkId = :roleId AND MenuMasterFkId = :menuId")
 					.setParameter("roleId", roleId)
@@ -212,7 +235,7 @@ public class BootstrapDataLoader {
 			acl.setMenuMasterFkId(menuId);
 			session.save(acl);
 		}
-		System.out.println("Ensured administrator access control entries");
+		System.out.println("Ensured " + roleName[role] + " access control entries");
 	}
 
 	private Long seedDefaultLocation(Session session) throws Exception {
