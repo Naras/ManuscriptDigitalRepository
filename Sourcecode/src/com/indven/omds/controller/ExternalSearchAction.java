@@ -14,7 +14,7 @@ import com.indven.omds.util.ManuscriptDocumentationType;
 import com.indven.omds.util.ManuscriptWorkType;
 import com.indven.omds.vo.AuthorVO;
 import com.indven.omds.vo.DigitalManuscriptVO;
-import com.indven.portal.administration.vo.UserInfoVO;
+//import com.indven.portal.administration.vo.UserInfoVO;
 import com.indven.portal.hrd.service.EmployeeMasterServiceImpl;
 
 import net.sf.json.JSONObject;
@@ -59,7 +59,7 @@ public class ExternalSearchAction extends BaseAction implements ServletResponseA
 	 */
 	public String generateReportByCriteria() {
 
-		System.out.println("omds.controller.ExternalSearch.generateReportByCriteria for details report-----!!!!!!!!!!!!!1-------" + getRequest().getParameterNames());
+		logger.debug("omds.controller.ExternalSearch.generateReportByCriteria for details report-----!!!!!!!!!!!!!1-------" + getRequest().getParameterNames());
 
 		String status = ERROR;
 		int eDocumentStatus;
@@ -102,7 +102,7 @@ public class ExternalSearchAction extends BaseAction implements ServletResponseA
 			queryBuffer.append(" WHERE ");
 			queryBuffer.append(reportFilter == null ? "" : reportFilter);
 			queryBuffer.append(" GROUP BY dm.Id ORDER BY dm.Id");
-			System.out.println("query is ----- " + queryBuffer.toString());
+			logger.debug("query is ----- " + queryBuffer.toString());
 
 
 			inputStream = new ByteArrayInputStream(
@@ -139,6 +139,7 @@ public class ExternalSearchAction extends BaseAction implements ServletResponseA
 	}
 
 	public void setParameters(Map<String, Object> parameters) {
+//            logger.debug( "omds.controller.ExternalSearch.Action setParameters:"+parameters);
 		this.parameters = parameters;
 	}
 
@@ -158,8 +159,12 @@ public class ExternalSearchAction extends BaseAction implements ServletResponseA
 
 	/**
 	 * @return the digitalManuscriptVO
-	 */
+	 
+        amazing weirdness .. with this debug statement, externalSearch.searchForManuscript() works. 
+         Without this, gives null pointer exception in Groovy front-end app
+         */
 	public DigitalManuscriptVO getDigitalManuscriptVO() {
+            logger.debug( "omds.controller.ExternalSearch.Action:"+digitalManuscriptVO.toString());
 		return digitalManuscriptVO;
 	}
 
@@ -167,12 +172,13 @@ public class ExternalSearchAction extends BaseAction implements ServletResponseA
 	 * @param digitalManuscriptVO the digitalManuscriptVO to set
 	 */
 	public void setDigitalManuscriptVO(DigitalManuscriptVO digitalManuscriptVO) {
+//            logger.debug( "omds.controller.ExternalSearch.Action:setdmVO:"+digitalManuscriptVO.getId());
 		this.digitalManuscriptVO = digitalManuscriptVO;
 	}
 
 
 	public String generateReportCriteria() {
-		System.out.println("omds.controller.ExternalSearch.generateReportCriteria:digitalManuscriptVO ----- " + digitalManuscriptVO);
+		logger.debug("omds.controller.ExternalSearch.generateReportCriteria:digitalManuscriptVO ----- " + digitalManuscriptVO);
 		StringBuffer criteriaStr = new StringBuffer("dm.isDeleted = " + (short) 0);
 		if (digitalManuscriptVO != null) {
 			if (digitalManuscriptVO.getManuscriptId() != null && digitalManuscriptVO.getManuscriptId().length() > 0) {
@@ -199,7 +205,7 @@ public class ExternalSearchAction extends BaseAction implements ServletResponseA
 			if (digitalManuscriptVO.getScriptFkId() != null && digitalManuscriptVO.getScriptFkId() > 0) {
 				criteriaStr.append(" and dm.scriptFkId=" + digitalManuscriptVO.getScriptFkId());
 			}
-			System.out.println("omds.controller.ExternalSearch.generateReportCriteria stage9 "+DocumentStatusEnum.valueOf(digitalManuscriptVO.getTypeOfWork()));
+			logger.debug("omds.controller.ExternalSearch.generateReportCriteria stage9 "+DocumentStatusEnum.valueOf(digitalManuscriptVO.getTypeOfWork()));
 				/*if(digitalManuscriptVO.getTypeOfWork() !=null && DocumentStatusEnum.valueOf(digitalManuscriptVO.getTypeOfWork()).getValue() != null && (DocumentStatusEnum.valueOf(digitalManuscriptVO.getTypeOfWork()).getValue()) >= 0){
 					criteriaStr.append(" and mm.material_fkid="+(DocumentStatusEnum.valueOf(digitalManuscriptVO.getTypeOfWork()).getValue()));
 				}*/
@@ -212,7 +218,7 @@ public class ExternalSearchAction extends BaseAction implements ServletResponseA
 			if (digitalManuscriptVO.getEndingLine() != null && digitalManuscriptVO.getEndingLine().trim().length() > 0) {
 				criteriaStr.append(" and dm.ending_line like '%" + digitalManuscriptVO.getEndingLine().trim() + "%'");
 			}
-			System.out.println("omds.controller.ExternalSearch.generateReportCriteria: digitalManuscriptVO.getAuthorFKId()------ "+digitalManuscriptVO.getAuthorFKId());
+			logger.debug("omds.controller.ExternalSearch.generateReportCriteria: digitalManuscriptVO.getAuthorFKId()------ "+digitalManuscriptVO.getAuthorFKId());
 			if (digitalManuscriptVO.getAuthorFKId() != null && digitalManuscriptVO.getAuthorFKId() > 0) {
 				criteriaStr.append(" and opa.Id =" + digitalManuscriptVO.getAuthorFKId());
 			}
@@ -325,7 +331,7 @@ public class ExternalSearchAction extends BaseAction implements ServletResponseA
     }
 
 	public String searchForManuscript() {
-        System.out.println( "omds.controller.ExternalSearch.Action:"+digitalManuscriptVO);
+        logger.debug( "omds.controller.ExternalSearch.Action:"+digitalManuscriptVO.getId());
 		String status = ERROR;
 		jsonObject = new JSONObject();
 		try {
@@ -338,13 +344,13 @@ public class ExternalSearchAction extends BaseAction implements ServletResponseA
 				selectedPage = 1L;
 			}
 			if (searchType != null && searchType.equals("FIND_ALL")) {
-                System.out.println("omds.controller.ExternalSearch.FIND_ALL");
+                logger.debug("omds.controller.ExternalSearch.FIND_ALL");
 				objMap = new ManuscriptMasterServiceImpl()
 						.searchManuscriptRecord(digitalManuscriptVO, true,
 								setFirst.intValue(),
 								IndvenApplicationConstants.RECORDS_PER_PAGE);
 			} else if (searchType != null && searchType.equals("SEARCH_SPC")) {
-                System.out.println("omds.controller.ExternalSearch.SEARCH_SPC");
+                logger.debug("omds.controller.ExternalSearch.SEARCH_SPC");
                 objMap = new ManuscriptMasterServiceImpl()
 						.searchManuscriptRecord(digitalManuscriptVO, false,
 								setFirst.intValue(),
@@ -357,7 +363,7 @@ public class ExternalSearchAction extends BaseAction implements ServletResponseA
 
             //jsonObject.put("manuscriptlist",objResult.getListOfElemnents());
             //jsonObject.accumulate("manuscriptlist","saasdasd");
-            System.out.println("omds.controller.ExternalSearch. jsonObject "+jsonObject);
+            logger.debug("omds.controller.ExternalSearch. jsonObject "+jsonObject);
             jsonObject.put("authors", objResult.getListOfElemnents());
 
 			/*totalRecords = (Long) objMap.get("totalCount");
@@ -371,7 +377,7 @@ public class ExternalSearchAction extends BaseAction implements ServletResponseA
 					listForPagingCombo.add(i);
 				}
 			}*/
-            System.out.println("omds.controller.ExternalSearch. digitalManuscriptVOs "+objResult.getListOfElemnents());
+            logger.debug("omds.controller.ExternalSearch. digitalManuscriptVOs "+objResult.getListOfElemnents());
             status = SUCCESS;
 		} catch (OMDPCoreException e) {
 			logger.error(e);
@@ -435,7 +441,7 @@ public class ExternalSearchAction extends BaseAction implements ServletResponseA
     public String getHomePageDashBoard() {
     	//ManuscriptMasterAction manuscriptMasterAction = new ManuscriptMasterAction();
     	//manuscriptMasterAction.findNoOfManuscripts()
-    	System.out.println("omds.controller.ExternalSearch.Action.getHomePageDashBoard stage1");
+    	logger.debug("omds.controller.ExternalSearch.Action.getHomePageDashBoard stage1");
     	String status = ERROR;
     	List<JSONObject> jsonObjectList = new ArrayList();
 		ManuscriptMasterServiceImpl manuscriptMasterServiceImpl = new ManuscriptMasterServiceImpl();
@@ -473,7 +479,7 @@ public class ExternalSearchAction extends BaseAction implements ServletResponseA
 					jsonObject.put("bookStatus", bookStatus);
 				}*/
 				//jsonObject.put(key, value)
-				System.out.println("omds.controller.ExternalSearch.dashBoardJsonObject "+jsonObject);
+				logger.debug("omds.controller.ExternalSearch.dashBoardJsonObject "+jsonObject);
 				jsonObject.put("digitalManuscripts", hashMap);
 			status = SUCCESS;
 		} catch (OMDPCoreException e) {
